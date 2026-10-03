@@ -39,6 +39,22 @@ Format: **item** — why emulation can't prove it — phase added.
     whether the hub should suggest a second check on important work.
     — Phase 5
 
+## Student guide steps only real students can prove (Phase 7)
+
+Claude ran the guide end to end on a fresh copy (`docs/phase-7/RUN-LOG.md`),
+but these steps can't be done from Paul's account or in emulation.
+
+- **The Fork button and "Sync fork".** GitHub won't let one account fork
+  its own repo, so the test used a fresh copy instead. The first student to
+  fork proves step 1, and the first update proves step 6.
+- **GitHub's Settings → Pages screen on a phone.** Does it show in the
+  mobile layout, or is "Desktop site" needed as the guide suggests? —
+  Phase 7
+- **Add to Home Screen / Install app,** then doing setup inside the
+  installed app on iPhone, as the guide says. — Phase 7
+- **The Spanish guide read by a Spanish-first student.** Are the English
+  button names with Spanish glosses clear? — Phase 7
+
 ## Manual (copy-paste) mode
 
 - **Copy prompt on iPhone Safari and the installed iPhone app**: iOS only
