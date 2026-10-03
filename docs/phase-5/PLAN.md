@@ -48,6 +48,25 @@ repo, so Claude stops and writes up instead (`docs/phase-6/PROPOSAL.md`).
      - every v1.0 finding is gone: no personal name in the body, narrow
        query, `sourcing: advice`, `web_search` not `required`, and the
        optional input handled.
+3a. **Revised after the rerun answer**, before any Phase 5 test ran.
+   - **The trigger:** the first advice-mode rule flagged 24 of 27 lines in a
+     good coaching answer. They were suggested interview questions in
+     quotes, words quoted from the posting, and placeholders.
+   - **The new rules:**
+     - `FACT_RE` is `/\d|%|[$€£]/`, tested after removing `[…]`
+       placeholders and `(1)`-style enumerators. Quotations no longer count.
+     - **For both modes:** a line is a question if it ends in `?` followed
+       only by closing quotes or brackets, or by a trailing `[note]`.
+   - **Effect:**
+
+     | Answer | Before | After |
+     |---|---|---|
+     | Rerun answer (advice) | 24 of 27 flagged | 4 claims, 3 unsourced |
+     | v1.0 job-prep answer (advice) | — | 11 claims, 6 unsourced, **including every invented student figure** |
+     | v1.0 job-prep answer (facts) | 50 claims, 41 unsourced | 41 claims, 32 unsourced |
+
+     The 50 → 41 drop is quoted questions that are no longer counted.
+     Deere runs 1–3 are unchanged: 60/49/3/8, 53/52/0/1, 53/51/0/2.
 6. **Fixtures:** prompt fixtures regenerated for the new block. The prompts
    the old answers responded to are kept as `answer-prompt.md`.
 

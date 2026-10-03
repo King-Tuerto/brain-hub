@@ -64,7 +64,13 @@ export const isSummaryHeading = (name) => norm(name) === 'summary'
 // In `sourcing: advice` recipes only factual-looking statements need a source:
 // ones with a figure, a percentage, a currency amount or a quotation. Coaching
 // ("Lead with the metric…") is not counted; an invented "attendance up 40%" is.
-const FACT_RE = /\d|%|[$€£]|["“][^"”]{6,}["”]/
+// Quotations are not counted: in coaching answers they are suggested wording
+// or words quoted from the student's own input (Phase 5 rerun finding).
+// Placeholders like [X%] and enumerators like (1) are ignored.
+const FACT_RE = /\d|%|[$€£]/
+const forFactTest = (t) => t.replace(/\[[^\]]*\]/g, ' ').replace(/\(\d+\)/g, ' ')
+// "…?" followed only by closing quotes, brackets or a trailing [note] is a question.
+const isQuestion = (t) => /\?["”'’)\]]*$/.test(t.replace(/\s*\[[^\]]*\]\s*$/, '').trim())
 
 export function checkSources(markdown, { sourcing = 'facts', returnItems = false } = {}) {
   const lines = String(markdown ?? '').split(/\r?\n/)
@@ -119,8 +125,8 @@ export function checkSources(markdown, { sourcing = 'facts', returnItems = false
 
   const real = claims.filter((c) => {
     const t = plain(c.text)
-    if (!t || t.endsWith('?') || t.endsWith(':') || isLabel(c.text) || isNote(c.text)) return false
-    return sourcing !== 'advice' || FACT_RE.test(t)
+    if (!t || isQuestion(t) || t.endsWith(':') || isLabel(c.text) || isNote(c.text)) return false
+    return sourcing !== 'advice' || FACT_RE.test(forFactTest(t))
   })
   const result = { claims: real.length, sourced: 0, unverified: 0, unsourced: [] }
   for (const c of classify(real)) {
