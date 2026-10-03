@@ -1,7 +1,7 @@
 // Brain Hub service worker. Network first for the app shell, so students always
 // get updates when online; the cache only matters when the network fails.
 // Never caches other origins (brain, AI, GitHub) or tool recipes.
-const CACHE = 'brain-hub-v3'
+const CACHE = 'brain-hub-v4'
 const SHELL = [
   './', 'index.html', 'manifest.json', 'icon.svg', 'icon-192.png', 'icon-512.png',
   'core/styles.css', 'core/app.js', 'core/sw-register.js',
@@ -31,7 +31,10 @@ self.addEventListener('fetch', (event) => {
   const path = url.pathname.slice(scope.pathname.length)
   if (path.startsWith('plugins/') || path.startsWith('core/tools/')) return
   event.respondWith(
-    fetch(req)
+    // cache: 'no-cache' revalidates with GitHub Pages every time (a cheap 304 when
+    // nothing changed). Without it the browser trusts Pages' max-age=600, so an
+    // update could take ~10 minutes to reach an installed app (Phase 7 guide run).
+    fetch(req, { cache: 'no-cache' })
       .then((res) => {
         if (res.ok) { const copy = res.clone(); caches.open(CACHE).then((c) => c.put(req, copy)) }
         return res

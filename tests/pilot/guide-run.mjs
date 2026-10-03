@@ -66,13 +66,16 @@ page.on('response', (r) => { if (r.status() >= 400) failed.push(`${r.status()} $
 page.on('console', (m) => { if (m.type() === 'error' && !(shooting && /Refused to apply a stylesheet/.test(m.text()))) errors.push(m.text()) })
 const log = []
 const say = (s) => { log.push(s); console.log(s) }
-const btn = (name) => page.getByRole('button', { name, exact: false }).first()
+// Buttons are matched from the start of their accessible name (exact enough to
+// avoid "ChatGPT" matching the Manual button's description; Nitpick T4).
+const esc = (t) => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+const btn = (name) => page.getByRole('button', { name: new RegExp('^' + esc(name)) })
 const shot = async (n) => {
   shooting = true
   try { await page.screenshot({ path: resolve(outDir, `${device}-${n}.png`) }); await page.waitForTimeout(200) } finally { shooting = false }
 }
 
-await page.goto(URL_, { waitUntil: 'networkidle' })
+await page.goto(URL_ + '?v=' + Date.now(), { waitUntil: 'networkidle' })
 
 if (stage === 'setup') {
   // Step 3 can only be checked for installability here (no real home screen in emulation).
@@ -91,7 +94,7 @@ if (stage === 'setup') {
     await btn('Connect my brain').click()
     say('step 4.2: connected to the local stand-in brain (never a real one)')
   } else {
-    await btn('Skip').click()
+    await btn('Skip — I don’t have a brain yet').click()
     say('step 4.2: tapped "Skip — I don’t have a brain yet"')
   }
   // Step 4.3 AI mode
@@ -128,7 +131,15 @@ if (stage === 'answer') {
   const answer = await readFile(resolve(outDir, 'answer.md'), 'utf8')
   const prompt = await page.getByTestId('prompt-box').inputValue()
   say(`step 5 (return): prompt still there after leaving the app: ${prompt === await readFile(resolve(outDir, 'prompt.md'), 'utf8')}`)
-  await page.getByTestId('answer-box').fill(answer)
+  if (device === 'android') {
+    await page.evaluate((t) => navigator.clipboard.writeText(t), answer)
+    await btn('Paste answer').click()
+    const got = await page.getByTestId('answer-box').inputValue()
+    if (got !== answer) { errors.push('Paste answer did not fill the box from the clipboard'); await page.getByTestId('answer-box').fill(answer) }
+    else say('step 5.7: Paste answer filled the box from the real clipboard')
+  } else {
+    await page.getByTestId('answer-box').fill(answer) // WebKit in Playwright has no clipboard read
+  }
   await btn('Use this answer').click()
   await page.getByTestId('result').waitFor()
   const sc = await page.getByTestId('source-check').textContent().catch(() => '(no source check shown)')
@@ -189,3 +200,5 @@ say(errors.length ? `page errors: ${errors.join(' | ')}` : 'page errors: none')
 if (failed.length) say(`failed requests: ${failed.join(' | ')}`)
 await writeFile(resolve(outDir, `log-${device}-${stage}.txt`), log.join('\n') + '\n')
 await ctx.close()
+const unexpected = failed.filter((f) => !/^401 POST \/rest\/v1\/thoughts$/.test(f)) // the open-check probe is meant to be refused
+if (errors.filter((e) => !/status of 401/.test(e)).length || unexpected.length) { console.log('GUIDE RUN FAILED'); process.exit(1) }

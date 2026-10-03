@@ -21,7 +21,7 @@ será un análisis estratégico, con fuentes, de una empresa real.
 Abre Claude, ChatGPT o Gemini. Pega esta guía completa y describe exactamente
 lo que ves en tu pantalla. Por ejemplo:
 
-- *"Estoy en el paso 3 y no veo la opción Pages. Aquí va una captura."*
+- *"Estoy en el paso 2 y no veo la opción Pages. Aquí va una captura."*
 - *"¿Qué significa 'fork'? ¿Es seguro?"*
 - *"El hub dice 'Could not reach that brain'. ¿Qué hago?"*
 
@@ -81,9 +81,11 @@ Anótala. Esa es tu app.
 Abre la dirección de tu hub en el teléfono.
 
 - **iPhone (Safari):** toca el botón **Compartir** y luego **Agregar a
-  inicio**.
-- **Android (Chrome):** toca el menú **⋮** y luego **Instalar app** (o
-  **Agregar a la pantalla principal**).
+  pantalla de inicio** (si tu teléfono está en inglés: **Share**, luego
+  **Add to Home Screen**).
+- **Android (Chrome):** toca el menú **⋮** y luego **Instalar app** o
+  **Agregar a la pantalla principal** (en inglés: **Install app** o **Add to
+  Home screen**).
 
 De aquí en adelante, abre Brain Hub desde su ícono.
 
@@ -94,29 +96,32 @@ De aquí en adelante, abre Brain Hub desde su ícono.
 
 ## Paso 4 — Configúrala (3 minutos)
 
-El hub te pregunta tres cosas, una pantalla a la vez.
+1. **Tu nombre.** Escríbelo y toca **Next** (siguiente). Solo es para el
+   saludo.
 
-1. **Tu nombre.** Solo es para el saludo.
+Luego el hub te pide dos elecciones rápidas, una pantalla a la vez.
+
 2. **Tu brain (cerebro).**
-   - **¿No tienes Open Brain?** Toca **Skip — I don't have a brain yet**
+   - **¿No tienes Open Brain?** Toca **Skip — I don’t have a brain yet**
      (omitir, todavía no tengo cerebro).
    - **¿Tienes uno?** Escribe su dirección (`https://….supabase.co`), su
-     llave **pública** (empieza con `sb_publishable_` o `eyJ`), y el correo y
-     la contraseña con los que entras a tu cerebro.
+     clave **pública** (empieza con `sb_publishable_` o `eyJ`), y el correo y
+     la contraseña con los que entras a tu cerebro. Luego toca **Connect my
+     brain** (conectar mi cerebro).
      - Primero el hub revisa que tu cerebro esté cerrado solo para ti. Si
        dice que tu cerebro está **open** (abierto), sigue su enlace para
        actualizarlo antes de continuar.
-     - **Nunca pegues tu llave secreta** (empieza con `sb_secret_`).
+     - **Nunca pegues tu clave secreta** (empieza con `sb_secret_`).
 3. **Cómo correr las herramientas.** Elige **Manual (copy and paste)**
    (copiar y pegar) y escoge la app de IA que usas.
    - **Manual es gratis:** usa la app de IA que ya tienes, incluida su
      búsqueda en la web.
-   - **Automatic** necesita una llave de OpenRouter y es opcional; puedes
-     cambiar después en **Settings**.
+   - **Automatic** (automático) necesita una clave de OpenRouter y es
+     opcional; puedes cambiar después en **Settings**.
 
 Toca **Finish** (terminar). Verás tu pantalla de inicio con tus herramientas.
 
-> **Tus llaves y tu contraseña se quedan en tu teléfono.** Nunca se guardan en
+> **Tus claves y tu contraseña se quedan en tu teléfono.** Nunca se guardan en
 > GitHub, y tu contraseña no se guarda en ningún lado.
 
 ---
@@ -144,18 +149,26 @@ Verás el análisis y, debajo de su título, una **revisión de fuentes**. Cada
 dato debe tener un enlace. Si alguno no lo tiene, el hub te los muestra para
 que sepas cuáles revisar.
 
-**¿Quieres estar seguro?** Toca **Check this answer** (revisar esta
-respuesta).
-1. El hub escribe un segundo prompt que le pide a tu IA abrir cada enlace y
-   confirmar que dice lo que afirma el análisis.
-2. Cópialo, pégalo en tu app de IA y pega la respuesta de vuelta.
+**¿Quieres asegurarte?** Toca **Check this answer** (revisar esta respuesta).
+
+La primera calificación que ves ("Score so far: … / 50") solo cubre
+secciones y fuentes. **Todavía no es tu calificación final.** Para revisar
+los enlaces:
+
+1. Toca **Copy check prompt** (copiar prompt de revisión), abre tu app de IA
+   y pégalo. Tu IA abre cada enlace y confirma que dice lo que afirma el
+   análisis.
+2. Copia su respuesta completa, regresa, pégala en el recuadro debajo del
+   prompt y toca **Score it** (calificar).
 3. Recibes una calificación sobre 100 y una lista de correcciones concretas.
+   Si algún dato sale "not supported" (sin respaldo), corrígelo o quítalo
+   antes de usar el análisis.
 
 **Para guardarlo:**
-- **Save to brain** (guardar en el cerebro, si conectaste uno): guarda un
-  resumen corto que puedes buscar después, con el reporte completo adjunto.
-  La próxima vez que analices la misma empresa, el hub encuentra tu trabajo
-  anterior.
+- **Save to brain** (guardar en el cerebro, si conectaste uno) abre un
+  resumen corto que puedes editar. Toca **Save** (guardar). El resumen es lo
+  que buscarás después, y el reporte completo va adjunto. La próxima vez que
+  analices la misma empresa, el hub encuentra tu trabajo anterior.
 - **Download** (descargar) guarda el reporte como archivo.
 
 **Listo. Hiciste un análisis de empresa con fuentes.**
@@ -170,7 +183,8 @@ día:
 1. Abre tu copia en GitHub.
 2. Toca **Sync fork** (sincronizar) y luego **Update branch** (actualizar).
 
-Tu sitio se actualiza solo un minuto después.
+Tu sitio se actualiza en unos minutos. Si la app de tu teléfono se ve igual,
+ciérrala y vuelve a abrirla.
 
 **Nunca edites la carpeta `core/`.** Eso es lo que mantiene las
 actualizaciones sin conflictos.
@@ -184,12 +198,19 @@ preparación para networking o comentarios sobre un ensayo?
 
 1. Abre tu app de IA y pega
    **[WIDGET-GUIDE.md](WIDGET-GUIDE.md)** de tu copia.
-2. Pide la herramienta que quieres. Puedes pedirlo en español.
-3. Pega lo que te dé en Brain Hub → **Add a tool** (agregar herramienta). El
-   hub te muestra exactamente qué puede hacer la herramienta antes de
-   instalarla.
-4. Para tenerla en todos tus dispositivos, guarda el archivo en la carpeta
-   `plugins/` de tu copia en GitHub. El hub la encuentra ahí solo.
+2. Pide la herramienta que quieres; puedes pedirla en español. Te da un
+   archivo cuyo nombre termina en `.recipe.md`.
+3. En Brain Hub, toca **Add a tool** (agregar herramienta), pega el texto
+   del archivo y toca **Check recipe** (revisar receta). El hub te muestra
+   exactamente qué puede hacer la herramienta. Si estás de acuerdo, toca
+   **Install** (instalar).
+4. **Para tenerla en todos tus dispositivos:**
+   1. Abre tu copia en GitHub y luego la carpeta `plugins/`.
+   2. Toca **Add file** (agregar archivo) y luego **Create new file** (crear
+      archivo nuevo).
+   3. Ponle el nombre exacto que te dio tu IA (que termina en `.recipe.md`),
+      pega el texto y toca **Commit changes** (guardar cambios).
+   4. En Brain Hub, toca **Refresh tools** (actualizar herramientas).
 
 ---
 
@@ -197,8 +218,8 @@ preparación para networking o comentarios sobre un ensayo?
 
 | Lo que ves | Qué hacer |
 |---|---|
-| La dirección de tu sitio muestra "404" | Espera dos minutos más después del Paso 2. Revisa que Pages esté en **main** y **/ (root)**. |
-| "Could not reach that brain" | Revisa que la dirección empiece con `https://` y termine en `.supabase.co`. |
+| La dirección de tu sitio muestra "404" | Espera dos minutos más después del Paso 2. Revisa que Pages esté en **main** y **/ (root)**. ¿Sigue en 404 después de diez minutos? Abre la pestaña **Actions** de tu copia; si te lo pide, activa los workflows y repite el Paso 2. |
+| "Could not reach that brain" | Revisa tu internet. Compara la dirección con **Project URL** en Supabase (**Project Settings** → **API**). Un proyecto gratuito de Supabase **se pausa después de una semana sin uso**: entra a supabase.com y restáuralo. |
 | "This brain is open" | Tu cerebro necesita primero su actualización de seguridad. Sigue el enlace que muestra el hub. |
 | "Your brain session ended" | Toca **Sign in again** (volver a entrar). |
 | "Paste answer" no hace nada | Mantén presionado en el recuadro de la respuesta y elige **Pegar**. |

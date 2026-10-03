@@ -47,6 +47,13 @@ but these steps can't be done from Paul's account or in emulation.
 - **The Fork button and "Sync fork".** GitHub won't let one account fork
   its own repo, so the test used a fresh copy instead. The first student to
   fork proves step 1, and the first update proves step 6.
+- **The first Pages build on a real fork** (Nitpick G11).
+  - **The risk:** GitHub turns Actions off on new forks, and "Deploy from a
+    branch" builds through an Actions workflow. Whether that blocks a
+    fork's first build is unknown, because the test copy wasn't a fork.
+  - **What's ready:** the guide's 404 row already says to open the Actions
+    tab and enable workflows. Confirm with the first student, and move the
+    step into Step 2 if it's always needed. — Phase 7
 - **GitHub's Settings → Pages screen on a phone.** Does it show in the
   mobile layout, or is "Desktop site" needed as the guide suggests? —
   Phase 7

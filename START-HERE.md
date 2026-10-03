@@ -17,7 +17,7 @@ analysis of a real company.
 Open Claude, ChatGPT or Gemini. Paste this whole guide in, then describe
 exactly what's on your screen. For example:
 
-- *"I'm on step 3 and I don't see a Pages option. Here's a screenshot."*
+- *"I'm on step 2 and I don't see a Pages option. Here's a screenshot."*
 - *"What does 'fork' mean? Is it safe?"*
 - *"The hub says 'Could not reach that brain'. What do I do?"*
 
@@ -89,14 +89,16 @@ From now on, open Brain Hub from its icon.
 
 ## Step 4 — Set it up (3 minutes)
 
-The hub asks three things, one screen at a time.
+1. **Your name.** Type it, then tap **Next**. It's just for the greeting.
 
-1. **Your name.** It's just for the greeting.
+Then the hub asks two quick choices, one screen at a time.
+
 2. **Your brain.**
-   - **No Open Brain?** Tap **Skip — I don't have a brain yet**.
+   - **No Open Brain?** Tap **Skip — I don’t have a brain yet**.
    - **Have one?** Enter its address (`https://….supabase.co`), its
      **public** key (it starts `sb_publishable_` or `eyJ`), and the email
-     and password you sign in to your brain with.
+     and password you sign in to your brain with. Then tap **Connect my
+     brain**.
      - The hub first checks that your brain is locked to you. If it says
        your brain is **open**, follow its link to upgrade before going on.
      - **Never paste your secret key** (it starts `sb_secret_`).
@@ -137,15 +139,22 @@ should have a link. If some don't, the hub lists them so you know which to
 double-check.
 
 **Want to be sure?** Tap **Check this answer**.
-1. The hub writes a second prompt that asks your AI to open every link and
-   confirm it says what the analysis claims.
-2. Copy it, paste it into your AI app, and paste the reply back.
-3. You get a score out of 100 and a list of exact fixes.
+
+The first score you see ("Score so far: … / 50") only covers sections and
+sources. **It isn't your final score yet.** To check the links:
+
+1. Tap **Copy check prompt**, then open your AI app and paste it. Your AI
+   opens every link and confirms it says what the analysis claims.
+2. Copy its whole reply, come back, paste it into the box under the prompt,
+   and tap **Score it**.
+3. You get a score out of 100 and a list of exact fixes. If any claim is
+   "not supported", fix or remove it before you use the analysis.
 
 **Keep it:**
-- **Save to brain** (if you connected one): saves a short summary you can
-  search later, with the full report attached. Next time you analyse the
-  same company, the hub finds your earlier work.
+- **Save to brain** (if you connected one) opens a short summary you can
+  edit. Tap **Save**. The summary is what you'll search for later, and the
+  full report is attached. Next time you analyse the same company, the hub
+  finds your earlier work.
 - **Download** saves the report as a file.
 
 **That's it. You've done a sourced company analysis.**
@@ -159,7 +168,8 @@ When new tools or fixes come out, your copy can catch up:
 1. Open your copy on GitHub.
 2. Tap **Sync fork**, then **Update branch**.
 
-Your site refreshes on its own a minute later.
+Your site updates within a few minutes. If your phone app still looks old,
+close it and open it again.
 
 **Never edit the `core/` folder.** That's what keeps updates conflict-free.
 
@@ -172,11 +182,17 @@ essay feedback?
 
 1. Open your AI app and paste in
    **[WIDGET-GUIDE.md](WIDGET-GUIDE.md)** from your copy.
-2. Ask for the tool you want.
-3. Paste what it gives you into Brain Hub → **Add a tool**. The hub shows
-   exactly what the tool can do before you install it.
-4. To keep it on every device, save the file into the `plugins/` folder of
-   your copy on GitHub. The hub finds it there by itself.
+2. Ask for the tool you want. It gives you a file whose name ends in
+   `.recipe.md`.
+3. In Brain Hub, tap **Add a tool**, paste the file's text, and tap **Check
+   recipe**. The hub shows exactly what the tool can do. If you're happy,
+   tap **Install**.
+4. **To keep it on every device:**
+   1. Open your copy on GitHub, then the `plugins/` folder.
+   2. Tap **Add file**, then **Create new file**.
+   3. Name it exactly as your AI said (ending in `.recipe.md`), paste the
+      text, and tap **Commit changes**.
+   4. In Brain Hub, tap **Refresh tools**.
 
 ---
 
@@ -184,8 +200,8 @@ essay feedback?
 
 | What you see | What to do |
 |---|---|
-| Your site address shows "404" | Wait two more minutes after Step 2. Check that Pages is set to **main** and **/ (root)**. |
-| "Could not reach that brain" | Check the address starts with `https://` and ends with `.supabase.co`. |
+| Your site address shows "404" | Wait two more minutes after Step 2. Check that Pages is set to **main** and **/ (root)**. Still 404 after ten minutes? Open the **Actions** tab of your copy; if it asks, enable workflows, then repeat Step 2. |
+| "Could not reach that brain" | Check your internet. Check the address against **Project URL** in Supabase (**Project Settings** → **API**). A free Supabase project **pauses after a week without use**: sign in at supabase.com and restore it. |
 | "This brain is open" | Your brain needs its security upgrade first. Follow the link the hub shows. |
 | "Your brain session ended" | Tap **Sign in again**. |
 | "Paste answer" does nothing | Long-press in the answer box and choose **Paste**. |
