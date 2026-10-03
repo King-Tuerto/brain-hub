@@ -85,13 +85,21 @@ export async function discoverTools({ fetch: f, store, now = () => Date.now(), r
   const rank = { core: 0, plugin: 1, local: 2 }
   const tools = []
   const conflicts = []
+  const promoted = []
   const byId = new Map()
   for (const t of [...all].sort((a, b) => rank[a.origin] - rank[b.origin])) {
     const id = idOf(t.fileName)
-    if (byId.has(id)) conflicts.push({ ...t, id, keptOrigin: byId.get(id).origin })
+    if (byId.has(id)) {
+      // A pasted tool that has since been saved into plugins/ is the guide's own
+      // "keep it on every device" path, not a clash: hide the pasted copy quietly
+      // (Nitpick Phase 7 N2). The pasted copy is only hidden, never deleted, so a newer edit
+      // of it is not lost. Other clashes are still reported.
+      if (t.origin === 'local' && byId.get(id).origin === 'plugin') promoted.push(id)
+      else conflicts.push({ ...t, id, keptOrigin: byId.get(id).origin })
+    }
     else { byId.set(id, t); tools.push(t) }
   }
-  return { tools, via, conflicts }
+  return { tools, via, conflicts, promoted }
 }
 
 // Fetch and parse each discovered tool. Broken recipes come back with errors

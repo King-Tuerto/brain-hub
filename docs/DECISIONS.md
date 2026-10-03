@@ -325,6 +325,21 @@ directly. The hub calls them on the recipe's behalf.
     - **Students' own `plugins/` recipes** were never affected: the hub loads
       them from raw GitHub URLs, not from Pages.
 
+20. **Phase 6 (brain connector tools) is DEFERRED until after the pilot**
+    (Paul, October 3, 2026). DECIDED.
+    - **Why:**
+      - **The hub already works on phones.** Students run every tool in the
+        hub itself, at phone size, and paste into their own AI app.
+      - **A secret-link sign-in is the wrong habit to teach.** Option B in
+        `docs/phase-6/PROPOSAL.md` would train students to treat a URL as
+        a password.
+    - **If the pilot shows students want in-app use** (running tools from
+      inside the Claude or ChatGPT app), Phase 6 is built **with OAuth**
+      (option A), not a secret URL.
+    - **The other repos stay untouched** until then. The proposal is kept
+      for reference.
+    - **The order changes:** Phase 7 (pilot) now comes before Phase 6.
+
 ---
 
 **Phase 1 closed October 3, 2026.** Paul approved these decisions and
