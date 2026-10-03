@@ -184,6 +184,33 @@ directly. The hub calls them on the recipe's behalf.
    - **Revisit if** a student has a custom domain. It means changing the
      check in `brain.js` and the CSP in `index.html`.
 
+9. **Phase 3 test company: Deere & Company** (El Código, Paul away). It's
+   public, with four reporting segments in different industries, which gives
+   real material for the business-unit, competitor and PESTLE sections.
+   Construction & Forestry was picked for the scan.
+10. **The "AI app" in the real run is an independent research agent**
+    (El Código, Paul away). Automatic mode needs Paul's OpenRouter key, which
+    isn't to be used.
+    - Manual mode is the free path most students will take: the hub builds
+      the prompt, an AI with web search answers it, and the answer is pasted
+      back.
+    - The agent sees only the prompt, never the hub's code or tests.
+11. **"Saved and found again" is proven on a local stand-in brain**
+    (Paul's instruction).
+    - **What it is:** Express's real migration in local Postgres (PGlite),
+      behind the hub's exact HTTP calls.
+    - **What that covers:** the real RLS, dedup and hybrid search, with
+      keyword-only search because there are no embeddings.
+    - **Still unverified:** the round trip against a real Supabase brain.
+12. **Source check = a mechanical count, not a judgement** (El Código, Paul
+    away).
+    - **What it counts:** each list item, table row or paragraph outside
+      Summary needs a link or `[unverified]`. Questions and lead-in lines
+      ending in `:` aren't claims.
+    - **What it doesn't do:** judge whether a source actually supports its
+      claim. That's the Phase 5 Checker. Phase 3 does a one-off human-style
+      spot audit instead (`docs/phase-3/SOURCE-AUDIT.md`).
+
 ---
 
 **Phase 1 closed October 3, 2026.** Paul approved these decisions and

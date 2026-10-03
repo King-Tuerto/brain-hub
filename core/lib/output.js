@@ -31,6 +31,58 @@ export function parseOutput(markdown, recipe) {
   return { summary, sections, missingSections, sources: extractSources(markdown) }
 }
 
+// Every factual claim must carry a source link or be marked [unverified]
+// (WIDGET-GUIDE §8). A "claim" is each list item, table row or paragraph
+// inside a ## section, except the Summary. Not claims: questions (end in "?"),
+// lead-in lines (end in ":"), table header and separator rows, and code blocks.
+const LINK_RE = /https?:\/\/[^\s)>\]]+/
+const UNVERIFIED_RE = /\[unverified\]/i
+
+export function checkSources(markdown) {
+  const lines = String(markdown ?? '').split(/\r?\n/)
+  const claims = []
+  let section = null
+  let para = []
+  let inCode = false
+  let tableRow = 0
+  const flush = () => { if (para.length) claims.push({ section, text: para.join(' ') }); para = [] }
+
+  for (const raw of lines) {
+    const line = raw.trim()
+    if (line.startsWith('```')) { flush(); inCode = !inCode; continue }
+    if (inCode) continue
+    const h = /^(#{1,6})\s+(.+?)\s*#*$/.exec(line)
+    if (h) { flush(); if (h[1].length === 2) section = h[2]; tableRow = 0; continue }
+    if (!line) { flush(); tableRow = 0; continue }
+    if (section == null || section.trim().toLowerCase() === 'summary') continue
+
+    if (line.startsWith('|')) {
+      flush()
+      tableRow++
+      if (tableRow === 1 || /^\|[\s:|-]+\|?$/.test(line)) continue // header or separator
+      claims.push({ section, text: line })
+      continue
+    }
+    tableRow = 0
+    const item = /^(?:[-*+]|\d+[.)])\s+(.*)$/.exec(line)
+    if (item) { flush(); claims.push({ section, text: item[1] }); continue }
+    para.push(line)
+  }
+  flush()
+
+  const real = claims.filter((c) => {
+    const t = c.text.replace(/[*_`]/g, '').trim()
+    return t && !t.endsWith('?') && !t.endsWith(':')
+  })
+  const result = { claims: real.length, sourced: 0, unverified: 0, unsourced: [] }
+  for (const c of real) {
+    if (LINK_RE.test(c.text)) result.sourced++
+    else if (UNVERIFIED_RE.test(c.text)) result.unverified++
+    else result.unsourced.push({ section: c.section, text: c.text })
+  }
+  return result
+}
+
 export function extractSources(markdown) {
   const text = String(markdown ?? '')
   const seen = []
