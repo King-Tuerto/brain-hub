@@ -22,6 +22,23 @@ Format: **item** — why emulation can't prove it — phase added.
     embeddings have never been exercised. Details are in the Phase 3 section
     below. — Phase 5
 
+- **Checker strictness before students see it** (Nitpick R1, Phase 5).
+  - **What's unmeasured:** the clean Deere report has only been checked with
+    the old checker prompt. The revised one, where a wrong figure is always
+    NOT SUPPORTED, flagged a true claim whose cited page didn't say it (the
+    NYSE listing). Under the grade cap, one such catch drops a good report
+    to "Needs work".
+  - **What to do:** run the revised check on a few real clean reports. If
+    students find this harsh, consider a separate "wrong source" verdict
+    that doesn't cap the grade. — Phase 5
+- **Citation-check consistency** (Phase 5).
+  - **What's known:** two real checkers agreed on 83% of unplanted claims.
+    Only one of them caught a real error in run 3 ("net income $1.114B" is
+    operating profit).
+  - **What to do:** see how students react to run-to-run differences, and
+    whether the hub should suggest a second check on important work.
+    — Phase 5
+
 ## Manual (copy-paste) mode
 
 - **Copy prompt on iPhone Safari and the installed iPhone app**: iOS only

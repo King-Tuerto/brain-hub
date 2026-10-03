@@ -188,3 +188,29 @@ check is narrow on purpose, so it never cries wolf.
      have no source", and the checker opens with one claim to check.
 9. **Layout:** the checker panel never scrolls sideways, before or after
    scoring, down to 320 px.
+
+## Added after El Código's fixes (commit 6768989)
+
+- **Unit:**
+  - **M1 and M2:** the prompt wording.
+  - **The prompt fixtures:**
+    - `checker-prompt-planted-v2.md` is byte-equal to today's prompt;
+    - the two v1 prompt fixtures have today's claims list, byte for byte,
+      and only their instructions differ. So replaying the v1 tables
+      stays honest.
+  - **L1:** the number cell takes the first integer only.
+  - **L2:** a `|` inside the evidence, and a three-cell row.
+  - **L3:** the score equals the sum of its parts (the 74 case, plus 200
+    random tables).
+  - **L4:** the summary and guide §6b wording.
+  - **The v2 replay:** 28/18/5/0. P2, P3, P5 and P6 are all NOT
+    SUPPORTED, the only other one is #2, and the result is 82, Needs
+    work.
+- **E2E (× 3 projects):**
+  - **Check prompts:** each is compared with today's build
+    (`buildCheckerPrompt(claimsToCheck(...))`, or the v2 fixture).
+  - **The H1 test:** it is now unconditional. Checking the new answer
+    scores and saves its own check, and that check survives a reload.
+  - **The v2 table:** replayed in the UI.
+  - **L5:** the reason given for no key, for no models, and for paid
+    search off.
