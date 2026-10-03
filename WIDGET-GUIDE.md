@@ -195,7 +195,9 @@ facts. The hub appends a standard block to every prompt that:
   couldn't verify, with `Note:`. Those don't need a source;
 - **tells the AI never to invent facts about the student** (numbers,
   achievements, dates, names). It must use a placeholder like `[your number]`
-  instead;
+  instead. That includes example sentences the student might copy, such as
+  sample resume bullets: every number in them must be a placeholder like
+  `[X%]`;
 - requires a final `## Summary` of 2–3 sentences.
 
 The hub then checks the answer:

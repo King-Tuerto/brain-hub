@@ -34,10 +34,10 @@ Nice to have
 Salary range: $68,000–$78,000 plus bonus. Apply by November 15.
 
 My background, in my own words:
-Business major, graduating May 2027. Events chair of the PM Club for two semesters: ran 5 events and grew average attendance from 22 to 41 students. Built a Google Sheets tracker for club sign-ups. Summer 2026 intern at a family-owned moving company in Phoenix: answered customer calls and logged complaints in a shared spreadsheet.
+(not provided)
 
 Gaps I'm worried about:
-No SQL. Never worked in software.
+(not provided)
 
 What my own notes say about this company or my experience:
 (No personal notes available.)
@@ -63,5 +63,5 @@ Format your answer in Markdown with these sections, in this order, each as a "##
 - Summary
 Every factual statement (figures, dates, names, statistics, quotations, claims about real organisations) must include a source link in Markdown form [title](https://…), or be marked [unverified]. Advice and recommendations do not need sources.
 Statements about your own method or about what you could not verify are not factual claims: start them with "Note:".
-Never invent facts about me (numbers, achievements, dates, names). Where a real detail of mine is needed and you do not have it, write a placeholder like [your number]. This includes example sentences I might copy, such as sample resume bullets or answers: put a placeholder like [X%] in place of every number in them.
+Never invent facts about me (numbers, achievements, dates, names). Where a real detail of mine is needed and you do not have it, write a placeholder like [your number].
 End with "## Summary": 2–3 sentences someone could search for later.

@@ -46,6 +46,42 @@ Two prompts are built by the hub from the fictional Northwind posting:
   wording is fixed and the case rerun with a fresh agent; it is never
   waved through.
 
+### What happened (2026-10-03)
+
+**First answers** (kept as `*.answer-v1.md`, with the prompts they answered
+as `*.prompt-v1.md`):
+- **B passed.** Every figure about the student came from her background.
+- **A failed.** With no background, Haiku wrote **example resume bullets with
+  made-up figures**: "reduced customer support tickets by 23%", "led a
+  4-person team to launch in 8 weeks", "cut feature delivery time by 30%".
+  Those are framed as examples, but they're exactly what a student copies
+  onto a real resume.
+
+**The fix was hub-wide, not tool-only.** `NO_INVENTION_RULE` gained a second
+sentence: example sentences the student might copy, such as sample resume
+bullets or answers, must put a placeholder like `[X%]` in place of every
+number. WIDGET-GUIDE §8 now says so too. Every prompt fixture was
+regenerated, and each old answer keeps the exact prompt it answered.
+
+**Second answers** (fresh agents, same models: Haiku for A, Sonnet for B):
+- **B: clean.** All 4 figures come from the student's background, and the
+  sample bullets use placeholders.
+- **A: no invented facts about the student.** Resume examples are now
+  "Led [project/team/event] … [result]". The remaining figures are advice
+  ("GPA if 3.5+", "spend 30 minutes"), list numbers, and one suggested
+  interview line: "My goal in the first 90 days is to interview at least 10
+  customers".
+
+**The bar, clarified before Nitpick's review.**
+- **The narrower bar:** the hazard is a false claim about the student's past
+  or present: achievements, roles, results, dates. A first-person *goal or
+  plan* the student would choose to say isn't a fact about them, so it
+  passes, and that's recorded here rather than hidden. The first wording,
+  "no figure in any first-person sentence", was stricter than intended.
+- **Nitpick's check:** Nitpick applies this narrower bar and may disagree.
+  If it does, the line becomes a placeholder through the rule, not the
+  answer.
+
 ## Tests (Nitpick)
 
 - **Unit:**
