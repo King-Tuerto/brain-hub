@@ -14,7 +14,7 @@ export function resolveTags(recipe, inputs, now) {
   return [...new Set(tags)]
 }
 
-export function buildSaveRow({ recipe, inputs, report, summary, sources, userId, now, tags }) {
+export function buildSaveRow({ recipe, inputs, report, summary, sources, userId, now, tags, sourceCheck }) {
   const hub = {
     tool: recipe.id,
     tool_version: recipe.version,
@@ -26,7 +26,26 @@ export function buildSaveRow({ recipe, inputs, report, summary, sources, userId,
     archived: false,
   }
   if (recipe.save?.type === 'profile') hub.profile_part = recipe.save.profile_part
-  return { user_id: userId, source: 'brain-hub', content: summary, metadata: { hub } }
+  if (sourceCheck) hub.source_check = sourceCheck
+  return { user_id: userId, source: 'brain-hub', content: withContext(summary, recipe, inputs), metadata: { hub } }
+}
+
+// The searchable text is the summary plus one line naming the tool and what the
+// student typed. Without embeddings, brain search is keyword-only and needs
+// every word of the query, and the next run's query is built from those same
+// inputs (e.g. "Deere & Company (NYSE: DE)"). The summary alone may not
+// contain them, so the save would never be found again (Nitpick A4).
+export function contextLine(recipe, inputs) {
+  const values = (recipe.inputs ?? [])
+    .filter((i) => i.type !== 'long_text')
+    .map((i) => String(inputs?.[i.id] ?? '').replace(/\s+/g, ' ').trim())
+    .filter((v) => v && v.length <= 120)
+  return values.length ? `${recipe.name}: ${values.join(' · ')}` : ''
+}
+
+function withContext(summary, recipe, inputs) {
+  const line = contextLine(recipe, inputs)
+  return line ? `${summary}\n\n${line}` : summary
 }
 
 export function downloadFile({ recipe, inputs, report, now }) {

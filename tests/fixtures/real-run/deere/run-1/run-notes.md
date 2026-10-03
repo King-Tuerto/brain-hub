@@ -1,0 +1,30 @@
+# Run notes – Deere
+
+- **Model:** Claude Opus 5.5 (claude-opus-5-5), run as a Claude Code subagent with WebSearch and WebFetch.
+- **Date:** 2026-10-03
+- **Research volume:** about 19 web searches and 22 fetch attempts. About 6 fetches failed with 403, timeout or unreadable PDF. Two PDFs (the Deere 10-K and the Kubota FY2025 results) had to be text-extracted locally.
+- **Sources relied on most:**
+  - Deere Q3 FY2026 earnings release (SEC 8-K)
+  - Deere Q4 FY2025 earnings release (SEC 8-K)
+  - Deere 2025 Form 10-K
+  - Motley Fool transcript of the Q3 FY2026 earnings call
+  - Caterpillar, CNH and AGCO Q2 2026 releases on SEC
+  - Volvo CE Q2 2026 press page
+  - Census construction-spending release (August 2026 data)
+  - Atlanta Fed FOMC statement
+  - AGC workforce survey
+  - NACo on IIJA expiry
+  - FTC right-to-repair press release
+- **Cited from search results only (page not opened):**
+  - CNBC Fed article (the rate figure was confirmed via the Atlanta Fed page)
+  - Holland & Knight Supreme Court IEEPA article
+  - Equipment World Kubota Q1 2026 (403 on fetch)
+  - Nasdaq AGCO release (used for the North America +19.8% figure)
+- **Marked [unverified]:**
+  - CNH farm-business strength ("second full-line global maker")
+  - whether Deere met its 2023 target of more than 20 electric/hybrid construction models by 2026
+- **Other caveats:**
+  - Segment revenue shares are my own arithmetic.
+  - The electrification target comes from a 2023 article.
+  - Fiscal 2026 full-year figures are August guidance.
+  - The Q3 release gave tariff refunds only company-wide, not split by segment.

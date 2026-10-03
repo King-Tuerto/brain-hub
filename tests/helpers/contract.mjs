@@ -13,6 +13,8 @@ export const WEBSEARCH_TEXT = { required: 'Needs web search', helpful: 'Better w
 export const STANDARD_BLOCK_RULES = [
   'Format your answer in Markdown with these sections, in this order, each as a "## " heading:',
   'Every factual claim must include a source link in Markdown form [title](https://…). If you cannot source a claim, mark it [unverified].',
+  // Fourth standard rule: Phase 3 PLAN §2a (amends WIDGET-GUIDE §8).
+  'Statements about your own method or about what you could not verify are not factual claims: start them with "Note:".',
   'End with "## Summary": 2–3 sentences someone could search for later.',
 ]
 export const AI_APP_URLS = {

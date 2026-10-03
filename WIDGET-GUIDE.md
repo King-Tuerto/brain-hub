@@ -153,7 +153,15 @@ appends a standard block to every prompt that:
 - requires a source link for every factual claim, and says to mark anything
   unsourced as `[unverified]`;
 - requires the `output.sections` headings, in order, as `##` headings;
-- requires a final `## Summary` of 2–3 sentences.
+- requires a final `## Summary` of 2–3 sentences;
+- tells the AI to start statements about its own method, or about what it
+  couldn't verify, with `Note:`. Those aren't factual claims, so they don't
+  need a source. *(Added in Phase 3.)*
+
+The hub then counts the claims in the answer: every list item, table row and
+paragraph outside the Summary needs a source link or `[unverified]`. Labels
+(a line that is entirely bold), questions, lead-in lines ending in `:` and
+`Note:` lines are not counted. Any shortfall is shown to the student.
 
 Repeating those rules in the template is harmless, but it wastes space.
 

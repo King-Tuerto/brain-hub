@@ -184,6 +184,68 @@ directly. The hub calls them on the recipe's behalf.
    - **Revisit if** a student has a custom domain. It means changing the
      check in `brain.js` and the CSP in `index.html`.
 
+9. **Phase 3 test company: Deere & Company** (El Código, Paul away). It's
+   public, with four reporting segments in different industries, which gives
+   real material for the business-unit, competitor and PESTLE sections.
+   Construction & Forestry was picked for the scan.
+10. **The "AI app" in the real run is an independent research agent**
+    (El Código, Paul away). Automatic mode needs Paul's OpenRouter key, which
+    isn't to be used.
+    - Manual mode is the free path most students will take: the hub builds
+      the prompt, an AI with web search answers it, and the answer is pasted
+      back.
+    - The agent sees only the prompt, never the hub's code or tests.
+11. **"Saved and found again" is proven on a local stand-in brain**
+    (Paul's instruction).
+    - **What it is:** Express's real migration in local Postgres (PGlite),
+      behind the hub's exact HTTP calls.
+    - **What that covers:** the real RLS, dedup and hybrid search, with
+      keyword-only search because there are no embeddings.
+    - **Still unverified:** the round trip against a real Supabase brain.
+12. **Source check = a mechanical count, not a judgement** (El Código, Paul
+    away).
+    - **What it counts:** each list item, table row or paragraph outside
+      Summary needs a link or `[unverified]`. Questions and lead-in lines
+      ending in `:` aren't claims.
+    - **What it doesn't do:** judge whether a source actually supports its
+      claim. That's the Phase 5 Checker. Phase 3 does a one-off human-style
+      spot audit instead (`docs/phase-3/SOURCE-AUDIT.md`).
+
+13. **Saved `content` = summary + a context line** (El Código, Phase 3, Paul
+    away). This changes Q2, where `content` was the summary only.
+    - **The context line** is `<Tool name>: <input values>`: every non-long
+      input of up to 120 characters, joined with ` · `, after a blank line.
+    - **Why:** without embeddings (a brain whose AI key is missing, or the
+      stand-in), search is keyword-only and needs every query word. The next
+      run's brain query is built from the same inputs, e.g.
+      "Deere & Company (NYSE: DE)". A summary that never repeats the ticker
+      would never be found again (Nitpick A4).
+    - **Side effects:** the student edits only the summary; the line is added
+      at save. Two saves with the same summary for different inputs are now
+      separate rows.
+14. **Same summary + same inputs saved twice = one row, the latest report
+    wins** (Nitpick A5). That's Express's dedup index doing its job; the
+    earlier report is replaced, not kept.
+
+15. **"Every claim has a source" means the hub guarantees it's checked and
+    shown, not that every AI answer is perfect** (El Código, Phase 3, Paul
+    away). **⚑ For Paul to confirm.**
+    - **The real runs:** three independent real Deere runs scored 49/60, then
+      52/53 (after the checker fixes), then 51/53 sourced.
+    - **Run 3's two gaps:** two product-list bullets ("What it sells: …")
+      whose source, the 10-K, sits on the next bullet. The hub's source
+      check lists both lines to the student.
+    - **Why not keep going:** re-running until an AI scores 53/53 would be
+      luck, and letting a bullet inherit from its sibling would hide real
+      gaps.
+    - **The done-when bar is therefore:**
+      - every unsourced claim in a real answer appears in `source-check`;
+      - at least 95% of claims are sourced or marked `[unverified]`;
+      - the source audit confirms that the cited pages exist and support
+        their claims.
+    - Run 3 (`deere/answer.md`) is the Phase 3 real-run fixture. Runs 1 and 2
+      are regression fixtures.
+
 ---
 
 **Phase 1 closed October 3, 2026.** Paul approved these decisions and

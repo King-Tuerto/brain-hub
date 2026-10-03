@@ -13,6 +13,9 @@ async function runHelloAuto(page) {
   await expect(tid(page, 'result')).toBeVisible()
 }
 
+// DECISIONS #13: saved content = summary, blank line, '<Tool name>: <inputs joined with " · ">'.
+const HELLO_CONTEXT = 'Hello Hub: Pricing · Quick' // the topic exactly as typed
+
 test('save to brain: panel prefilled from ## Summary, exact row sent, appears in recent, archive hides it', async ({ page, brain }) => {
   await setup(page, { brain: 'connect', mode: 'auto' })
   await runHelloAuto(page)
@@ -33,7 +36,7 @@ test('save to brain: panel prefilled from ## Summary, exact row sent, appears in
   expect(posts[0].params.on_conflict).toBe('dedup_key,user_id')
   expect(posts[0].headers.prefer).toBe('resolution=merge-duplicates,return=representation')
   const sent = posts[0].json
-  expect(sent).toMatchObject({ user_id: STUDENT.id, source: 'brain-hub', content: SUMMARY_TEXT })
+  expect(sent).toMatchObject({ user_id: STUDENT.id, source: 'brain-hub', content: `${SUMMARY_TEXT}\n\n${HELLO_CONTEXT}` }) // DECISIONS #13
   for (const col of ['tags', 'category', 'summary']) expect(sent).not.toHaveProperty(col)
   const hub = sent.metadata.hub
   expect(hub).toMatchObject({
@@ -88,7 +91,7 @@ test('edited summary is what gets saved', async ({ page, brain }) => {
   await tid(page, 'save-btn').click()
   await tid(page, 'save-summary').fill('My own words about pricing.')
   await tid(page, 'save-confirm').click()
-  await expect.poll(() => brain.hubRows().map((r) => r.content)).toEqual(['My own words about pricing.'])
+  await expect.poll(() => brain.hubRows().map((r) => r.content)).toEqual([`My own words about pricing.\n\n${HELLO_CONTEXT}`])
 })
 
 for (const withBrain of [true, false]) {

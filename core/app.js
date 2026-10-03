@@ -4,7 +4,7 @@ import * as S from './lib/store.js'
 import { parseRecipe } from './lib/recipe.js'
 import { buildPrompt, formatBrainContext, fillShort, WEB_SEARCH_LINE } from './lib/prompt.js'
 import { installSummary, PRIVACY_WARNING } from './lib/summary.js'
-import { parseOutput } from './lib/output.js'
+import { parseOutput, checkSources } from './lib/output.js'
 import { createBrain, keyProblem, isSupabaseUrl } from './lib/brain.js'
 import { createAI } from './lib/ai.js'
 import { discoverTools, loadTools, repoFromLocation, parseRepo } from './lib/plugins.js'
@@ -425,6 +425,19 @@ async function renderHome() {
   drawTiles()
 }
 
+// How many factual claims carry a source (WIDGET-GUIDE §8, Phase 3).
+function sourceCheckNote(sc) {
+  if (!sc.claims) return null
+  const unv = sc.unverified ? ` ${sc.unverified} marked [unverified].` : ''
+  if (!sc.unsourced.length) {
+    return note('ok', 'source-check', `All ${sc.claims} factual claims have a source or are marked [unverified].${unv}`)
+  }
+  return note('warn', 'source-check',
+    h('p', { text: `${sc.unsourced.length} of ${sc.claims} claims have no source. Check these before you rely on them:${unv}` }),
+    h('ul', { tid: 'unsourced-list' }, sc.unsourced.map((c) =>
+      h('li', { text: `${c.section}: ${c.text.length > 160 ? c.text.slice(0, 160) + '…' : c.text}` }))))
+}
+
 function brainError(error) {
   if (error === 'signed-out') {
     return note('warn', 'brain-signed-out', 'Your brain session ended. ', h('a', { href: '#/setup/2' }, 'Sign in again'))
@@ -670,6 +683,7 @@ async function renderTool(id) {
     st.result = text
     persist()
     const parsed = parseOutput(text, recipe)
+    const sc = checkSources(text)
     const body = h('div', { class: 'result', tid: 'result' })
     body.innerHTML = renderAnswer(text)
     body.querySelectorAll('a').forEach((a) => { a.target = '_blank'; a.rel = 'noopener noreferrer' })
@@ -696,6 +710,7 @@ async function renderTool(id) {
             const row = buildSaveRow({
               recipe, inputs: st.inputs, report: text, summary: sum, sources: parsed.sources, userId,
               tags: [...new Set(tags.value.split(',').map((t) => t.trim().toLowerCase()).filter(Boolean))],
+              sourceCheck: { claims: sc.claims, sourced: sc.sourced, unverified: sc.unverified, unsourced: sc.unsourced.length },
             })
             let res
             try { res = await b.save(row) } catch (e) { res = { ok: false, error: String(e?.message ?? e) } }
@@ -711,6 +726,7 @@ async function renderTool(id) {
       st.noWebSearch ? h('p', { tid: 'no-websearch-label', class: 'badge', text: 'No web search' }) : null,
       parsed.missingSections.length ? note('warn', 'missing-sections', `Missing sections: ${parsed.missingSections.join(', ')}`) : null,
       parsed.sources.length ? null : note('warn', 'no-sources-warning', 'This answer has no source links, so none of its facts can be checked. Treat it with care.'),
+      sourceCheckNote(sc),
       body,
       h('div', { class: 'row mt' },
         canSave ? h('button', { class: 'primary', tid: 'save-btn', onclick: () => { savePanel.hidden = false; savePanel.querySelector('textarea').focus() } }, 'Save to brain') : null,
