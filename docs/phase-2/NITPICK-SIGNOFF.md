@@ -1,9 +1,161 @@
 # Phase 2 — Nitpick Sign-off
 
 **Reviewer:** Nitpick · **Date:** 2026-10-03 · **Branch:** `phase-2-hub-core`
-(reviewed at El Código's commit `67e6f35`, plus Nitpick's sign-off tests)
+**Re-verified at:** El Código's commit `b1d130a`, plus Nitpick's second-pass
+tests (`tests/unit/signoff2.test.mjs`, `tests/e2e/signoff2.spec.mjs`, and a
+global CSP tripwire in `tests/helpers/fixtures.mjs`).
 
 ## Verdict: NOT SIGNED OFF
+
+**H1, the high-severity finding, is fixed, and I re-attacked it at both
+layers.** No high-severity finding remains. Two problems still block, because
+sign-off requires every test to pass:
+
+- **R1 (medium): the M5 tool review can be bypassed.** Acceptance is stored
+  per `id@version` only:
+  - A repo the student already trusted can change a tool's permissions
+    (`run_ai` → `search_brain` + `run_ai`, query `"passwords bank account"`)
+    without bumping the version, and it runs with no new review.
+  - A different repo can reuse the same `id@version` and inherit the
+    acceptance.
+  - **Fix:** key `hub.toolAcks` by repo plus a hash of the recipe text, or at
+    least repo + id + the permissions and query.
+  - **Where:** `core/app.js` `renderTool`, the `ackKey` line.
+- **R2 (medium): the setup Connect button runs twice, which hides the L7/L8
+  messages.**
+  - **Cause:** `brain-connect` is a submit button inside a form whose
+    `onsubmit` calls `connect.click()`. One click runs the handler twice.
+  - **Effect:** the second run starts with `refused.hidden = true`, then says
+    "Fill in all four boxes", because the password was already cleared. So:
+    - the L8 secret-key refusal ("…rotate it in Supabase") is hidden at once;
+    - the L7 address message is replaced.
+  - **What still holds:** the security property. No request is sent, which I
+    checked in a debug run. But the student is told the wrong thing, and the
+    advice to rotate a leaked secret key never shows.
+  - **Fix:** give `brain-connect` `type="button"`, or drop the
+    `onsubmit → click` relay.
+  - **Where:** `core/app.js`, `setupBrain`, the `connect` button and its
+    `h('form', { onsubmit … })` wrapper.
+
+Fix R1 and R2 and make `tests/e2e/signoff2.spec.mjs` pass in all three
+projects, and I'll sign off. Nothing else is outstanding.
+
+## Test results (`npm test`, full run at `b1d130a`)
+
+| Suite | Tests | Passed | Failed | Skipped |
+|---|---|---|---|---|
+| Unit (`tests/unit`) | 248 | 248 | 0 | 0 |
+| Database proof (`tests/db`) | 10 | 10 | 0 | 0 |
+| Browser (`tests/e2e`), 82 tests × 3 projects | 246 | 229 | **15** | 2 |
+
+- **The 15 failures** are 5 tests, each failing in all three projects:
+  - R1: two tests ("…asks for more permissions (same version)…" and
+    "acceptance for one repo does not carry over…").
+  - R2: three tests (the L7 address test, and the L8 tests for an
+    `sb_secret_` key and a service-role JWT).
+  - Each fails at the assertion that names the defect, not in the harness.
+- **The 2 skips** are unchanged from the first pass: the tap-target check
+  doesn't apply at laptop size, and WebKit can't reload a page while offline.
+- **El Código reported 190/2** before my new tests existed. That matches the
+  first-pass suite.
+
+## Status of every finding
+
+| # | Finding | Status | Evidence |
+|---|---|---|---|
+| H1 | AI output could leak brain notes | **Fixed, verified at both layers** | See "H1 re-attack" below |
+| M1 | Sign-out left saved runs; no server logout | **Fixed** | Unit and e2e: `hub.runs.*` and the session removed; `POST /auth/v1/logout` sent with the old bearer token; works offline |
+| M2 | Export included saved runs | **Fixed** | e2e: the export's keys are exactly `hub.brain`, `hub.localTools`, `hub.settings`; no brain notes |
+| M3 | No privacy warning for core/plugin tools | **Fixed** | e2e: `auto-privacy-warning` holds `PRIVACY_WARNING` in Automatic setup, and is hidden in Manual |
+| M4 | Parallel token refresh | **Fixed** | Unit: two concurrent calls → one `refresh_token` request, and both use the new token |
+| M5 | Repo override installs tools silently | **Partly fixed, R1 open** | e2e: `tool-review` → `tool-accept` works and is remembered; no review without an override. Bypassed by a same-version change or another repo |
+| L1 | UTC date | **Fixed** | e2e in `America/Mexico_City` at 20:00 local, when UTC is already 10-04: the prompt says `2026-10-03` and the download is `company-news-2026-10-03.md` |
+| L2 | Malformed tool link | **Fixed** | e2e: `#/tool/%E0%A4%A` shows "Tool not found" |
+| L3 | Copy-and-paste mode stuck | **Fixed** | e2e: after a 401 → switch-to-manual, the next Run calls OpenRouter again |
+| L4 | Offline fallback for any request | **Fixed (code read)** | `sw.js` falls back to `index.html` only for navigations |
+| L5 | Archive reported success when nothing changed | **Fixed** | Unit (`return=representation`, empty result → `not-found`); e2e: the row deleted elsewhere stays listed and the button is re-enabled |
+| L6 | Hidden duplicates not shown | **Fixed** | e2e: `tool-conflict` names `hello-hub`; the core tool wins |
+| L7 | Any https brain address | **Logic fixed; UI message broken by R2** | Unit: `isSupabaseUrl` refuses http, look-alike hosts and paths. e2e fails on the message (R2) |
+| L8 | Secret key refused as "open" | **Logic fixed; UI message broken by R2** | Unit: `keyProblem` catches `sb_secret_` and service-role JWTs, including base64url payloads. e2e fails on the hidden refusal (R2) |
+
+## H1 re-attack
+
+**Sanitizer layer** (`signoff2.spec`, all three projects, passing).
+
+An answer with 30 payloads:
+- **Images:** a Markdown image, a reference-style image, a `javascript:`
+  image, raw `<img onerror>`, `srcset`, and `<picture>`.
+- **SVG and MathML:** `<svg><image>`, `<svg onload>`, and a
+  `<math><mtext><table><mglyph><style>` mutation-XSS chain.
+- **Other mutation XSS:** a `<noscript>` title chain.
+- **CSS:** `<style>@import` and `url()`, inline `style=`, and
+  `<link rel=stylesheet|prefetch>`.
+- **Forms:** `<form action>` with a password input, and `<button formaction>`.
+- **Navigation:** `<meta http-equiv=refresh>` and `<base href>`.
+- **Embeds:** `<iframe>`, `<object>`, `<embed>`, `<video poster>`,
+  `<audio autoplay>`, `<table background>`, and `<a ping>`.
+- **Events:** `<details ontoggle>`.
+- **Dangerous links:** `javascript:` (plain and with a leading space),
+  `vbscript:`, two `data:` links, and `<input type=image>`.
+
+After rendering:
+- No forbidden tag remains.
+- No `on*`, `style`, `srcset`, `ping`, `background`, `poster`, `action`,
+  `formaction` or `src` attribute remains.
+- Every `href` is `http(s):`, `mailto:` or `#`.
+- `window.__pwned` is unset, the page didn't navigate, and no request to the
+  attacker host was made.
+- Legitimate links still render, and images become `[image: …]` links.
+
+**CSP layer** (passing in all three projects). Markup injected straight into
+the page, skipping the sanitizer, was all blocked by the CSP:
+- an `<img>`, `new Image()`, and inline `style` and `<style>`;
+- an inline `<script>`, `fetch`, and `sendBeacon`;
+- a form `submit()` to the attacker.
+
+The route-level network guard saw no request leave. `img-src`, `connect-src`
+and `script-src` violations were recorded in Chromium and WebKit.
+- **A measuring artifact, not a leak:** Chromium emits a Playwright `request`
+  event even for an image the CSP blocked ("The action has been blocked"). I
+  verified this in a debug run. That's why the proof uses the route guard,
+  not request events.
+
+**The CSP breaks nothing legitimate.** Every e2e test now fails on any CSP
+violation, through the global tripwire in `tests/helpers/fixtures.mjs`. All
+normal flows pass under it:
+- setup, both AI modes, with and without a brain;
+- save, download and archive;
+- Add tool and plugin discovery;
+- settings, layout, and the PWA and service worker.
+
+The only exempt tests are the deliberate attack tests.
+
+## New low-severity notes (not blocking)
+
+- **L9 — harmless console noise in Chromium.** When an answer contains inline
+  `style` or `<base>`, DOMPurify parses it in an inert document that inherits
+  the page's CSP, and Chromium logs `style-src`/`base-uri` violations. Nothing
+  loads. It only clutters the console.
+- **L10 — custom domains are refused.** `isSupabaseUrl` refuses Supabase
+  custom domains (a paid feature). Acceptable for students. Document it if a
+  custom-domain brain ever turns up.
+- **L11 — `connect-src` allows any project.** `https://*.supabase.co` admits
+  any Supabase project, including an attacker's. It only matters for script
+  the app runs, and the CSP's `script-src 'self'` keeps injected script out.
+  No action needed.
+
+## What is proven, and what is not
+
+Unchanged from the first review (below), plus everything in the status table
+above. Real-device and real-service items are still on
+`docs/PILOT-CHECKLIST.md`.
+
+---
+
+## History: first review at `67e6f35`
+
+
+### Verdict: NOT SIGNED OFF
 
 There is one blocking item: **H1, brain notes can leak through images in AI
 answers.** Everything else is ready. Fix H1 and make
@@ -11,7 +163,7 @@ answers.** Everything else is ready. Fix H1 and make
 Medium findings M1–M5 should be fixed in Phase 2 if they're cheap. Otherwise
 they go on the Phase 3 list. None of them blocks.
 
-## Test results (`npm test`, full run)
+### Test results (`npm test`, full run)
 
 | Suite | Tests | Passed | Failed | Skipped |
 |---|---|---|---|---|
@@ -29,7 +181,7 @@ they go on the Phase 3 list. None of them blocks.
   - The offline-reload test is skipped on WebKit. Playwright's WebKit throws
     an internal error when it reloads a page offline.
 
-## What is proven
+### What is proven
 
 - **"Done when."** The dummy tool `hello-hub` runs end to end in Automatic and
   Manual mode, with and without a brain. This holds at laptop size and in
@@ -72,7 +224,7 @@ they go on the Phase 3 list. None of them blocks.
   worker is registered from a relative path. It caches only same-origin shell
   files, never `plugins/` or `core/tools/`.
 
-## What is not proven
+### What is not proven
 
 These items need real devices or real services. They are listed in
 `docs/PILOT-CHECKLIST.md`:
@@ -88,7 +240,7 @@ These items need real devices or real services. They are listed in
 - the on-screen keyboard, safe areas, and the installed app starting offline
   on iPhone.
 
-## Findings from code review
+### Findings from code review
 
 Severity means what a student or their brain could lose.
 **High** blocks sign-off. **Medium** should be fixed. **Low** is noted.
@@ -222,7 +374,7 @@ privacy warning.**
 - **The service worker** never caches other origins, `plugins/` or
   `core/tools/`.
 
-## Changes to tests in this pass
+### Changes to tests in this pass
 
 - **`recipe.test.mjs`:** the old "first line must be ---" test is replaced by
   the amended rule. Leading blank lines and whitespace are accepted, CRLF

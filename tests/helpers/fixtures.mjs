@@ -47,9 +47,25 @@ export const test = base.extend({
     await use(g)
   }, { auto: true }],
 
-  page: async ({ page }, use) => {
+  // Set false in tests that deliberately attack the CSP and assert on cspViolations themselves.
+  cspStrict: [true, { option: true }],
+  cspViolations: async ({}, use) => { await use([]) },
+
+  page: async ({ page, cspStrict, cspViolations }, use) => {
+    // Every Content-Security-Policy violation on any page is recorded. In normal
+    // flows there must be none: that is how we know the CSP breaks nothing legitimate.
+    await page.exposeFunction('__nitpickCsp', (v) => { cspViolations.push(v) })
+    await page.addInitScript(() => {
+      document.addEventListener('securitypolicyviolation', (e) => {
+        window.__nitpickCsp(`${e.effectiveDirective} blocked ${e.blockedURI || '(inline)'}${e.sample ? ' sample=' + e.sample : ''}`)
+      })
+    })
+    page.on('console', (m) => {
+      if (/Content[- ]Security[- ]Policy|Refused to (load|connect|apply|execute|send form)/i.test(m.text())) cspViolations.push(`console: ${m.text().slice(0, 200)}`)
+    })
     await page.clock.setFixedTime(new Date(FIXED_TIME))
     await use(page)
+    if (cspStrict) expect(cspViolations, 'CSP violations during a normal flow').toEqual([])
   },
 })
 

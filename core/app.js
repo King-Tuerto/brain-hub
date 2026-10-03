@@ -76,6 +76,11 @@ function saveFile(fileName, text, type = 'text/markdown') {
 }
 
 const today = () => localDate()
+
+async function sha256(text) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(String(text)))
+  return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('')
+}
 const settings = () => S.getSettings()
 
 function bumpStat(name) {
@@ -167,7 +172,9 @@ function setupBrain() {
   const password = h('input', { type: 'password', id: 'brain-password', tid: 'brain-password', autocomplete: 'current-password' })
   const status = h('div', { tid: 'brain-status', role: 'status', 'aria-live': 'polite' })
   const refused = h('div', { tid: 'brain-refused', class: 'note bad', role: 'alert', hidden: true })
-  const connect = h('button', { class: 'primary', tid: 'brain-connect' }, 'Connect my brain')
+  // type=button: the form's own submit (Enter key) relays to this click, so a
+  // submit button would run the connect twice (Nitpick R2).
+  const connect = h('button', { type: 'button', class: 'primary', tid: 'brain-connect' }, 'Connect my brain')
 
   const say = (kind, text) => { status.replaceChildren(text ? note(kind, null, text) : '') }
   const refuse = (text) => {
@@ -435,9 +442,12 @@ async function renderTool(id) {
 
   // Tools from a repo the student pointed the hub at (not their own fork, not
   // pasted through Add tool) must be reviewed before first use (Nitpick M3/M5).
-  const ackKey = `${recipe.id}@${recipe.version}`
+  // Acceptance is tied to the repo AND the exact recipe text, so a changed
+  // recipe, or the same id from another repo, is reviewed again (Nitpick R1).
+  const needsReview = tool.entry.origin === 'plugin' && !!settings().repoOverride
+  const ackKey = needsReview ? `${settings().repoOverride.trim().toLowerCase()}|${await sha256(tool.text ?? '')}` : null
   const acks = S.get('hub.toolAcks', {}) ?? {}
-  if (tool.entry.origin === 'plugin' && settings().repoOverride && !acks[ackKey]) {
+  if (needsReview && !acks[ackKey]) {
     const sum = installSummary(recipe)
     render(h('section', { tid: 'screen-tool' },
       h('div', { class: 'card stack', tid: 'tool-review' },

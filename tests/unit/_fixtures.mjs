@@ -101,6 +101,7 @@ export function memStore(initial = {}) {
     get: (k, fallback) => (m.has(k) ? JSON.parse(JSON.stringify(m.get(k))) : fallback),
     set: (k, v) => { m.set(k, JSON.parse(JSON.stringify(v))) },
     remove: (k) => { m.delete(k) },
+    keys: (prefix = '') => [...m.keys()].filter((k) => k.startsWith(prefix)),
     dumpAll: () => JSON.stringify([...m.entries()]),
   }
 }

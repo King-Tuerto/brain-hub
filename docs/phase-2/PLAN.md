@@ -504,6 +504,15 @@ listed here, the answer is "accepted as is".
   with `role: service_role`) is refused before any request, with its own
   message (`brain-refused`).
 
+## Amendments after Nitpick's re-verification (2026-10-03)
+
+- **R1, review acceptance.** Accepting a tool from someone else's repo is
+  stored under `<repo, lowercased>|<SHA-256 of the exact recipe text>`. If
+  the recipe text changes, or the same id arrives from a different repo, the
+  tool is reviewed again.
+- **R2, Connect.** `brain-connect` is `type="button"`. The form's submit
+  (the Enter key) relays to it once, so the connect never runs twice.
+
 ## Out of scope for Phase 2
 
 Company analysis (Phase 3), Checker (Phase 5), connector (Phase 6), Spanish
