@@ -353,9 +353,10 @@ async function renderHome() {
           h('div', {}, h('div', { text: item.content }),
             h('div', { class: 'small muted', text: `${item.metadata?.hub?.tool ?? ''} · ${String(item.created_at).slice(0, 10)}` })),
           h('button', { class: 'ghost', tid: 'archive-btn', 'aria-label': 'Archive', onclick: async (ev) => {
-            ev.currentTarget.disabled = true
+            const btn = ev.currentTarget // currentTarget is null once we await
+            btn.disabled = true
             const res = await b.archive(item)
-            if (res.ok) li.remove(); else ev.currentTarget.disabled = false
+            if (res.ok) li.remove(); else btn.disabled = false
           } }, 'Archive'))
         recentList.append(li)
       }
@@ -618,13 +619,15 @@ async function renderTool(id) {
             if (!sum) { saveStatus.replaceChildren(note('bad', null, 'Add a short summary first.')); return }
             const userId = b.userId()
             if (!userId) { saveStatus.replaceChildren(brainError('signed-out')); return }
-            ev.currentTarget.disabled = true
+            const btn = ev.currentTarget // currentTarget is null once we await
+            btn.disabled = true
             const row = buildSaveRow({
               recipe, inputs: st.inputs, report: text, summary: sum, sources: parsed.sources, userId,
               tags: [...new Set(tags.value.split(',').map((t) => t.trim().toLowerCase()).filter(Boolean))],
             })
-            const res = await b.save(row)
-            ev.currentTarget.disabled = false
+            let res
+            try { res = await b.save(row) } catch (e) { res = { ok: false, error: String(e?.message ?? e) } }
+            btn.disabled = false
             if (res.ok) { bumpStat('saves'); saveStatus.replaceChildren(note('ok', null, 'Saved to your brain.')) }
             else saveStatus.replaceChildren(res.error === 'signed-out' ? brainError('signed-out') : note('bad', null, `Could not save: ${res.error}`))
           } }, 'Save'),

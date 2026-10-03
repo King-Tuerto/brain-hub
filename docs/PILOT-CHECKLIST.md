@@ -59,3 +59,27 @@ Format: **item** — why emulation can't prove it — phase added.
   emulation sets the screen size but shows no keyboard. — Phase 2
 - **Notch and home-bar safe areas** on an iPhone in the installed app.
   — Phase 2
+
+## Real-service behaviour the test fakes assume (added by Nitpick)
+
+- **Express detection (OPTIONS search-brain) against a real Supabase
+  gateway**: in a browser the app's OPTIONS is preceded by a CORS preflight,
+  and the fakes answer both exactly as PLAN says. Whether real Supabase ever
+  returns a readable 404 for a missing function is unknown, so detection of
+  pre-Express brains may silently never fire. — Phase 2
+- **The open check writes nothing on a course-built (pre-Express) open
+  brain**: "nothing is written" relies on `content` being NOT NULL. Proven
+  for the Express schema only, in local Postgres. — Phase 2
+- **CORS from the student's github.io address** to Supabase REST, Auth and
+  Functions, to OpenRouter (with the `X-Title` header) and to
+  `raw.githubusercontent.com`: the fakes allow every origin and header.
+  — Phase 2
+- **Token refresh after a long Manual-mode detour**: a student who spends
+  over an hour in the AI app comes back to an expired token; tests prove the
+  refresh logic only with a fake clock. — Phase 2
+- **Picking several models on a phone**: the model list is a multi-select,
+  which phones show as an OS picker. Check a student can choose more than one
+  and understands the fallback order. — Phase 2
+- **Offline start of the installed iPhone app**: Playwright's WebKit can't
+  reload a page while offline, so the cached-shell test is skipped on the
+  iPhone project. — Phase 2

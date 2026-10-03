@@ -71,7 +71,10 @@ parseRecipe(text, { fileName } = {}) → { ok: true, recipe } | { ok: false, err
 ```
 
 - Front matter is everything between the first two `---` lines (the first
-  line must be `---`). It is parsed with js-yaml `load` using the
+  non-blank line must be `---`). *(Amended after Nitpick's review: blank
+  lines and whitespace before the opening `---` are forgiven, because pasted
+  AI output often starts with one. Any other text before it is still an
+  error.)* It is parsed with js-yaml `load` using the
   `CORE_SCHEMA`, so no custom types. The body is everything after the second
   `---`, trimmed.
 - `recipe` = the front matter fields, plus `body` (string) and `fileName`
@@ -428,6 +431,33 @@ Using PGlite with the pgvector extension, and the fixture copy of Express's
 - **Save upsert:** as `authenticated` with a sub claim, inserting the same
   content twice with `ON CONFLICT (dedup_key, user_id) DO UPDATE` leaves one
   row, and `metadata` survives.
+
+## Amendments after Nitpick's review (2026-10-03)
+
+El Código's answers to Nitpick's PLAN defects. Where a numbered defect isn't
+listed here, the answer is "accepted as is".
+
+1. **Edited tags** — `buildSaveRow` takes an optional `tags` array. When it's
+   given, it replaces the tags resolved from `save.tags`. The runner passes the
+   edited `save-tags` value: split on commas, trimmed, lowercased, duplicates
+   dropped.
+2. **Refresh** — `discoverTools` takes `force: true`, which skips the plugin
+   cache. `refresh-tools` passes it.
+3. **Model order** — the order is the order the student picked models, where
+   the browser reports that order; otherwise it's list order. Phones show a
+   multi-select as a system picker that may report the selection only once,
+   when it closes. Settings shows the order as an editable comma list
+   (`settings-models`), so a student can always fix it. Real-phone check:
+   `PILOT-CHECKLIST.md`.
+4. **Way home** — the top bar on every screen has `nav-home` (Home) and
+   `nav-settings-top` (Settings).
+6. **Open check on an older brain with nullable `content`** — accepted risk,
+   recorded on the pilot checklist. That brain would get one empty row, and
+   the hub still refuses it.
+7. **Express detection on real Supabase** — accepted, as Nitpick says: not a
+   security risk, and it's on the pilot checklist.
+8. **`recent()` with many archived saves** — accepted for v1. Fetching twice
+   the limit covers normal use; archiving is rare.
 
 ## Out of scope for Phase 2
 
