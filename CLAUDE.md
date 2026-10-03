@@ -28,6 +28,11 @@ Forkable student command center. Read `docs/SPEC-v1.0.md`, then
   throwaway Postgres, or report them as unverified.
 - **TDD flow:** El Código specs → Nitpick test plan → El Código codes → Nitpick
   review. No freelancing outside it.
+- **After every merge to main, run `npm run test:live`** once GitHub Pages
+  has rebuilt. The local test server serves files untouched; GitHub Pages
+  does not. Without `.nojekyll`, Pages runs Jekyll and turns every recipe
+  into a 404. That went unnoticed from Phase 2 to Phase 5 because the only
+  "live check" loaded the setup screen. Never delete `.nojekyll`.
 - **Paul does no hands-on checks.** Every phase ends with automated browser
   tests (`npm test`), at laptop size and in phone emulation, plus Nitpick's
   written sign-off. Anything emulation can't prove goes on

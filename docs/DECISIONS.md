@@ -304,6 +304,27 @@ directly. The hub calls them on the recipe's behalf.
       server in another repo), which the repo rule forbids. Claude writes up
       what Phase 6 would change in the other repos and waits.
 
+19. **Hotfix: `.nojekyll`, and a real live check after every merge**
+    (El Código, 2026-10-03, after Phase 5).
+    - **The bug:** GitHub Pages runs Jekyll by default, which converted every
+      recipe (`.md` starting with `---`) into an HTML page. So every core
+      tool 404'd on the live site **from Phase 2 onward**.
+    - **Why it was missed:**
+      - Claude's earlier "live site loads" checks only opened the setup
+        screen.
+      - All automated tests use a local server that serves files untouched.
+    - **The fix:** an empty `.nojekyll` at the root. Forks inherit it, so
+      student hubs are fixed too.
+    - **The guards:**
+      - `tests/unit/pages-raw.test.mjs` checks the file exists.
+      - `npm run test:live` (`tests/live-smoke.mjs`) fetches every core
+        recipe from the real site, compares it byte for byte, and opens Home
+        on laptop, iPhone and Android, expecting every tool tile and zero
+        errors.
+      - CLAUDE.md requires `test:live` after every merge.
+    - **Students' own `plugins/` recipes** were never affected: the hub loads
+      them from raw GitHub URLs, not from Pages.
+
 ---
 
 **Phase 1 closed October 3, 2026.** Paul approved these decisions and
