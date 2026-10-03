@@ -3,14 +3,29 @@
 import * as S from './lib/store.js'
 import { parseRecipe } from './lib/recipe.js'
 import { buildPrompt, formatBrainContext, fillShort, WEB_SEARCH_LINE } from './lib/prompt.js'
-import { installSummary } from './lib/summary.js'
+import { installSummary, PRIVACY_WARNING } from './lib/summary.js'
 import { parseOutput } from './lib/output.js'
-import { createBrain } from './lib/brain.js'
+import { createBrain, keyProblem, isSupabaseUrl } from './lib/brain.js'
 import { createAI } from './lib/ai.js'
 import { discoverTools, loadTools, repoFromLocation, parseRepo } from './lib/plugins.js'
-import { buildSaveRow, downloadFile, resolveTags } from './lib/save.js'
+import { buildSaveRow, downloadFile, resolveTags, localDate } from './lib/save.js'
 import { marked } from './vendor/marked.esm.js'
 import DOMPurify from './vendor/purify.es.mjs'
+
+// AI answers are untrusted: a recipe, a web page the AI read, or a pasted answer
+// can all steer them. Nothing in an answer may load anything or collect input:
+// an image URL could carry brain notes to a stranger's server with no click
+// (Nitpick H1). Images become plain links; the CSP in index.html backs this up.
+const escAttr = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;')
+marked.use({ renderer: { image({ href, text }) { return `<a href="${escAttr(href)}">[image: ${escAttr(text || 'link')}]</a>` } } })
+const PURIFY = {
+  FORBID_TAGS: ['img', 'picture', 'source', 'video', 'audio', 'track', 'form', 'input', 'button', 'textarea',
+    'select', 'option', 'style', 'link', 'meta', 'iframe', 'frame', 'object', 'embed', 'svg', 'math', 'base'],
+  FORBID_ATTR: ['style', 'srcset', 'action', 'formaction', 'background', 'poster', 'ping'],
+}
+export function renderAnswer(text) {
+  return DOMPurify.sanitize(marked.parse(String(text ?? ''), { async: false }), PURIFY)
+}
 
 const EXPRESS_URL = 'https://github.com/King-Tuerto/open-brain-express'
 const UPGRADE_URL = `${EXPRESS_URL}/blob/main/UPGRADE.md`
@@ -60,7 +75,7 @@ function saveFile(fileName, text, type = 'text/markdown') {
   setTimeout(() => URL.revokeObjectURL(url), 10_000)
 }
 
-const today = () => new Date().toISOString().slice(0, 10)
+const today = () => localDate()
 const settings = () => S.getSettings()
 
 function bumpStat(name) {
@@ -107,7 +122,11 @@ function route() {
   document.querySelectorAll('[data-nav]').forEach((a) => a.classList.toggle('active', a.dataset.nav === name))
   switch (name) {
     case 'setup': return renderSetup(Number(arg) || 1)
-    case 'tool': return renderTool(decodeURIComponent(arg))
+    case 'tool': {
+      let id = arg
+      try { id = decodeURIComponent(arg) } catch { /* malformed link: show "not found" */ }
+      return renderTool(id)
+    }
     case 'add': return renderAdd()
     case 'settings': return renderSettings()
     default: return renderHome()
@@ -132,7 +151,7 @@ function renderSetup(step) {
     h('p', { class: 'muted', text: 'Two quick choices and you are in. Nothing you type here leaves this browser except to services you pick.' }),
     h('label', { for: 'setup-name', text: 'What should we call you?' }),
     name,
-    h('div', { class: 'row', style: 'margin-top:1rem' },
+    h('div', { class: 'row mt' },
       h('button', { class: 'primary', tid: 'setup-next', onclick: () => {
         S.setSettings({ name: name.value.trim() })
         location.hash = '#/setup/2'
@@ -165,7 +184,12 @@ function setupBrain() {
     const p = password.value
     password.value = ''
     if (!u || !k || !e || !p) { say('bad', 'Fill in all four boxes: brain address, public key, email and password.'); return }
-    if (!/^https:\/\//.test(u)) { say('bad', 'The brain address should start with https://'); return }
+    if (!isSupabaseUrl(u)) { say('bad', 'The brain address should look like https://xxxx.supabase.co (Project Settings → API in Supabase).'); return }
+    if (keyProblem(k) === 'secret') {
+      say('', '')
+      refuse('That is a secret key. It unlocks your whole brain and must never be pasted into an app. Use the publishable (public) key instead, and if this secret key has been shared anywhere, rotate it in Supabase.')
+      return
+    }
     connect.disabled = true
     say('', 'Checking your brain is locked to you…')
     try {
@@ -213,7 +237,7 @@ function setupBrain() {
       h('label', { for: 'brain-email', text: 'Email you sign in to your brain with' }), email,
       h('label', { for: 'brain-password', text: 'Password' }), password,
       h('p', { class: 'help', text: 'Your password goes only to your own brain. Brain Hub never stores it.' }),
-      h('div', { class: 'row', style: 'margin-top:1rem' }, connect),
+      h('div', { class: 'row mt' }, connect),
     ),
     status, refused,
   ))
@@ -256,6 +280,7 @@ function setupAI() {
     h('label', { for: 'model-select', text: 'Models, in the order to try them' }), modelSelect,
     h('p', { class: 'help', id: 'model-help', text: 'Free models are rate-limited and change often, so pick more than one.' }), order,
     h('label', { class: 'check' }, paid, 'Allow paid web search (billed by OpenRouter)'),
+    note('warn', 'auto-privacy-warning', `${PRIVACY_WARNING} Tools that search your brain include those notes in the prompt.`),
   )
 
   const appButtons = Object.entries(AI_APPS).map(([id, a]) =>
@@ -294,7 +319,7 @@ function setupAI() {
     h('h1', { text: 'How should tools run?' }),
     h('div', { class: 'choice-grid' }, autoBtn, manualBtn),
     autoPanel, manualPanel, aiStatus,
-    h('div', { class: 'row', style: 'margin-top:1rem' }, finish),
+    h('div', { class: 'row mt' }, finish),
   ))
   sync()
 }
@@ -324,6 +349,12 @@ async function renderHome() {
     toolNotes.replaceChildren(...broken.map((t) =>
       note('warn', 'tool-broken', h('strong', { text: `${t.entry.fileName} has problems and was skipped:` }),
         h('ul', { class: 'errors' }, (t.errors ?? []).map((e) => h('li', { text: e }))))))
+    // Say when a tool is hidden by another with the same id (Nitpick L6).
+    for (const c of toolsState.conflicts ?? []) {
+      const kept = c.keptOrigin === 'core' ? 'a built-in tool' : 'a tool in your plugins/ folder'
+      const lost = c.origin === 'local' ? 'The tool you pasted' : `${c.fileName} in plugins/`
+      toolNotes.append(note('warn', 'tool-conflict', `${lost} (id "${c.id}") is hidden because ${kept} uses the same id. Change one of the ids to see both.`))
+    }
     stats.querySelector('[data-k=tools] b').textContent = String(ok.length)
   }
 
@@ -366,14 +397,14 @@ async function renderHome() {
   }
 
   render(h('section', { tid: 'screen-home' },
-    h('div', { class: 'row', style: 'justify-content:space-between' },
+    h('div', { class: 'row between' },
       h('h1', { tid: 'home-name', text: s.name ? `Hi, ${s.name}` : 'Welcome' }),
       h('span', { class: `badge ${b ? 'on' : ''}`, tid: 'brain-badge', text: b ? 'Brain connected' : 'No brain' })),
     stats,
     h('div', { class: 'card' },
-      h('div', { class: 'row', style: 'justify-content:space-between' }, h('h2', { text: 'Tools' }), refresh),
+      h('div', { class: 'row between' }, h('h2', { text: 'Tools' }), refresh),
       tilesBox, toolNotes,
-      h('div', { class: 'row', style: 'margin-top:1rem' },
+      h('div', { class: 'row mt' },
         h('a', { class: 'btn', href: '#/add', tid: 'nav-add' }, 'Add a tool'),
         h('a', { class: 'btn', href: '#/settings', tid: 'nav-settings' }, 'Settings'))),
     brainSection,
@@ -401,6 +432,30 @@ async function renderTool(id) {
   }
   const recipe = tool.recipe
   const perms = recipe.permissions ?? []
+
+  // Tools from a repo the student pointed the hub at (not their own fork, not
+  // pasted through Add tool) must be reviewed before first use (Nitpick M3/M5).
+  const ackKey = `${recipe.id}@${recipe.version}`
+  const acks = S.get('hub.toolAcks', {}) ?? {}
+  if (tool.entry.origin === 'plugin' && settings().repoOverride && !acks[ackKey]) {
+    const sum = installSummary(recipe)
+    render(h('section', { tid: 'screen-tool' },
+      h('div', { class: 'card stack', tid: 'tool-review' },
+        h('h1', { text: `Review “${recipe.name}” before using it` }),
+        h('p', { class: 'muted', text: `This tool comes from ${settings().repoOverride}, not from your own Brain Hub. Only continue if you trust whoever wrote it. By ${sum.author}, version ${sum.version}.` }),
+        h('ul', { tid: 'summary-permissions' }, sum.permissions.length
+          ? sum.permissions.map((p) => h('li', { 'data-permission': p.id, text: p.text }))
+          : h('li', { text: 'Build a prompt and let you download the result. Nothing else.' })),
+        h('p', {}, h('strong', { text: 'Web search: ' }), sum.webSearch),
+        sum.warnings.length ? note('warn', 'summary-warning', ...sum.warnings.map((w) => h('p', { text: w }))) : null,
+        h('div', { class: 'row mt' },
+          h('button', { class: 'primary', tid: 'tool-accept', onclick: () => {
+            S.set('hub.toolAcks', { ...(S.get('hub.toolAcks', {}) ?? {}), [ackKey]: true })
+            renderTool(id)
+          } }, 'I trust it — continue'),
+          h('a', { class: 'btn', href: '#/home' }, 'Back')))))
+    return
+  }
   const runKey = `hub.runs.${recipe.id}`
   let st = { inputs: {}, prompt: '', answer: '', result: null, mode: null, noWebSearch: false, ...S.get(runKey, {}) }
   const persist = () => S.set(runKey, st)
@@ -431,7 +486,9 @@ async function renderTool(id) {
   const stage = h('div', { 'aria-live': 'polite' })
   const resultBox = h('div')
 
-  const runBtn = h('button', { class: 'primary', tid: 'run-btn', onclick: () => start() }, 'Run')
+  // A fresh Run goes back to the student's chosen mode; copy-and-paste chosen
+  // after an error applies to that run only (Nitpick L3).
+  const runBtn = h('button', { class: 'primary', tid: 'run-btn', onclick: () => { st.mode = null; start() } }, 'Run')
   const clearBtn = h('button', { class: 'ghost', tid: 'clear-run', onclick: () => {
     S.remove(runKey)
     renderTool(id)
@@ -599,7 +656,7 @@ async function renderTool(id) {
     persist()
     const parsed = parseOutput(text, recipe)
     const body = h('div', { class: 'result', tid: 'result' })
-    body.innerHTML = DOMPurify.sanitize(marked.parse(text, { async: false }))
+    body.innerHTML = renderAnswer(text)
     body.querySelectorAll('a').forEach((a) => { a.target = '_blank'; a.rel = 'noopener noreferrer' })
 
     const saveStatus = h('div', { tid: 'save-status', role: 'status' })
@@ -613,7 +670,7 @@ async function renderTool(id) {
       savePanel = h('div', { tid: 'save-panel', class: 'card', hidden: true },
         h('label', { for: 'save-summary', text: 'Summary (this is what search will find)' }), summary,
         h('label', { for: 'save-tags', text: 'Tags (comma separated)' }), tags,
-        h('div', { class: 'row', style: 'margin-top:.75rem' },
+        h('div', { class: 'row mt' },
           h('button', { class: 'primary', tid: 'save-confirm', onclick: async (ev) => {
             const sum = summary.value.trim()
             if (!sum) { saveStatus.replaceChildren(note('bad', null, 'Add a short summary first.')); return }
@@ -640,7 +697,7 @@ async function renderTool(id) {
       parsed.missingSections.length ? note('warn', 'missing-sections', `Missing sections: ${parsed.missingSections.join(', ')}`) : null,
       parsed.sources.length ? null : note('warn', 'no-sources-warning', 'This answer has no source links, so none of its facts can be checked. Treat it with care.'),
       body,
-      h('div', { class: 'row', style: 'margin-top:1rem' },
+      h('div', { class: 'row mt' },
         canSave ? h('button', { class: 'primary', tid: 'save-btn', onclick: () => { savePanel.hidden = false; savePanel.querySelector('textarea').focus() } }, 'Save to brain') : null,
         h('button', { tid: 'download-btn', onclick: () => {
           const f = downloadFile({ recipe, inputs: st.inputs, report: text })
@@ -655,9 +712,9 @@ async function renderTool(id) {
     h('div', { class: 'card' },
       h('h1', { text: recipe.name }),
       h('p', { class: 'muted', text: recipe.description }),
-      h('form', { onsubmit: (ev) => { ev.preventDefault(); start() } }, fields.map((f) => f.wrap)),
+      h('form', { onsubmit: (ev) => { ev.preventDefault(); runBtn.click() } }, fields.map((f) => f.wrap)),
       formError,
-      h('div', { class: 'row', style: 'margin-top:1rem' }, runBtn, clearBtn)),
+      h('div', { class: 'row mt' }, runBtn, clearBtn)),
     stage, resultBox))
 
   // Restore an in-progress run.
@@ -726,7 +783,7 @@ function renderAdd() {
         h('a', { href: 'WIDGET-GUIDE.md', target: '_blank', rel: 'noopener' }, 'WIDGET-GUIDE.md'),
         '. Then paste its recipe here.'),
       h('label', { for: 'recipe-paste', text: 'Recipe' }), paste,
-      h('div', { class: 'row', style: 'margin-top:1rem' }, check)),
+      h('div', { class: 'row mt' }, check)),
     out))
 }
 
@@ -782,7 +839,11 @@ function renderSettings() {
       h('h2', { text: 'Brain' }),
       h('p', { tid: 'settings-brain-status', text: status }),
       h('div', { class: 'row' },
-        b && b.isSignedIn() ? h('button', { tid: 'settings-signout', onclick: () => { b.signOut(); renderSettings() } }, 'Sign out') : null,
+        b && b.isSignedIn() ? h('button', { tid: 'settings-signout', onclick: async (ev) => {
+          ev.currentTarget.disabled = true
+          await b.signOut()
+          renderSettings()
+        } }, 'Sign out') : null,
         h('a', { class: 'btn', tid: 'settings-reconnect', href: '#/setup/2' }, b ? 'Reconnect' : 'Connect a brain'))),
     h('div', { class: 'card' },
       h('h2', { text: 'AI' }),
@@ -799,8 +860,9 @@ function renderSettings() {
       h('h2', { text: 'Your data' }),
       h('div', { class: 'row' },
         h('button', { tid: 'settings-export', onclick: () => {
+          // Settings only: never the key or session, and never saved runs, which hold brain notes (Nitpick M2).
           const out = {}
-          for (const k of S.keys('hub.')) if (k !== 'hub.openrouterKey' && k !== 'hub.session') out[k] = S.get(k)
+          for (const k of ['hub.settings', 'hub.brain', 'hub.localTools']) { const v = S.get(k); if (v != null) out[k] = v }
           saveFile('brain-hub-settings.json', JSON.stringify(out, null, 2), 'application/json')
         } }, 'Export settings'),
         h('button', { class: 'danger', tid: 'settings-reset', onclick: () => {

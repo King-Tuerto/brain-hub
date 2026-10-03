@@ -1,7 +1,13 @@
 // What gets saved to the brain, and what gets downloaded.
 import { fillShort } from './prompt.js'
 
-const isoDate = (now) => new Date(now ?? Date.now()).toISOString().slice(0, 10)
+// The student's own calendar date, not UTC: after 6 pm in Mexico, UTC is already tomorrow.
+export function localDate(now) {
+  const d = new Date(now ?? Date.now())
+  const pad = (n) => String(n).padStart(2, '0')
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
+}
+const isoDate = localDate
 
 export function resolveTags(recipe, inputs, now) {
   const tags = (recipe.save?.tags ?? []).map((t) => fillShort(t, recipe, inputs, isoDate(now)).toLowerCase()).filter(Boolean)

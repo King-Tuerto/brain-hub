@@ -118,9 +118,16 @@ describe('valid recipe (WIDGET-GUIDE §10)', () => {
 })
 
 describe('structure', () => {
-  test('first line must be ---', () => {
-    bad('\n' + NETWORKING_PREP)
+  // PLAN amended after review: blank lines and whitespace before the opening --- are forgiven.
+  test('leading blank lines and whitespace before --- are forgiven', () => {
+    assert.equal(ok('\n' + NETWORKING_PREP).id, 'networking-prep')
+    assert.equal(ok('\n\n   \n' + NETWORKING_PREP).id, 'networking-prep')
+    assert.equal(ok('  \r\n' + NETWORKING_PREP.replace(/\n/g, '\r\n')).id, 'networking-prep')
+  })
+  test('any other text before --- is an error', () => {
     bad('hello\n' + NETWORKING_PREP)
+    bad('Here is your recipe:\n\n' + NETWORKING_PREP)
+    bad('```\n' + NETWORKING_PREP + '```\n')
   })
   test('missing closing ---', () => bad('---\nid: abc\nname: x\n'))
   test('empty text', () => bad(''))

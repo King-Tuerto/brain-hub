@@ -142,3 +142,6 @@ button:disabled { opacity: .55; cursor: default; }
 
 .errors { color: var(--bad); padding-left: 1.2rem; }
 .mono { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: .875rem; }
+
+.mt { margin-top: 1rem; }
+.between { justify-content: space-between; }

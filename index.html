@@ -2,6 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
+  <!-- Second line of defence for AI output (Nitpick H1): nothing may load from,
+       or send to, any server except the app itself, the brain, OpenRouter and GitHub. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; connect-src 'self' https://*.supabase.co https://openrouter.ai https://api.github.com https://raw.githubusercontent.com; manifest-src 'self'; worker-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#0f172a">
   <meta name="description" content="Your personal command center for AI tools.">
@@ -24,10 +27,6 @@
   <main id="app" tabindex="-1"></main>
   <noscript>Brain Hub needs JavaScript turned on.</noscript>
   <script type="module" src="core/app.js"></script>
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}))
-    }
-  </script>
+  <script src="core/sw-register.js"></script>
 </body>
 </html>

@@ -92,6 +92,17 @@ describe('discoverTools', () => {
     assert.deepEqual(r2.tools.filter((t) => t.origin === 'plugin').map((t) => t.url), [RAW('gh-tool.recipe.md')])
   })
 
+  test('force:true skips a fresh cache and calls the API again (PLAN amendment 2)', async () => {
+    const w = world(); const store = memStore()
+    await run(w, { store })
+    const r = await discoverTools({ fetch: w.fetch, store, now: flexNow(T0 + 60 * 1000), repo: REPO, base: BASE, force: true })
+    assert.equal(r.via, 'api')
+    assert.equal(w.apiCalls(), 2)
+    // and the fresh result is cached for the next normal call
+    const r3 = await run(w, { store, now: T0 + 2 * 60 * 1000 })
+    assert.equal(r3.via, 'cache')
+  })
+
   test('cache at exactly 10 minutes is stale → API again', async () => {
     const w = world(); const store = memStore()
     await run(w, { store })

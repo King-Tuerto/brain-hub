@@ -41,6 +41,19 @@ test('buildSaveRow: no top-level tags/category/summary columns (enrichment overw
   for (const k of ['tags', 'category', 'summary', 'dedup_key', 'id']) assert.ok(!(k in row), `row must not set ${k}`)
 })
 
+test('buildSaveRow: an explicit tags array replaces the recipe tags (PLAN amendment 1)', () => {
+  const row = buildSaveRow({
+    recipe: HELLO, inputs: { topic: 'Pricing', depth: 'Quick' }, report: REPORT, summary: 'S',
+    sources: [], userId: 'u', now: flexNow(NOW), tags: ['mine', 'edited'],
+  })
+  assert.deepEqual(row.metadata.hub.tags, ['mine', 'edited'])
+})
+
+test('buildSaveRow: tags omitted → resolved from save.tags', () => {
+  const row = buildSaveRow({ recipe: HELLO, inputs: { topic: 'Pricing', depth: 'Quick' }, report: REPORT, summary: 'S', sources: [], userId: 'u', now: flexNow(NOW) })
+  assert.deepEqual(row.metadata.hub.tags, ['hello-hub', 'pricing'])
+})
+
 test('downloadFile: fileName <id>-<YYYY-MM-DD>.md; text = # name, date, inputs list, blank line, report', () => {
   const f = downloadFile({ recipe: HELLO, inputs: { topic: 'Pricing', depth: 'Thorough' }, report: REPORT, now: flexNow(NOW) })
   assert.equal(f.fileName, 'hello-hub-2026-10-03.md')

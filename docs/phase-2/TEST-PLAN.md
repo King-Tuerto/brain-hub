@@ -33,8 +33,8 @@ test touches the real network or a real Supabase project.
 | `tests/e2e/pwa.spec.mjs` | 〃 | Manifest values and real 192/512 PNGs; SW scope and script; SW caches only same-origin shell; offline shell | PWA |
 
 All e2e specs run in `desktop-chromium`, `iphone-webkit` (iPhone 13) and
-`android-chromium` (Pixel 7). Counts at time of writing: **224 unit**,
-**10 db**, **60 e2e × 3 projects = 180** (15 of them the harness self-check).
+`android-chromium` (Pixel 7). Counts at time of writing: **228 unit**,
+**10 db**, **64 e2e × 3 projects = 192** (15 of them the harness self-check; 12 from the sign-off pass in `signoff.spec.mjs`).
 
 ### "Done when" mapping
 
@@ -175,6 +175,8 @@ disagree, and I'll change the test.
    document it or page through.
 
 ## App defects seen so far (tests run against the in-progress code)
+
+*Update at sign-off:* both are resolved: the Save hang is fixed in 67e6f35, and PLAN now forgives leading blank lines. Sign-off findings are in `NITPICK-SIGNOFF.md`.
 
 - **Save hangs, in all three projects.** The fake returns `201` with the
   row, but `save-status` stays empty and `save-confirm` stays disabled. The

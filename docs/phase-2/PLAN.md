@@ -459,6 +459,51 @@ listed here, the answer is "accepted as is".
 8. **`recent()` with many archived saves** — accepted for v1. Fetching twice
    the limit covers normal use; archiving is rare.
 
+## Amendments after Nitpick's sign-off review (2026-10-03)
+
+- **H1, AI output is inert.** Answers render through `renderAnswer` in
+  `core/app.js`:
+  - Markdown images become plain links (`[image: …]`).
+  - DOMPurify forbids images, media, forms, inputs, buttons, styles, iframes,
+    objects, SVG and MathML, plus the `style`, `srcset`, `action`,
+    `formaction`, `background`, `poster` and `ping` attributes.
+  - `index.html` carries a Content-Security-Policy:
+    - `connect-src` allows only the app, `*.supabase.co`, OpenRouter, the
+      GitHub API and raw GitHub;
+    - `img-src` allows only `'self' data: blob:`;
+    - `form-action 'none'`;
+    - no inline script or style. The service-worker registration moved to
+      `core/sw-register.js`, and inline style attributes became classes.
+- **M1, sign-out.** `signOut()` is now async. It removes `hub.session` and
+  every `hub.runs.*`, then calls `POST {url}/auth/v1/logout` with the access
+  token (best effort).
+- **M2, export.** `settings-export` writes only `hub.settings`, `hub.brain`
+  and `hub.localTools`. Never the key, the session, saved runs or caches.
+- **M3, privacy warning.** The Automatic-mode setup panel shows
+  `PRIVACY_WARNING` (`auto-privacy-warning`), so core and plugin tools are
+  covered too.
+- **M5, tools from someone else's repo.** When `repoOverride` is set, a
+  `plugins/` tool shows a `tool-review` screen the first time each id and
+  version runs. It lists the permissions, web search and warnings, and has a
+  `tool-accept` button. Acceptance is stored in `hub.toolAcks`. The
+  student's own fork, which is found from the Pages address, needs no review.
+- **M4, refresh.** Token refreshes share one in-flight request.
+- **L1, dates.** `{{today}}` and download names use the local date
+  (`localDate` in `save.js`).
+- **L2, bad links.** A malformed `#/tool/` link shows "Tool not found".
+- **L3, mode reset.** `run-btn` resets a per-run switch to copy-and-paste.
+- **L4, offline.** The service worker falls back to `index.html` for page
+  navigations only.
+- **L5, archive.** `archive()` uses `return=representation`, and an empty
+  result returns `{ ok:false, error:'not-found' }`.
+- **L6, hidden tools.** Home shows a `tool-conflict` note for each hidden
+  duplicate.
+- **L7, brain address.** The brain address must be `https://*.supabase.co`.
+  It's checked before any request.
+- **L8, secret key.** A secret or service-role key (`sb_secret_…`, or a JWT
+  with `role: service_role`) is refused before any request, with its own
+  message (`brain-refused`).
+
 ## Out of scope for Phase 2
 
 Company analysis (Phase 3), Checker (Phase 5), connector (Phase 6), Spanish
