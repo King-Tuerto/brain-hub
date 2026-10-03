@@ -132,8 +132,17 @@ export function extractSources(markdown) {
   const seen = []
   const found = []
   // Markdown links first, then bare URLs; ordering by position in the text.
-  for (const m of text.matchAll(/\]\((https?:\/\/[^\s)]+)\)/g)) found.push([m.index, m[1]])
-  for (const m of text.matchAll(/https?:\/\/[^\s<>"'\]]+/g)) found.push([m.index, m[0]])
+  const spans = []
+  for (const m of text.matchAll(/\]\((https?:\/\/[^\s)]+)\)/g)) {
+    found.push([m.index, m[1]])
+    spans.push([m.index, m.index + m[0].length])
+  }
+  // A bare-URL match inside a Markdown link is the same link, possibly cut short
+  // at a character like ' (Nitpick F1), so skip it.
+  for (const m of text.matchAll(/https?:\/\/[^\s<>"'\]]+/g)) {
+    if (spans.some(([a, b]) => m.index >= a && m.index < b)) continue
+    found.push([m.index, m[0]])
+  }
   found.sort((a, b) => a[0] - b[0])
   for (const [, raw] of found) {
     const url = raw.replace(/[).,;]+$/, '')

@@ -18,10 +18,20 @@ test('real answer: every required section is present, in order, plus Summary', (
   assert.deepEqual(order, [...order].sort((a, b) => a - b), `sections out of order: ${o.sections.join(' | ')}`)
 })
 
-test('real answer: 0 unsourced claims', () => {
+// DECISIONS #15 bar: at least 95% of claims sourced or [unverified]; every
+// unsourced claim is shown to the student (the E2E checks the on-screen list).
+test('real answer: at least 95% of claims are sourced or marked [unverified]', () => {
   const sc = checkSources(readAnswer())
   assert.ok(sc.claims > 0, 'the source check found no claims at all')
-  assert.deepEqual(sc.unsourced, [], `unsourced claims:\n${sc.unsourced.map((u) => `  ${u.section}: ${u.text}`).join('\n')}`)
+  const share = (sc.sourced + sc.unverified) / sc.claims
+  assert.ok(share >= 0.95, `only ${(share * 100).toFixed(1)}% sourced or unverified; unsourced:\n${sc.unsourced.map((u) => `  ${u.section}: ${u.text}`).join('\n')}`)
+})
+
+test('real answer (run 3): exactly the two "What it sells" bullets are unsourced; 53 claims, 51 sourced', () => {
+  const sc = checkSources(readAnswer())
+  assert.deepEqual({ claims: sc.claims, sourced: sc.sourced, unverified: sc.unverified }, { claims: 53, sourced: 51, unverified: 0 })
+  assert.deepEqual(sc.unsourced.map((u) => u.section), ['Business units', 'Business units'])
+  for (const u of sc.unsourced) assert.match(u.text, /^What it sells: /)
 })
 
 test('real answer: mostly sourced, not mostly [unverified]', () => {

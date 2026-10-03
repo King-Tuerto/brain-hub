@@ -15,7 +15,8 @@ test('buildSaveRow: exact row for a work_product save', () => {
   assert.deepEqual(row, {
     user_id: 'u-1',
     source: 'brain-hub',
-    content: 'Short summary.',
+    // DECISIONS #13: summary + blank line + '<Tool name>: <input values joined with " · ">'.
+    content: 'Short summary.\n\nHello Hub: Pricing Strategy · Quick',
     metadata: {
       hub: {
         tool: 'hello-hub', tool_version: '1.0.0', type: 'work_product',

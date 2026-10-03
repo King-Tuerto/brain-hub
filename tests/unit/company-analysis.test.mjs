@@ -119,7 +119,8 @@ test('buildSaveRow: sourceCheck is stored as metadata.hub.source_check, verbatim
   assert.deepEqual(row.metadata.hub.source_check, SC)
   assert.equal(row.metadata.hub.tool, 'company-analysis')
   assert.equal(row.metadata.hub.report, GOOD_ANSWER)
-  assert.equal(row.content, GOOD_SUMMARY)
+  // DECISIONS #13: summary, blank line, then "<Tool name>: <inputs joined with ' · '>".
+  assert.equal(row.content, `${GOOD_SUMMARY}\n\nCompany Analysis: Deere & Company (NYSE: DE) · Construction & Forestry · Class assignment`)
   assert.equal(row.source, 'brain-hub')
 })
 

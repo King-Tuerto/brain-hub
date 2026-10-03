@@ -151,3 +151,13 @@ See the report to El Código. The tests that need run 3's `deere/answer.md`
 fail with "answer.md missing" until it lands: 7 unit, plus 2 E2E per
 project. D1–D3 fail until
 they are fixed.
+
+## Update after PLAN §2b (2026-10-03)
+
+D1–D3 and A1–A7 are resolved in PLAN §2b and DECISIONS #13–#15, and the
+tests now follow the amended contract.
+- **Real answer:** done-when #2 uses the #15 bar: at least 95% of claims
+  sourced or `[unverified]`, and every unsourced claim listed on screen.
+- **Run 3** is `deere/answer.md`. Runs 1 and 2 are regression fixtures.
+- **Results and the final verdict** are in `NITPICK-SIGNOFF.md`.
+- **The source audit** is in `SOURCE-AUDIT.md`.

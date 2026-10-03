@@ -4,6 +4,10 @@ import { test, expect } from '../helpers/fixtures.mjs'
 import { NETWORKING_PREP } from '../helpers/recipes.mjs'
 import { tid, toBrainStep, setup, openTool, fillHello, setHash, noHorizontalScroll, smallTapTargets } from '../helpers/hub.mjs'
 
+// The tour is long; under a full parallel run (Phase 3 adds PGlite stand-ins)
+// WebKit once took over 30 s. Nitpick, Phase 3: allow 60 s.
+test.describe.configure({ timeout: 60_000 })
+
 // Visit every screen and state, calling check(label) on each.
 async function tour(page, check) {
   await toBrainStep(page)

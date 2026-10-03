@@ -6,12 +6,15 @@
 // tests/fixtures/real-run/deere/answer.md exists. The same flows also run with
 // a synthetic answer, so the mechanism is proven independently of it.
 import { test as base, expect } from '../helpers/fixtures.mjs'
-import { tid, toBrainStep, openTool } from '../helpers/hub.mjs'
+import { tid, toBrainStep, openTool, noHorizontalScroll } from '../helpers/hub.mjs'
 import { NO_BRAIN_TEXT } from '../helpers/contract.mjs'
+import { checkSources } from '../../core/lib/output.js'
 import { StandinBrain, STANDIN_URL, STANDIN_KEY, STANDIN_USER } from '../standin/brain-standin.mjs'
 import { INPUTS, PROMPT, readAnswer, GOOD_ANSWER, GOOD_SUMMARY, WEAK_ANSWER, WEAK_UNSOURCED, RULES_ANSWER } from '../helpers/phase3.mjs'
 
 const NOTES_HEADER = 'What I already have in my notes about this company:'
+// DECISIONS #13, spelled out from the contract (not imported from core).
+const CONTEXT_LINE = 'Company Analysis: Deere & Company (NYSE: DE) · Construction & Forestry · Class assignment'
 
 // A fresh stand-in per test (~1.2–1.7 s to build; measured), so tests never share rows.
 const test = base.extend({
@@ -100,15 +103,28 @@ test('setup: connects to the stand-in; the open check passes from the real RLS',
 
 // ---------------------------------------------------------------- Real Deere run
 
-test('real run: prompt-box equals prompt.md; answer.md renders with no missing sections and 0 unsourced', async ({ page, standin }) => {
+// DECISIONS #15 bar: every unsourced claim appears in source-check, and at
+// least 95% of claims are sourced or [unverified]. Run 3 has exactly two
+// unsourced claims, the "What it sells" bullets in Business units.
+test('real run: prompt-box equals prompt.md; answer.md renders, every unsourced claim is listed, >= 95% sourced', async ({ page, standin }) => {
   void standin
   const answer = readAnswer() // fails with "answer.md missing" until it lands
+  const sc = checkSources(answer)
+  expect((sc.sourced + sc.unverified) / sc.claims, 'share sourced or [unverified]').toBeGreaterThanOrEqual(0.95)
   await connectStandin(page)
   expect(await runDeere(page)).toBe(PROMPT)
   await useAnswer(page, answer)
   await expect(tid(page, 'missing-sections')).toHaveCount(0)
   await expect(tid(page, 'no-sources-warning')).toHaveCount(0)
-  await expectSourceCheckOk(page)
+  await expect(tid(page, 'source-check')).toContainText(`${sc.unsourced.length} of ${sc.claims} claims have no source`)
+  const shown = tid(page, 'unsourced-list').locator('li')
+  await expect(shown).toHaveText(sc.unsourced.map((u) => {
+    const t = u.text.length > 160 ? u.text.slice(0, 160) + '…' : u.text
+    return `${u.section}: ${t}`
+  }))
+  // Pinned independently of checkSources, so a checker change can't move both sides at once.
+  await expect(shown).toHaveCount(2)
+  for (const li of await shown.all()) await expect(li).toHaveText(/^Business units: What it sells: /)
 })
 
 test('real run: save, then found again on Home, by search for "Deere", and in the next prompt', async ({ page, standin }) => {
@@ -121,12 +137,13 @@ test('real run: save, then found again on Home, by search for "Deere", and in th
   const rows = await standin.hubRows()
   expect(rows).toHaveLength(1)
   const hub = rows[0].metadata.hub
-  expect(rows[0].content).toBe(summary)
+  expect(rows[0].content).toBe(`${summary}\n\n${CONTEXT_LINE}`)
   expect(hub).toMatchObject({ tool: 'company-analysis', tool_version: '1.0.0', type: 'work_product', report: answer.trim(), archived: false })
   expect(hub.tags).toEqual(expect.arrayContaining(['company-analysis', 'deere & company (nyse: de)']))
   expect(hub.sources.length).toBeGreaterThanOrEqual(10)
-  expect.soft(hub.source_check.unsourced, 'unsourced claims in the real answer (checked in the run test too)').toBe(0)
-  expect(hub.source_check.claims).toBeGreaterThan(0)
+  const sc = checkSources(answer)
+  expect(hub.source_check).toEqual({ claims: sc.claims, sourced: sc.sourced, unverified: sc.unverified, unsourced: sc.unsourced.length })
+  expect(hub.source_check.unsourced).toBe(2)
 
   await page.goto('./#/home')
   await expect(tid(page, 'recent-item').first()).toContainText(summary.slice(0, 60))
@@ -161,7 +178,8 @@ test('synthetic answer: saved row has tool, version, tags, report, sources and s
   expect(await save(page)).toBe(GOOD_SUMMARY)
   const rows = await standin.hubRows()
   expect(rows).toHaveLength(1)
-  expect(rows[0].content).toBe(GOOD_SUMMARY)
+  // DECISIONS #13: the student edits only the summary; the context line is added at save.
+  expect(rows[0].content).toBe(`${GOOD_SUMMARY}\n\n${CONTEXT_LINE}`)
   const hub = rows[0].metadata.hub
   expect(hub).toMatchObject({
     tool: 'company-analysis', tool_version: '1.0.0', type: 'work_product', report: GOOD_ANSWER.trim(), archived: false,
@@ -188,7 +206,7 @@ test('synthetic answer: found again on Home, by search for "Deere", and in the n
 
   const found = await searchStandin(page, 'Deere')
   expect(found.status).toBe(200)
-  expect(found.body.results.map((r) => r.content)).toEqual([GOOD_SUMMARY])
+  expect(found.body.results.map((r) => r.content)).toEqual([`${GOOD_SUMMARY}\n\n${CONTEXT_LINE}`])
 
   const prompt = await runDeere(page, { again: true })
   expect(prompt).toContain(`${NOTES_HEADER}\n- (`)
@@ -252,4 +270,71 @@ test('no claims at all (N = 0): source-check is not shown', async ({ page, stand
   await useAnswer(page, '## Company snapshot\n- What is Deere?\n\n## Summary\nNothing to check.')
   await expect(tid(page, 'missing-sections')).toBeVisible()
   await expect(tid(page, 'source-check')).toHaveCount(0)
+})
+
+// Nitpick A4 / DECISIONS #13: keyword-only search ANDs every query word, and the
+// next run's query is the company exactly as typed. A summary that never names
+// the ticker must still be found, through the context line added at save.
+const PLAIN = 'Deere is growing its construction business while farm equipment sales fall.'
+
+test('A4: a summary without the ticker is re-found by the next run (keyword-only stand-in search)', async ({ page, standin }) => {
+  expect(PLAIN).not.toMatch(/NYSE|\bDE\b|Company/)
+  await connectStandin(page)
+  await runDeere(page)
+  await useAnswer(page, GOOD_ANSWER)
+  await tid(page, 'save-btn').click()
+  await tid(page, 'save-summary').fill(PLAIN)
+  await tid(page, 'save-confirm').click()
+  await expect(tid(page, 'save-status')).toContainText('Saved to your brain.')
+  const [row] = await standin.hubRows()
+  expect(row.content).toBe(`${PLAIN}\n\n${CONTEXT_LINE}`)
+
+  // The exact query the hub sends finds it, keyword-only.
+  const found = await searchStandin(page, INPUTS.company)
+  expect(found.body.mode).toBe('keyword')
+  expect(found.body.results.map((r) => r.id)).toEqual([row.id])
+
+  await page.goto('./#/home')
+  const prompt = await runDeere(page, { again: true })
+  expect(prompt).toContain(`${NOTES_HEADER}\n- (`)
+  expect(prompt).toContain(`) ${PLAIN} ${CONTEXT_LINE}`)
+  expect(prompt).not.toContain(NO_BRAIN_TEXT)
+})
+
+test('A4 control: the same summary without the context line is NOT found (stand-in search is AND)', async ({ page, standin }) => {
+  await connectStandin(page)
+  await standin.db.query(`INSERT INTO thoughts (user_id, source, content, metadata) VALUES ($1, 'brain-hub', $2, '{}'::jsonb)`, [STANDIN_USER.id, PLAIN])
+  const found = await searchStandin(page, INPUTS.company)
+  expect(found.status).toBe(200)
+  expect(found.body.results).toEqual([])
+})
+
+test('DECISIONS #14: same summary + same inputs saved twice is one row, and the latest report wins', async ({ page, standin }) => {
+  await connectStandin(page)
+  await runDeere(page)
+  await useAnswer(page, GOOD_ANSWER)
+  await save(page)
+  const second = GOOD_ANSWER.replace('Revenue was about $51bn', 'Revenue was about $45.7bn')
+  expect(second).not.toBe(GOOD_ANSWER)
+  await tid(page, 'answer-box').fill(second)
+  await tid(page, 'use-answer').click()
+  await tid(page, 'save-btn').click()
+  await tid(page, 'save-confirm').click()
+  await expect(tid(page, 'save-status')).toContainText('Saved to your brain.')
+  await expect.poll(async () => (await standin.hubRows())[0]?.metadata.hub.report).toBe(second.trim())
+  expect(await standin.hubRows()).toHaveLength(1)
+})
+
+test('layout: the real answer, its source-check list and the save panel never scroll sideways (device size and 320px)', async ({ page, standin }) => {
+  void standin
+  const answer = readAnswer()
+  await connectStandin(page)
+  await runDeere(page)
+  await noHorizontalScroll(page, 'company-analysis prompt')
+  await useAnswer(page, answer)
+  await tid(page, 'save-btn').click()
+  await expect(tid(page, 'save-panel')).toBeVisible()
+  await noHorizontalScroll(page, 'company-analysis result')
+  await page.setViewportSize({ width: 320, height: 640 })
+  await noHorizontalScroll(page, 'company-analysis result @320')
 })
