@@ -11,6 +11,52 @@
   serves the same `core/app.js` and `sw.js` as this branch (checked byte for
   byte).
 
+## Final verdict — Round 3
+
+**APPROVED. Merge.**
+
+El Código fixed both Round 2 findings before merging:
+
+- **N2:** a pasted tool that is later saved into `plugins/` is now hidden
+  quietly. It's kept in storage, and every other clash still warns.
+- **N1:** the app message and both guides now say "tap **Connect** at the top
+  of your project".
+
+The live copy serves the same `core/app.js` and `core/lib/plugins.js` as
+this branch (checked byte for byte). The guide change is one troubleshooting
+row, so the Spanish run below still stands.
+
+| Suite | Round 3 result |
+|---|---|
+| Unit | **434 pass**, 0 fail |
+| DB | **10 pass**, 0 fail |
+| E2E | **421 pass**, 2 skipped, 0 fail |
+
+**New in Round 3:**
+
+- **`guides.test.mjs`:**
+  - `SUPABASE` is now `Connect`, `Project URL`. The stale `Project Settings`
+    and `API` are gone. "Connect" is Supabase's button, not the hub's
+    "Connect my brain".
+  - A new test checks that the app's address message and both guides send
+    students to the same place ("tap Connect … Project URL"). Neither the app
+    nor the guides may say "Project Settings" again.
+- **`tests/e2e/phase7.spec.mjs`** adds 4 tests × 3 projects for N2:
+  - **The guide's path:** paste-install `gh-tool`. The fake GitHub then lists
+    the same id in `plugins/`, and the student taps Refresh tools. Result:
+    one tile, no `tool-conflict`, also after a reload, and the pasted copy is
+    still in `hub.localTools`.
+  - **Pasting a newer version once it's in `plugins/`:** refused at Check
+    recipe ("A plugins/ tool already uses the id …"). A student is never
+    silently left running a different version than the one they pasted.
+  - **Genuine clash, still warns:** a `plugins/` tool using a built-in id.
+  - **Genuine clash, still warns:** a pasted tool using a built-in id.
+- **Mutation checks** on `core/lib/plugins.js` (restored byte for byte):
+  - never promoting fails the N2 test;
+  - promoting every clash fails both guard tests.
+
+---
+
 ## Verdict — Round 2
 
 **APPROVED.** Merge when ready.
@@ -171,9 +217,9 @@ missing.
   separately allows just the open-check's `401 POST /rest/v1/thoughts`, so a
   401 from anything else still fails the run. Acceptable as is.
 
-## New findings — Round 2 (none blocking)
+## New findings — Round 2 (none blocking; both fixed in Round 3)
 
-- **N1 — Supabase's menu name is out of date (low).**
+- **N1 — Supabase's menu name is out of date (low). FIXED in Round 3.**
   - **The problem:**
     - The troubleshooting row says to compare against **Project URL** under
       **Project Settings → API**. Supabase's docs (checked 2026-10-03) now
@@ -185,7 +231,7 @@ missing.
   - **Suggested fix:** "tap **Connect** at the top of your project in
     Supabase; it shows the Project URL", in both guides and in the app
     message. Then update the `SUPABASE` list in the test.
-- **N2 — The "Make your own tools" path ends in a warning (low, app).**
+- **N2 — The "Make your own tools" path ends in a warning (low, app). FIXED in Round 3, with e2e tests.**
   - **What happens:** a student who follows it exactly first installs the
     tool by paste (step 3), then saves the same file to `plugins/` (step 4).
     Both copies have the same id. `discoverTools()` keeps the plugin, and

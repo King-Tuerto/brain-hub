@@ -8,6 +8,7 @@ import { test, expect } from '../helpers/fixtures.mjs'
 import { tid, setup, openTool } from '../helpers/hub.mjs'
 import { parseRecipe } from '../../core/lib/recipe.js'
 import { claimsToCheck, buildCheckerPrompt } from '../../core/lib/checker.js'
+import { GH_TOOL } from '../helpers/recipes.mjs'
 import { COMPANY_RECIPE_TEXT, DEERE_INPUTS, plantedReport, cleanReport } from '../helpers/phase5.mjs'
 
 const COMPANY = parseRecipe(COMPANY_RECIPE_TEXT, { fileName: 'company-analysis.recipe.md' }).recipe
@@ -71,4 +72,80 @@ test('a new Run closes the check, and it stays closed after a reload', async ({ 
   await page.reload()
   await expect(tid(page, 'prompt-box')).toBeVisible()
   await expect(visiblePanel(page)).toHaveCount(0)
+})
+
+// ---------------------------------------------------------------- N2: "keep it on every device"
+// The guide's own path: install a tool by paste (Make your own tools, step 3),
+// then save the same file into plugins/ on GitHub and tap Refresh tools (step 4).
+// That is a promotion, not a clash: one tile, no warning, and the pasted copy is
+// kept in storage (hidden, never deleted). A real clash must still warn.
+const toolTile = (page, id) => tid(page, 'tool-tile').and(page.locator(`[data-tool-id="${id}"]`))
+
+async function pasteInstall(page, text) {
+  await tid(page, 'nav-add').click()
+  await tid(page, 'recipe-paste').fill(text)
+  await tid(page, 'recipe-check').click()
+  await tid(page, 'install-btn').click()
+  await expect(tid(page, 'installed-notice')).toBeVisible()
+  await page.goto('./#/home')
+}
+
+async function pointAtRepo(page, repo) {
+  await tid(page, 'nav-settings').click()
+  await tid(page, 'settings-repo-override').fill(repo)
+  await tid(page, 'settings-repo-override').press('Enter')
+  await tid(page, 'settings-repo-override').blur()
+  await page.goto('./#/home')
+  await expect(tid(page, 'screen-home')).toBeVisible()
+}
+
+test('N2: a pasted tool later saved into plugins/ shows once, with no tool-conflict, and the pasted copy is kept', async ({ page, github }) => {
+  await setup(page)
+  await pasteInstall(page, GH_TOOL)
+  await expect(toolTile(page, 'gh-tool')).toHaveCount(1)
+  // Step 4: the same file is committed to plugins/ in the student's copy.
+  github.repo('alice', 'brain-hub', { 'gh-tool.recipe.md': GH_TOOL })
+  await pointAtRepo(page, 'alice/brain-hub')
+  await tid(page, 'refresh-tools').click()
+  await expect.poll(() => github.log.some((e) => e.url.endsWith('/plugins/gh-tool.recipe.md'))).toBe(true)
+  await expect(toolTile(page, 'gh-tool')).toHaveCount(1)
+  await expect(tid(page, 'tool-conflict')).toHaveCount(0)
+  await page.reload()
+  await expect(toolTile(page, 'gh-tool')).toHaveCount(1)
+  await expect(tid(page, 'tool-conflict')).toHaveCount(0)
+  const local = await page.evaluate(() => JSON.parse(localStorage.getItem('hub.localTools')))
+  expect(local.map((t) => t.id)).toEqual(['gh-tool']) // hidden, not deleted
+})
+
+test('N2: once the tool is in plugins/, pasting a new version of it is refused with a clear reason (never silently ignored)', async ({ page, github }) => {
+  github.repo('alice', 'brain-hub', { 'gh-tool.recipe.md': GH_TOOL })
+  await setup(page)
+  await pointAtRepo(page, 'alice/brain-hub')
+  await tid(page, 'refresh-tools').click()
+  await expect(toolTile(page, 'gh-tool')).toHaveCount(1)
+  await tid(page, 'nav-add').click()
+  await tid(page, 'recipe-paste').fill(GH_TOOL.replace('version: 1.0.0', 'version: 1.1.0'))
+  await tid(page, 'recipe-check').click()
+  await expect(tid(page, 'recipe-errors')).toContainText('A plugins/ tool already uses the id "gh-tool"')
+  await expect(tid(page, 'install-btn')).toHaveCount(0)
+})
+
+test('N2 guard: a genuine clash still warns — a plugins/ tool using a built-in tool\'s id', async ({ page, github }) => {
+  github.repo('alice', 'brain-hub', { 'hello-hub.recipe.md': GH_TOOL.replace('id: gh-tool', 'id: hello-hub') })
+  await setup(page)
+  await pointAtRepo(page, 'alice/brain-hub')
+  await tid(page, 'refresh-tools').click()
+  await expect(tid(page, 'tool-conflict')).toBeVisible()
+  await expect(tid(page, 'tool-conflict')).toContainText('hello-hub.recipe.md in plugins/ (id "hello-hub") is hidden because a built-in tool uses the same id')
+  await expect(toolTile(page, 'hello-hub')).toHaveCount(1)
+})
+
+test('N2 guard: a genuine clash still warns — a pasted tool using a built-in tool\'s id (stored before the built-in existed)', async ({ page }) => {
+  await setup(page)
+  await page.evaluate((text) => localStorage.setItem('hub.localTools', JSON.stringify([{ id: 'hello-hub', text, installedAt: '2026-10-01T00:00:00Z' }])),
+    GH_TOOL.replace('id: gh-tool', 'id: hello-hub'))
+  await page.reload()
+  await expect(tid(page, 'tool-conflict')).toBeVisible()
+  await expect(tid(page, 'tool-conflict')).toContainText('The tool you pasted (id "hello-hub") is hidden because a built-in tool uses the same id')
+  await expect(toolTile(page, 'hello-hub')).toHaveCount(1)
 })

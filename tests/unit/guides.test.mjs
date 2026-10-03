@@ -109,9 +109,10 @@ const RECIPE_LABELS = new Set(['Company Analysis', 'Company', 'Business unit for
 const GITHUB = new Set(['Fork', 'Create fork', 'Settings', 'Pages', 'Build and deployment', 'Source',
   'Deploy from a branch', 'Branch', 'main', '/ (root)', 'Save', 'Sync fork', 'Update branch', 'Your site is live at…', '404',
   'Add file', 'Create new file', 'Commit changes', 'Actions'])
-// Supabase's dashboard wording (not testable here; see NITPICK-SIGNOFF N1 — the
-// dashboard now shows the Project URL under Connect and Integrations → Data API).
-const SUPABASE = new Set(['Project URL', 'Project Settings', 'API'])
+// Supabase's dashboard wording (checked against supabase.com/docs, 2026-10-03:
+// the project's Connect dialog shows the Project URL; not testable here).
+// "Connect" is Supabase's button, NOT the hub's "Connect my brain".
+const SUPABASE = new Set(['Connect', 'Project URL'])
 // The phone's / browser's own wording (not testable here; PILOT-CHECKLIST).
 const PHONE = new Set(['Desktop site', 'Sitio de escritorio', 'Share', 'Add to Home Screen', 'Install app',
   'Add to Home screen', 'Compartir', 'Agregar a pantalla de inicio', 'Instalar app', 'Agregar a la pantalla principal',
@@ -165,6 +166,17 @@ test('every app button the guides quote exists verbatim in core/app.js', () => {
     assert.match(APP, new RegExp(`['\`]${esc}['\`]`), `app.js has no string literal "${label}"`)
   }
   for (const [label, ok] of Object.entries(APP_TEMPLATED)) assert.ok(ok(), `app.js cannot produce "${label}"`)
+})
+
+test('the app and both guides send students to the same place for the Project URL (Supabase → Connect)', () => {
+  // N1: the old "Project Settings → API" menu no longer exists; the app's own
+  // address message must not drift back to it, or disagree with the guides.
+  assert.match(APP, /In Supabase, tap Connect at the top of your project to see its Project URL\./)
+  assert.doesNotMatch(APP, /Project Settings → API/)
+  for (const md of [EN, ES]) {
+    assert.match(flat(md), /\*\*Connect\*\*.{0,80}\*\*Project URL\*\*/)
+    assert.doesNotMatch(md, /Project Settings/)
+  }
 })
 
 test('every app message the guides quote exists in core/app.js', () => {
