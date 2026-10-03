@@ -4,14 +4,16 @@
 //    the same sections, the same troubleshooting rows (keyed by the on-screen
 //    message each row quotes). Counting markers was the Express mistake.
 // 2. Every bold or quoted string in either guide is classified below as an app
-//    label, a recipe label, GitHub's wording, the phone's wording, or plain
-//    emphasis. App and recipe labels must exist verbatim in the code. A new bold
+//    label, a recipe label, GitHub's or Supabase's wording, the phone's
+//    wording, or plain emphasis. App and recipe labels must exist verbatim in the code. A new bold
 //    or quoted string fails until someone classifies it — so a guide can't start
 //    quoting a button the app doesn't have without a test noticing.
 // 3. README links both guides; every relative link and repo path resolves.
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync, existsSync } from 'node:fs'
+import { parseRecipe } from '../../core/lib/recipe.js'
+import { scoreReport } from '../../core/lib/checker.js'
 
 const root = new URL('../../', import.meta.url)
 const read = (p) => readFileSync(new URL(p, root), 'utf8').replace(/\r\n/g, '\n')
@@ -19,12 +21,10 @@ const EN = read('START-HERE.md')
 const ES = read('EMPIEZA-AQUI.md')
 const APP = read('core/app.js')
 const RECIPE = read('core/tools/company-analysis.recipe.md')
+const COMPANY = parseRecipe(RECIPE, { fileName: 'company-analysis.recipe.md' }).recipe
 
 // Line breaks inside a paragraph are not meaningful in Markdown.
 const flat = (md) => md.replace(/\n[ \t]*/g, ' ')
-// The only normalisation: the app uses typographic apostrophes (I don’t), the
-// guides type straight ones (I don't). A student sees the same word; we accept it.
-const apos = (s) => s.replace(/[’‘]/g, "'")
 
 const links = (md) => [...flat(md).matchAll(/\]\(([^)\s]+)\)/g)].map((m) => m[1])
 const codes = (md) => [...flat(md).matchAll(/`([^`]+)`/g)].map((m) => m[1])
@@ -76,14 +76,23 @@ test('EN and ES quote the same on-screen messages, in the same order', () => {
 
 // ---- Classification of every bold / quoted string ---------------------------
 
-// Buttons and links the app itself shows (core/app.js), checked verbatim.
+// Buttons and links the app itself shows (core/app.js), checked VERBATIM —
+// including the typographic apostrophe in "I don’t" (Phase 7 G6).
 const APP_LABELS = new Set([
-  'Skip — I don\'t have a brain yet', 'Manual (copy and paste)', 'Automatic', 'Finish',
-  'Run', 'Copy prompt', 'Paste answer', 'Use this answer', 'Check this answer',
-  'Save to brain', 'Download', 'Add a tool', 'Sign in again', 'Settings',
+  'Next', 'Skip — I don’t have a brain yet', 'Connect my brain', 'Manual (copy and paste)', 'Automatic', 'Finish',
+  'Run', 'Copy prompt', 'Paste answer', 'Use this answer', 'Check this answer', 'Copy check prompt', 'Score it',
+  'Save to brain', 'Save', 'Download', 'Add a tool', 'Check recipe', 'Install', 'Refresh tools', 'Sign in again', 'Settings',
 ])
-// Built from a template in app.js: `Open ${app.name}` with app.name 'Claude'.
-const APP_TEMPLATED = { 'Open Claude': () => APP.includes('`Open ${app.name}`') && APP.includes("name: 'Claude'") }
+// Built from templates in app.js.
+const APP_TEMPLATED = {
+  // `Open ${app.name}` with app.name 'Claude'.
+  'Open Claude': () => APP.includes('`Open ${app.name}`') && APP.includes("name: 'Claude'"),
+  // `Score so far: ${result.score} / ${result.outOf} — …`. The guide quotes it with
+  // "…" for the score, so what must hold is the fixed text around it and that,
+  // before the citation check, outOf really is 50 (sections 20 + sources 30).
+  'Score so far: … / 50': () => APP.includes('`Score so far: ${result.score} / ${result.outOf}') &&
+    scoreReport('## Company snapshot\n- A fact. [1](https://example.com)\n', COMPANY, null).outOf === 50,
+}
 // Messages the app shows, checked as a substring of an app.js string.
 const MESSAGES = new Map([
   ['Could not reach that brain', 'Could not reach that brain.'],
@@ -92,15 +101,20 @@ const MESSAGES = new Map([
   ['Your brain session ended', 'Your brain session ended.'],
   ['have no source', 'claims have no source.'],
   ['Paste answer', "'Paste answer'"],
+  ['not supported', ' not supported by '], // the checker's contradicted-claims warning
 ])
 // Labels that come from the Company Analysis recipe, not from app.js.
 const RECIPE_LABELS = new Set(['Company Analysis', 'Company', 'Business unit for the environmental scan', 'What is this for?'])
 // GitHub's own wording (checked against docs.github.com, 2026-10-03; not testable here).
 const GITHUB = new Set(['Fork', 'Create fork', 'Settings', 'Pages', 'Build and deployment', 'Source',
-  'Deploy from a branch', 'Branch', 'main', '/ (root)', 'Save', 'Sync fork', 'Update branch', 'Your site is live at…', '404'])
+  'Deploy from a branch', 'Branch', 'main', '/ (root)', 'Save', 'Sync fork', 'Update branch', 'Your site is live at…', '404',
+  'Add file', 'Create new file', 'Commit changes', 'Actions'])
+// Supabase's dashboard wording (not testable here; see NITPICK-SIGNOFF N1 — the
+// dashboard now shows the Project URL under Connect and Integrations → Data API).
+const SUPABASE = new Set(['Project URL', 'Project Settings', 'API'])
 // The phone's / browser's own wording (not testable here; PILOT-CHECKLIST).
 const PHONE = new Set(['Desktop site', 'Sitio de escritorio', 'Share', 'Add to Home Screen', 'Install app',
-  'Add to Home screen', 'Compartir', 'Agregar a inicio', 'Instalar app', 'Agregar a la pantalla principal',
+  'Add to Home screen', 'Compartir', 'Agregar a pantalla de inicio', 'Instalar app', 'Agregar a la pantalla principal',
   '⋮', 'Paste', 'Pegar'])
 // The guides' own emphasis and lead-ins: not something on a screen.
 const EMPHASIS = new Set([
@@ -110,38 +124,45 @@ const EMPHASIS = new Set([
   'iPhone:', 'in the home-screen app', 'Your name.', 'Your brain.', 'No Open Brain?', 'Have one?', 'public',
   'Never paste your secret key', 'How tools should run.', 'Manual is free:', 'Your keys and password stay on your phone.',
   'Company:', 'Business unit for the environmental scan:', 'paste', 'copy the whole answer', 'source check',
-  'Want to be sure?', 'Keep it:', "That's it. You've done a sourced company analysis.", 'Never edit the `core/` folder.',
+  'Want to be sure?', "It isn't your final score yet.", 'Keep it:', "That's it. You've done a sourced company analysis.",
+  'Never edit the `core/` folder.', 'To keep it on every device:', 'pauses after a week without use',
   // ES
   'Tiempo: unos 15 minutos.', 'La app está en inglés.', 'tal como aparecen en pantalla',
   '¿Te atoras? Pregúntale a tu IA, no a la persona que te mandó esto.', 'Una cuenta gratuita de GitHub.',
   'Una app de IA que ya uses:', 'Opcional: un Open Brain.', 'No', 'tu copia', 'dentro de esa app', 'Tu nombre.',
-  'Tu brain (cerebro).', '¿No tienes Open Brain?', '¿Tienes uno?', 'pública', 'Nunca pegues tu llave secreta',
-  'Cómo correr las herramientas.', 'Manual es gratis:', 'Tus llaves y tu contraseña se quedan en tu teléfono.',
-  'pega', 'copia la respuesta completa', 'revisión de fuentes', '¿Quieres estar seguro?', 'Para guardarlo:',
-  'Listo. Hiciste un análisis de empresa con fuentes.', 'Nunca edites la carpeta `core/`.',
+  'Tu brain (cerebro).', '¿No tienes Open Brain?', '¿Tienes uno?', 'pública', 'Nunca pegues tu clave secreta',
+  'Cómo correr las herramientas.', 'Manual es gratis:', 'Tus claves y tu contraseña se quedan en tu teléfono.',
+  'pega', 'copia la respuesta completa', 'revisión de fuentes', '¿Quieres asegurarte?', 'Todavía no es tu calificación final.',
+  'Para guardarlo:', 'Listo. Hiciste un análisis de empresa con fuentes.', 'Nunca edites la carpeta `core/`.',
+  'Para tenerla en todos tus dispositivos:', 'se pausa después de una semana sin uso',
   // Translated example questions / requests to the AI (prose, not UI).
-  "I'm on step 3 and I don't see a Pages option. Here's a screenshot.", "What does 'fork' mean? Is it safe?",
+  "I'm on step 2 and I don't see a Pages option. Here's a screenshot.", "What does 'fork' mean? Is it safe?",
   "The hub says 'Could not reach that brain'. What do I do?", 'add a source link to every fact, or mark it [unverified]',
-  'Estoy en el paso 3 y no veo la opción Pages. Aquí va una captura.', "¿Qué significa 'fork'? ¿Es seguro?",
+  'Estoy en el paso 2 y no veo la opción Pages. Aquí va una captura.', "¿Qué significa 'fork'? ¿Es seguro?",
   "El hub dice 'Could not reach that brain'. ¿Qué hago?", 'agrega un enlace de fuente a cada dato, o márcalo [unverified]',
 ])
 const isLinkOrCode = (s) => /^\[.*\]\(.*\)$/.test(s) || /^`[^`]+`$/.test(s)
 const classified = (s) => isLinkOrCode(s) || APP_LABELS.has(s) || s in APP_TEMPLATED || MESSAGES.has(s) ||
-  RECIPE_LABELS.has(s) || GITHUB.has(s) || PHONE.has(s) || EMPHASIS.has(s)
+  RECIPE_LABELS.has(s) || GITHUB.has(s) || SUPABASE.has(s) || PHONE.has(s) || EMPHASIS.has(s)
+const quotedAnywhere = () => new Set([...bolds(EN), ...bolds(ES), ...quotes(EN), ...quotes(ES)])
 
 for (const [name, md] of [['START-HERE.md', EN], ['EMPIEZA-AQUI.md', ES]]) {
-  test(`${name}: every bold or quoted string is classified (app, recipe, GitHub, phone, or emphasis)`, () => {
+  test(`${name}: every bold or quoted string is classified (app, recipe, GitHub, Supabase, phone, or emphasis)`, () => {
     const unknown = [...new Set([...bolds(md), ...quotes(md)])].filter((s) => !classified(s))
     assert.deepEqual(unknown, [], 'classify these in tests/unit/guides.test.mjs, and if they are app labels make sure the app has them')
   })
 }
 
+test('the classification lists hold nothing stale (every entry is still quoted by a guide)', () => {
+  const q = quotedAnywhere()
+  const all = [...APP_LABELS, ...Object.keys(APP_TEMPLATED), ...MESSAGES.keys(), ...RECIPE_LABELS, ...GITHUB, ...SUPABASE, ...PHONE, ...EMPHASIS]
+  assert.deepEqual(all.filter((s) => !q.has(s)), [])
+})
+
 test('every app button the guides quote exists verbatim in core/app.js', () => {
-  const quoted = new Set([...bolds(EN), ...bolds(ES), ...quotes(EN), ...quotes(ES)])
   for (const label of APP_LABELS) {
-    assert.ok(quoted.has(label), `"${label}" is listed as quoted but neither guide quotes it; remove it from the list`)
-    const esc = apos(label).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-    assert.match(apos(APP), new RegExp(`['\`]${esc}['\`]`), `app.js has no string literal "${label}"`)
+    const esc = label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+    assert.match(APP, new RegExp(`['\`]${esc}['\`]`), `app.js has no string literal "${label}"`)
   }
   for (const [label, ok] of Object.entries(APP_TEMPLATED)) assert.ok(ok(), `app.js cannot produce "${label}"`)
 })
@@ -160,10 +181,10 @@ test('every recipe label the guides quote exists in the Company Analysis recipe'
 
 test('the Spanish guide glosses each app label the first time it uses it', () => {
   // Rule from PLAN.md: English label exactly as on screen, Spanish gloss in brackets the first time.
-  const KNOWN_UNGLOSSED = new Set(['Automatic']) // Nitpick Phase 7 finding N7 — remove once glossed
+  // Labels GitHub also uses (Save, Settings) first appear in the GitHub steps, so they are skipped.
   const f = flat(ES)
   for (const label of [...APP_LABELS, ...Object.keys(APP_TEMPLATED), ...RECIPE_LABELS]) {
-    if (KNOWN_UNGLOSSED.has(label)) continue
+    if (GITHUB.has(label)) continue
     const at = f.indexOf(`**${label}**`)
     if (at < 0) continue
     const after = f.slice(at + label.length + 4, at + label.length + 8)

@@ -1,222 +1,222 @@
 # Phase 7 prep — Nitpick sign-off (student guides)
 
 **Reviewer:** Nitpick · **Date:** 2026-10-03 · **Branch:** `phase-7-pilot-prep`
-**Scope:** `START-HERE.md`, `EMPIEZA-AQUI.md`, the README entry point,
-`tests/pilot/guide-run.mjs`, against `core/app.js`, the Company Analysis
-recipe, GitHub's current docs and the live fresh copy
-(`king-tuerto.github.io/brain-hub-pilot-test/`).
+**Scope:**
+- **Reviewed:** `START-HERE.md`, `EMPIEZA-AQUI.md`, the README entry point and
+  `tests/pilot/guide-run.mjs`.
+- **Against:** `core/app.js`, the Company Analysis recipe, GitHub's and
+  Supabase's current docs, and the live fresh copy
+  (`king-tuerto.github.io/brain-hub-pilot-test/`).
+- **Round 2** covers El Código's fixes in 3b66f1f and 1ff19f5. The live copy
+  serves the same `core/app.js` and `sw.js` as this branch (checked byte for
+  byte).
 
-## Verdict
+## Verdict — Round 2
 
-**APPROVED WITH REQUIRED CHANGES.** The guides are accurate where they speak:
-every app label and message they quote exists verbatim, the GitHub wording
-matches GitHub's docs, and a student following the Spanish guide on Android
-gets from a blank phone to a sourced, downloaded Costco analysis with zero
-page errors. But three places leave a student stuck or misled (G1–G3). Fix
-those in both guides before any student sees them; then this sign-off stands
-without another full run, provided `npm test` stays green (the new guide
-tests will force G1's new labels to be classified).
+**APPROVED.** Merge when ready.
 
-## Counts (`npm test`, no network)
+- **All required findings are fixed** (G1–G4), and so are all the
+  recommended ones (G5–G11).
+- **Both app fixes are correct and now have tests:**
+  - **`st.checkOpen`:** the check panel reopens after the trip to the AI app.
+  - **Service worker `no-cache`:** an update reaches an installed app
+    promptly.
+- **The Spanish-guide run on the live copy** now goes all the way from a
+  blank Android phone to a scored check (95 / 100, Strong), with zero page
+  errors. It uses only labels the guide gives, and the real clipboard.
+
+Two new findings are below (N1, N2). Neither blocks the pilot; both are small
+and can ride along or wait for pilot feedback.
+
+## Counts (`npm test`, no network) — Round 2
 
 | Suite | Result |
 |---|---|
-| Unit | **428 pass**, 0 fail (15 new in `tests/unit/guides.test.mjs`) |
+| Unit | **433 pass**, 0 fail. Includes 16 in `tests/unit/guides.test.mjs` and 4 new in `tests/unit/sw.test.mjs`. |
 | DB | **10 pass**, 0 fail |
-| E2E (desktop, iPhone WebKit, Android Chromium) | **397 pass**, 2 skipped, 0 fail |
+| E2E (desktop, iPhone WebKit, Android Chromium) | **409 pass**, 2 skipped, 0 fail. Includes 4 new tests × 3 projects in `tests/e2e/phase7.spec.mjs`. |
 
-The new guide tests were mutation-checked on a scratch copy; each of these
-made the suite fail: renaming an app button, breaking README's link, adding an
-unclassified bold label, dropping an ES troubleshooting row, breaking a
-relative link, changing an ES code value, removing an ES gloss, renaming a
-recipe input label.
+Round 1 was 428 / 10 / 397.
 
-### What `tests/unit/guides.test.mjs` checks
+### New and changed tests
 
-- **Parity by content:** links in the same order (the cross-link to the other
-  guide counts as the same link); code values in the same order
-  (`TU-USUARIO` = `YOUR-USERNAME`); the same `##` sections with steps 1–6 in
-  order; the same troubleshooting rows, matched by the on-screen message each
-  row quotes; the same quoted UI messages in the same order.
-- **Every bold or quoted string is classified**, or the test fails:
-  - **app labels** (verbatim string literal in `core/app.js`): Skip — I don't
-    have a brain yet, Manual (copy and paste), Automatic, Finish, Run, Copy
-    prompt, Paste answer, Use this answer, Check this answer, Save to brain,
-    Download, Add a tool, Sign in again, Settings; plus Open Claude (from the
-    `Open ${app.name}` template);
-  - **app messages** (substring of an app.js string): Could not reach that
-    brain, This brain is open / open, Your brain session ended, have no source;
-  - **recipe labels** (from `core/tools/company-analysis.recipe.md`, not
-    app.js): Company Analysis, Company, Business unit for the environmental
-    scan, What is this for?;
-  - **GitHub's wording** (checked against docs.github.com, not testable
-    offline): Fork, Create fork, Settings, Pages, Build and deployment,
-    Source, Deploy from a branch, Branch, main, / (root), Save, Sync fork,
-    Update branch, Your site is live at…, 404;
-  - **the phone's wording** (PILOT-CHECKLIST): Desktop site, Share, Add to
-    Home Screen, Install app, ⋮, Paste, and the Spanish equivalents;
-  - **emphasis** (lead-ins, example questions).
-- The only normalisation is the apostrophe: the app writes `I don’t`, the
-  guides `I don't` (G6).
-- **ES glosses** each app/recipe label on first use (rule from PLAN.md), with
-  one recorded exception, `Automatic` (G7).
-- README links both guides; every relative link resolves; every repo path
-  named in code (`core/`, `plugins/`) exists; Step 2's address has the shape
-  `repoFromLocation()` reads.
+- **`tests/unit/guides.test.mjs`**
+  - **Parity by content:**
+    - links in order (the cross-link counts as the same link);
+    - code values in order (`TU-USUARIO` = `YOUR-USERNAME`);
+    - the same `##` sections, with steps 1–6 in order;
+    - the same troubleshooting rows, matched by the message each one quotes;
+    - the same quoted UI messages, in order.
+  - **Every bold or quoted string is classified,** or the test fails. The
+    categories:
+    - **App label:** must exist **verbatim**, including the `’` in
+      "I don’t". Round 2 adds Next, Connect my brain, Copy check prompt,
+      Score it, Save, Check recipe, Install and Refresh tools.
+    - **App template:** Open Claude.
+    - **App message:** now including "not supported".
+    - **Recipe label.**
+    - **GitHub wording:** now including Add file, Create new file, Commit
+      changes and Actions.
+    - **Supabase wording (new):** Project URL, Project Settings, API.
+    - **Phone wording.**
+    - **Emphasis.**
+  - **"Score so far: … / 50"** is shown with a template value in the app, so
+    it's classified as an **app template**. It passes only if app.js still
+    builds `Score so far: ${result.score} / ${result.outOf}`, and
+    `scoreReport()` with no citation check really returns `outOf === 50`. If
+    the text or the scoring changes, the guide's number is caught.
+  - **No stale entries (new):** every list entry must still be quoted by a
+    guide.
+  - **The apostrophe normalisation is gone,** now that G6 is fixed.
+  - **ES gloss on first use,** for every app and recipe label. Labels GitHub
+    also uses (Save, Settings) are skipped, because their first use is in the
+    GitHub step. The `Automatic` exception is removed (G7 fixed).
+  - **Links and paths:** README links both guides, every relative link
+    resolves, and every repo path the guides name exists.
+- **`tests/unit/sw.test.mjs` (new).** It runs the real `sw.js` in a vm with a
+  fake worker global.
+  - Every app-shell request is fetched with `cache: 'no-cache'`.
+  - Recipes, `plugins/`, other origins and non-GET requests are never
+    intercepted.
+  - When offline it falls back to the cache, and a navigation falls back to
+    `index.html`.
+  - A good response refreshes the cache.
+  - **Why a unit test:** browsers don't expose which cache mode a worker
+    used, so this can't be seen from e2e.
+- **`tests/e2e/phase7.spec.mjs` (new),** all three projects:
+  - an opened, unscored check reopens after a reload, with the same check
+    prompt and **Score it** ready;
+  - it also reopens after going Home and back;
+  - a new answer closes it, and it stays closed after a reload;
+  - a new Run closes it, and it stays closed after a reload.
 
-## Independent run — Spanish guide, Android (Chromium, Pixel 7, es-MX), no brain
+**Mutation checks** (scratch copies, never the repo; `core/app.js` was
+restored byte for byte):
 
-My own runner (kept in my scratchpad, not the repo): every label it taps is
-first looked up as **bold** text in `EMPIEZA-AQUI.md`, buttons are matched
-by **exact** accessible name, and unlike `guide-run.mjs` it uses the **real
-clipboard** for Copy prompt and Paste answer. Fresh phone profile, live
-fresh copy. The answer is El Código's real Costco answer (same prompt, byte
-for byte after the Windows clipboard's CRLF).
+- **Each of these made the suite fail:**
+  - removing `st.checkOpen` from the reopen condition (2 e2e tests fail);
+  - dropping `cache: 'no-cache'` from `sw.js`;
+  - a straight apostrophe in the Skip label;
+  - renaming "Score so far" or "Score it" in app.js;
+  - removing an ES gloss;
+  - all eight Round 1 mutations.
+
+## Independent run — Spanish guide, Android (Chromium, Pixel 7, es-MX), no brain — Round 2
+
+**Setup:**
+- My own runner, kept in my scratchpad. Every label it taps is first looked up
+  as **bold** text in `EMPIEZA-AQUI.md`. Buttons are matched by exact
+  accessible name. Copy prompt, Paste answer and Copy check prompt go through
+  the real clipboard.
+- Fresh profile, live copy.
+- **Inputs reused from El Código's runs:** the real Costco answer (my prompt
+  was identical to his) and the real checker table.
+- **New this round:** the check stage. It's a separate browser session after
+  "leaving for the AI app", the hardest case for the reopen fix.
 
 ```
-paso 4.1: name box found; tapping "Next" (NOT named in the guide)
-paso 4.2: tapped Skip; app uses a curly apostrophe (I don’t), guide a straight one
-paso 4:   Home "Hi, Mariana", 2 tools, badge "No brain"
-          page errors: none · failed requests: none
-paso 5.1: Company Analysis tile (a link)
-paso 5.2: Company filled; business unit left blank; "What is this for?" options:
-          Choose… | Class assignment | Job interview | Investing research |
-          Board or consulting work | General curiosity
-paso 5.3–5.4: Copy prompt → "Copied."; clipboard = prompt box (2950 chars, CRLF only);
-          "Open Claude" → https://claude.ai/new, new tab
-          page errors: none · failed requests: none
-paso 5.7: back in the hub, prompt still shown: true
-          Paste answer filled the box from the clipboard: true (16994 chars)
-result:   all 7 sections + Summary; missing sections: none
-source check: All 45 factual claims have a source or are marked [unverified].
-          1 marked [unverified].
-check:    "Score so far: 50 / 50 — the citation check has not been run yet";
-          buttons now on screen: Copy check prompt | Score it (guide names neither)
-keep:     Download → company-analysis-2026-10-03.md; no "Save to brain" without a brain
-          page errors: none · failed requests: none
+paso 4: Next, Skip — I don’t have a brain yet, Manual (copy and paste), Claude, Finish
+        → Home "Hi, Mariana", 2 tools, "No brain"         errors: none, failed requests: none
+paso 5.1–5.4: Company Analysis → Company / What is this for? (Class assignment) → Run →
+        Copy prompt "Copied.", clipboard = prompt (2950 chars) → "Open Claude" = https://claude.ai/new
+paso 5.7: back: prompt still shown; Paste answer filled the box from the clipboard (16994 chars)
+        → Use this answer: 7 sections + Summary, none missing;
+        source check: All 45 factual claims have a source or are marked [unverified]. 1 marked [unverified].
+check:  Check this answer → "Score so far: 50 / 50 — the citation check has not been run yet"
+        Download → company-analysis-2026-10-03.md
+— new browser session (the trip to the AI app) —
+check:  panel reopened by itself: true, "Score so far: 50 / 50 — …"
+        Copy check prompt → clipboard = check prompt (15341 chars)
+        paste reply → Score it → "Score: 95 / 100 — Strong"
+        Sections 20/20 · Sources present 30/30 · Claims supported 45/50
+        (36 supported, 8 partly, 0 not supported, 0 unreachable); 8 fixes, all "partly supported"
+        reload → full score still shown
+page errors: none · failed requests: none   (every stage)
 ```
 
-**Pass bar (my part):** every Spanish-guide step was doable with the guide's
-own words, except two buttons the guide never names (Next, and the checker's
-Copy check prompt / Score it). There were no page errors. Every section
-showed, sources were 100% (≥95%), and the download name was correct. The
-citation check (pasting a checker reply) was not repeated; El Código's iPhone
-run covers it.
+**Every label the runner tapped was found in bold in the Spanish guide.**
+That includes Next, Copy check prompt and Score it, which Round 1 flagged as
+missing.
 
-## Findings for El Código (guide text — I did not edit the guides)
+## Round 1 findings — status
 
-**Required before students:**
+| # | Finding | Status |
+|---|---|---|
+| G1 | Checker steps: Copy check prompt / Score it unnamed; "50 / 50" read as final | **Fixed.** Both named and glossed; "isn't your final score yet"; "not supported → fix or remove". Run confirms. |
+| G2 | Save to brain is two taps | **Fixed.** "opens a short summary… Tap **Save**". |
+| G3 | "Could not reach that brain" gave the wrong cause | **Fixed.** Internet, the Project URL, and the free project pausing. See N1 for the Supabase menu name. |
+| G4 | "step 3" in the example | **Fixed** (step 2). |
+| G5 | Next unnamed; "three things" | **Fixed** (Next named; "two quick choices"). |
+| G6 | Straight apostrophe | **Fixed.** The test is now strict. |
+| G7 | Automatic unglossed | **Fixed** (automático). Test exception removed. |
+| G8 | Spanish phone labels | **Fixed.** "Agregar a pantalla de inicio", plus the English labels for phones set to English. Real-device check stays on PILOT-CHECKLIST. |
+| G9 | llave / estar seguro | **Fixed** (clave, asegurarte). |
+| G10 | Make your own tools too thin | **Fixed.** Add file → Create new file → `.recipe.md` → Commit changes → Refresh tools; Check recipe and Install named. See N2. |
+| G11 | Pages on a real fork | **On PILOT-CHECKLIST.** The 404 row points to Actions. Still unproven until a student forks. |
 
-- **G1 — The Checker steps leave a student stranded (medium).**
-  - **The problem:** after **Check this answer** the screen says "Score so
-    far: 50 / 50". A student can read that as a perfect score and stop.
-    The guide also never names **Copy check prompt** or **Score it**, so a
-    student who does paste the reply back doesn't know they must tap
-    **Score it**.
-  - **The fix:** name both buttons (ES with glosses). Say the first number is
-    only half: the score out of 100 appears after **Score it**. Then add
-    both labels to `APP_LABELS` in the test.
-- **G2 — Save to brain is two taps (medium).** **Save to brain** only opens
-  a panel with Summary and Tags; nothing is saved until the student taps
-  **Save**. The guide says Save to brain "saves". Add "then check the summary
-  and tap **Save**; you'll see 'Saved to your brain.'"
-- **G3 — The "Could not reach that brain" row gives the wrong cause
-  (medium).**
-  - **Why it's wrong:** the app rejects a badly shaped address before it
-    tries, with a different message ("The brain address should look
-    like…"). So "check it starts with https:// and ends with .supabase.co"
-    can't be why it was unreachable.
-  - **The real causes:** no internet, a mistyped project address, or, most
-    likely for a student, a **free Supabase project paused after a week
-    unused**.
-  - **The fix:** say "check your internet; open your project in Supabase and,
-    if it says paused, restore it; check the address letter by letter".
-- **G4 — Wrong step number (low, trivial).** The example question says
-  "I'm on step 3 and I don't see a Pages option". Pages is Step 2. This is in
-  both guides.
+**Tooling (`guide-run.mjs`):**
 
-**Recommended:**
+- **T1:** exit 1 on errors. **Fixed.**
+- **T3:** real clipboard paste on Android. **Fixed.**
+- **T4:** buttons matched from the start of their name. **Fixed.**
+- **T5:** loads are cache-busted. **Fixed.**
+- **T2: withdrawn.**
+  - **Measured on the live copy:** in WebKit, a screenshot with
+    `caret: 'initial'` still raises one "Refused to apply a stylesheet"
+    (Chromium raises none).
+  - **So:** El Código is right, and the narrowed screenshot-window filter
+    stays.
+- **Remaining note:** T1's exit rule excuses any console error containing
+  "status of 401". That is safe only because the failed-request list
+  separately allows just the open-check's `401 POST /rest/v1/thoughts`, so a
+  401 from anything else still fails the run. Acceptable as is.
 
-- **G5 — Two small mismatches with the app.** Step 4.1 doesn't say to tap
-  **Next**. Step 4 says "three things", while the app's first screen says
-  "Two quick choices and you are in." Both are harmless, but a literal
-  reader notices.
-- **G6 — Apostrophes.** The guide writes `I don't`; the app writes
-  `I don’t`. Use `’` in both guides so the labels are truly verbatim.
-  The test currently accepts either.
-- **G7 — ES `**Automatic**` has no gloss.** Add "(automático)" and remove
-  the `KNOWN_UNGLOSSED` exception in the test.
-- **G8 — Spanish phone labels, unverified.**
-  - **iPhone:** the iOS Spanish share-sheet entry is probably "Agregar a
-    pantalla de inicio", not "Agregar a inicio".
-  - **Language:** many LatAm students run their phone in English. Give
-    both, as the guide already does for "Sitio de escritorio (o Desktop
-    site)".
-  - **The check:** confirm on a real es-MX iPhone and Android (PILOT-CHECKLIST
-    already has the Spanish-reader item).
-- **G9 — Spanish style.** The Spanish is natural Mexican/LatAm overall
-  ("¿Te atoras?", "Anótala", "Listo"). Three small changes:
-  - **"llave" → "clave"** (clave pública / clave secreta): "clave" is the
-    normal LatAm word for keys and passwords in apps, and "llave" reads as a
-    literal translation.
-  - **"¿Quieres estar seguro?" → "¿Quieres asegurarte?"** (gender-neutral).
-  - **"Cómo correr las herramientas" → "Cómo usar las herramientas"**
-    (optional).
-- **G10 — "Make your own tools" step 4 is too thin for a phone user.**
-  - **What's missing:** it doesn't say how to add a file on GitHub (**Add
-    file → Create new file**), that the name must end `.recipe.md`, or to
-    tap **Refresh** on Home. The tool list is cached for 10 minutes.
-  - **Also:** the Add a tool screen's buttons (**Check recipe**, then
-    **Install**) aren't named.
-  - **The fix:** `plugins/README.md` has most of this; link it.
-- **G11 — Risk, not verified: Pages on a real *fork*.**
-  - **The risk:** GitHub disables Actions on new forks by default, and
-    branch-based Pages now builds through the "pages build and deployment"
-    Actions run. Whether that blocks a fork's first Pages build couldn't be
-    tested, because the fresh copy is not a fork.
-  - **The fix:** add it to PILOT-CHECKLIST under the Fork item. Consider a
-    troubleshooting line: "still 404 after 10 minutes → open the **Actions**
-    tab; if GitHub asks to enable workflows, tap the green button".
+## New findings — Round 2 (none blocking)
 
-**Verified correct (GitHub docs, 2026-10-03):**
+- **N1 — Supabase's menu name is out of date (low).**
+  - **The problem:**
+    - The troubleshooting row says to compare against **Project URL** under
+      **Project Settings → API**. Supabase's docs (checked 2026-10-03) now
+      show the project URL in the project's **Connect** dialog, and under
+      **Integrations → Data API**. Keys are under **Settings → API Keys**.
+    - A student looking for "Project Settings → API" may not find it.
+    - The app's own address-format message (`core/app.js`, "Project
+      Settings → API in Supabase") has the same wording.
+  - **Suggested fix:** "tap **Connect** at the top of your project in
+    Supabase; it shows the Project URL", in both guides and in the app
+    message. Then update the `SUPABASE` list in the test.
+- **N2 — The "Make your own tools" path ends in a warning (low, app).**
+  - **What happens:** a student who follows it exactly first installs the
+    tool by paste (step 3), then saves the same file to `plugins/` (step 4).
+    Both copies have the same id. `discoverTools()` keeps the plugin, and
+    Home then shows a yellow warning: *"The tool you pasted (id "…") is
+    hidden because a tool in your plugins/ folder uses the same id. Change
+    one of the ids to see both."*
+  - **Why it matters:** for this case the warning is alarming and its
+    advice is wrong (they don't want both). This comes from reading
+    `core/lib/plugins.js` and the conflict note in `core/app.js`. I did not
+    run it live.
+  - **Suggested fix (app):** when a pasted tool and a `plugins/` tool share
+    an id, quietly drop the pasted copy (or say "now saved in your copy on
+    GitHub"). Add an e2e test for it.
 
-- **Fork → Create fork.** The default "Copy the main branch only" is fine.
-- **Settings → Pages → Build and deployment → Source: Deploy from a
-  branch.** Branch: main, folder / (root), then Save.
-- **Sync fork → Update branch.**
+---
 
-## `tests/pilot/guide-run.mjs` as test tooling
+## Round 1 (for the record)
 
-It does not hide a real app problem in what it recorded. My stricter
-independent run (exact names, real clipboard) agrees with its results. Weak
-spots to fix before it's reused:
+**Verdict:** approved with required changes (G1–G4).
 
-- **T1 — It never fails.** Page errors and failed requests are only logged,
-  and the exit code is always 0, so a pass is "someone read the log". It
-  should exit 1 on any page error, or on a failed request other than the
-  expected open-check 401.
-- **T2 — The CSP filter is the wrong tool.**
-  - **Hides app errors:** it drops *any* "Refused to apply a stylesheet"
-    raised during a screenshot window, so a real CSP violation by the app in
-    that window would be hidden.
-  - **Leaks anyway:** El Código's `p7-iphone` setup and prompt logs still
-    list that message as a page error, so the filter also leaks, through
-    timing or an older run.
-  - **The fix:** the cause is Playwright injecting a caret-hiding style.
-    `page.screenshot({ caret: 'initial' })` stops the injection, so the
-    filter can be deleted.
-- **T3 — It never exercises the real clipboard.** The answer stage uses
-  `fill()`, so **Paste answer** and the clipboard are never used on the live
-  site. My run covered that on Android Chromium; WebKit can't emulate it, and
-  it's on PILOT-CHECKLIST.
-- **T4 — Loose button matching.** `btn()` matches by substring and takes
-  `.first()`, the same looseness that caused its first-run "ChatGPT"
-  mismatch. Exact names worked for every label in my run. Use
-  `exact: true`, or anchored regexes for buttons whose name includes a
-  description (Manual).
-- **T5 — Minor.**
-  - The "Copied." wait swallows its timeout.
-  - There's no cache-bust or service-worker bypass, so a re-run after a
-    deploy could test stale files.
-  - The stand-in session persistence monkey-patches internals. That's
-    acceptable for tooling, and it's documented.
+**Counts:** 428 unit / 10 DB / 397 e2e.
+
+**The run:**
+- **Device:** the Spanish guide on Android, no brain, live copy.
+- **Reached:** the result (45/45 sourced) and the download, with zero page
+  errors.
+- **Gaps:** it showed the unnamed buttons and the misleading "Score so far:
+  50 / 50" that became G1.
+
+**GitHub wording verified against docs.github.com:**
+- Fork → Create fork;
+- Settings → Pages → Build and deployment → Source: Deploy from a branch,
+  then Branch main, / (root), and Save;
+- Sync fork → Update branch.

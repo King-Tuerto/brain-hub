@@ -219,7 +219,7 @@ preparación para networking o comentarios sobre un ensayo?
 | Lo que ves | Qué hacer |
 |---|---|
 | La dirección de tu sitio muestra "404" | Espera dos minutos más después del Paso 2. Revisa que Pages esté en **main** y **/ (root)**. ¿Sigue en 404 después de diez minutos? Abre la pestaña **Actions** de tu copia; si te lo pide, activa los workflows y repite el Paso 2. |
-| "Could not reach that brain" | Revisa tu internet. Compara la dirección con **Project URL** en Supabase (**Project Settings** → **API**). Un proyecto gratuito de Supabase **se pausa después de una semana sin uso**: entra a supabase.com y restáuralo. |
+| "Could not reach that brain" | Revisa tu internet. En Supabase, toca **Connect** (conectar) arriba en tu proyecto: ahí aparece tu **Project URL**. Revisa que el hub tenga exactamente esa dirección. Un proyecto gratuito de Supabase **se pausa después de una semana sin uso**: entra a supabase.com y restáuralo. |
 | "This brain is open" | Tu cerebro necesita primero su actualización de seguridad. Sigue el enlace que muestra el hub. |
 | "Your brain session ended" | Toca **Sign in again** (volver a entrar). |
 | "Paste answer" no hace nada | Mantén presionado en el recuadro de la respuesta y elige **Pegar**. |

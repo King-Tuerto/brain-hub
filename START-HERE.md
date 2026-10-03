@@ -201,7 +201,7 @@ essay feedback?
 | What you see | What to do |
 |---|---|
 | Your site address shows "404" | Wait two more minutes after Step 2. Check that Pages is set to **main** and **/ (root)**. Still 404 after ten minutes? Open the **Actions** tab of your copy; if it asks, enable workflows, then repeat Step 2. |
-| "Could not reach that brain" | Check your internet. Check the address against **Project URL** in Supabase (**Project Settings** → **API**). A free Supabase project **pauses after a week without use**: sign in at supabase.com and restore it. |
+| "Could not reach that brain" | Check your internet. In Supabase, tap **Connect** at the top of your project: it shows your **Project URL**. Check the hub has exactly that address. A free Supabase project **pauses after a week without use**: sign in at supabase.com and restore it. |
 | "This brain is open" | Your brain needs its security upgrade first. Follow the link the hub shows. |
 | "Your brain session ended" | Tap **Sign in again**. |
 | "Paste answer" does nothing | Long-press in the answer box and choose **Paste**. |

@@ -195,7 +195,7 @@ function setupBrain() {
     const p = password.value
     password.value = ''
     if (!u || !k || !e || !p) { say('bad', 'Fill in all four boxes: brain address, public key, email and password.'); return }
-    if (!isSupabaseUrl(u)) { say('bad', 'The brain address should look like https://xxxx.supabase.co (Project Settings → API in Supabase).'); return }
+    if (!isSupabaseUrl(u)) { say('bad', 'The brain address should look like https://xxxx.supabase.co. In Supabase, tap Connect at the top of your project to see its Project URL.'); return }
     if (keyProblem(k) === 'secret') {
       say('', '')
       refuse('That is a secret key. It unlocks your whole brain and must never be pasted into an app. Use the publishable (public) key instead, and if this secret key has been shared anywhere, rotate it in Supabase.')
