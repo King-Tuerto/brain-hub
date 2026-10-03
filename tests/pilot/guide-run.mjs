@@ -134,6 +134,8 @@ if (stage === 'answer') {
   if (device === 'android') {
     await page.evaluate((t) => navigator.clipboard.writeText(t), answer)
     await btn('Paste answer').click()
+    // Reading the clipboard is asynchronous: wait for the box to fill (or give up after 5s).
+    await page.waitForFunction(() => document.querySelector('[data-testid=answer-box]')?.value.length > 0, null, { timeout: 5000 }).catch(() => {})
     const got = await page.getByTestId('answer-box').inputValue()
     if (got !== answer) { errors.push('Paste answer did not fill the box from the clipboard'); await page.getByTestId('answer-box').fill(answer) }
     else say('step 5.7: Paste answer filled the box from the real clipboard')
