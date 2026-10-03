@@ -179,7 +179,15 @@ trailing `/` on `url` is stripped.
   - `classifyOpenCheck`: body `code` `42501` → `locked`; `23502` → `open`;
     anything else → `unknown`. A network failure → `unreachable`.
   - If `locked`: a second request, `OPTIONS {url}/functions/v1/search-brain`.
-    A 404 → `not-express`; any 2xx → `locked`; anything else → `unknown`.
+    A 404 → `not-express`. Anything else, **including a network failure** →
+    `locked`.
+    - *(Revised 2026-10-03, before any test ran.)* This step only tells an
+      Express brain from an older one; the security decision was already made
+      by the first request.
+    - Against real Supabase, the gateway's answer to a cross-origin OPTIONS
+      is unverified, and treating doubt as "refuse" would lock out real
+      students. If `search-brain` is really missing, search fails later with
+      a clear message.
   - Only `locked` lets setup continue.
 - **signIn:** `POST {url}/auth/v1/token?grant_type=password`, body
   `{email,password}`.

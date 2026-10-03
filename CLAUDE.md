@@ -6,6 +6,11 @@ Forkable student command center. Read `docs/SPEC-v1.0.md`, then
 
 ## Rules
 
+- **Only modify files in this repo (brain-hub).** You may READ the sibling
+  `Open-Brain` folder and the `open-brain-express` and `open-brain-student`
+  repos, but never edit, commit or push to them. If you think another repo
+  needs a change, stop and tell Paul why instead. (Paul's rule, 2026-10-03.)
+
 - **No full drive paths in any file.** Paul works on three machines. Refer to
   sibling projects by name, e.g. "the `Open-Brain` folder next to this one".
 - **No keys, passwords or tokens in any file.** Forks are public. Credentials
