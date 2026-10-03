@@ -211,6 +211,22 @@ directly. The hub calls them on the recipe's behalf.
       claim. That's the Phase 5 Checker. Phase 3 does a one-off human-style
       spot audit instead (`docs/phase-3/SOURCE-AUDIT.md`).
 
+13. **Saved `content` = summary + a context line** (El Código, Phase 3, Paul
+    away). This changes Q2, where `content` was the summary only.
+    - **The context line** is `<Tool name>: <input values>`: every non-long
+      input of up to 120 characters, joined with ` · `, after a blank line.
+    - **Why:** without embeddings (a brain whose AI key is missing, or the
+      stand-in), search is keyword-only and needs every query word. The next
+      run's brain query is built from the same inputs, e.g.
+      "Deere & Company (NYSE: DE)". A summary that never repeats the ticker
+      would never be found again (Nitpick A4).
+    - **Side effects:** the student edits only the summary; the line is added
+      at save. Two saves with the same summary for different inputs are now
+      separate rows.
+14. **Same summary + same inputs saved twice = one row, the latest report
+    wins** (Nitpick A5). That's Express's dedup index doing its job; the
+    earlier report is replaced, not kept.
+
 ---
 
 **Phase 1 closed October 3, 2026.** Paul approved these decisions and

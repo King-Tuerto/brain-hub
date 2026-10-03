@@ -83,3 +83,27 @@ Format: **item** — why emulation can't prove it — phase added.
 - **Offline start of the installed iPhone app**: Playwright's WebKit can't
   reload a page while offline, so the cached-shell test is skipped on the
   iPhone project. — Phase 2
+
+## Phase 3 — company analysis (added by Nitpick)
+
+- **Save, search and re-find against a real Express brain on Supabase.**
+  Proven only on the local stand-in: Express's real migration in PGlite,
+  behind the hub's exact HTTP calls. PostgREST's own request parsing,
+  Supabase Auth and the deployed `search-brain` function are imitated, not
+  run. — Phase 3
+- **Re-find with embeddings on.** The stand-in has no embeddings, so search
+  is keyword-only, and keyword search ANDs every word of the query. The
+  brain query is the company exactly as typed ("Deere & Company (NYSE: DE)"),
+  so a saved summary is found again only if it contains every word,
+  ticker included. A real brain's vector search should be looser; check that
+  re-find works when a student types the company differently from the
+  saved summary. — Phase 3
+- **Real AI apps' Markdown habits.** The source-check rules were tuned
+  against one research agent's answers. ChatGPT, Gemini and Claude.ai
+  apps format differently: bold pseudo-headings, `---` separators, `~~~`
+  fences, nested bullets, citation footnotes like `[1]` with a reference
+  list. Paste a real answer from each app and read the source-check result.
+  — Phase 3
+- **A long answer pasted on a phone.** About 20 KB of Markdown goes into
+  the answer box through the OS paste menu; emulation fills the box
+  directly. — Phase 3

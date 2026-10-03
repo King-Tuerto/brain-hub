@@ -46,8 +46,20 @@ const LIST_RE = /^(?:[-*+]|\d+[.)])\s+(.*)$/
 
 const indentOf = (raw) => raw.replace(/\t/g, '    ').match(/^ */)[0].length
 const plain = (t) => t.replace(/[*_`]/g, '').trim()
-const isLabel = (t) => /^(\*\*|__)[^*_]+\1[.:]?$/.test(t.trim()) || /^(\*|_)[^*_]+\1[.:]?$/.test(t.trim())
+// A label is short, wholly emphasised and not a sentence: "**Caterpillar**",
+// "**1. Construction equipment**", "*Political*:". A wholly bold full sentence
+// is still a claim (Nitpick A1).
+const isLabel = (t) => {
+  const s = t.trim()
+  if (!(/^(\*\*|__)[^*_]+\1:?$/.test(s) || /^(\*|_)[^*_]+\1:?$/.test(s))) return false
+  const inner = plain(s).replace(/:$/, '')
+  return inner.split(/\s+/).length <= 15 && !/[.!?]$/.test(inner)
+}
 const isNote = (t) => /^note\s*:/i.test(plain(t))
+const FENCE_RE = /^(```|~~~)/
+const RULE_RE = /^(?:-{3,}|\*{3,}|_{3,})$/
+// Same normalisation as parseOutput, so "## **Summary**" and "## Summary:" agree (Nitpick D3).
+export const isSummaryHeading = (name) => norm(name) === 'summary'
 
 export function checkSources(markdown) {
   const lines = String(markdown ?? '').split(/\r?\n/)
@@ -57,16 +69,18 @@ export function checkSources(markdown) {
   let inCode = false
   let tableRow = 0
   let top = null // the current top-level list item, which collects its continuation lines
+  let lastWasItem = false // previous line belonged to a list item (for lazy continuation)
   const flush = () => { if (para.length) claims.push({ section, text: para.join(' ') }); para = [] }
 
   for (const raw of lines) {
     const line = raw.trim()
-    if (line.startsWith('```')) { flush(); inCode = !inCode; continue }
+    if (FENCE_RE.test(line)) { flush(); top = null; lastWasItem = false; inCode = !inCode; continue }
     if (inCode) continue
     const h = /^(#{1,6})\s+(.+?)\s*#*$/.exec(line)
-    if (h) { flush(); top = null; if (h[1].length === 2) section = h[2]; tableRow = 0; continue }
-    if (!line) { flush(); tableRow = 0; continue }
-    if (section == null || section.trim().toLowerCase() === 'summary') continue
+    if (h) { flush(); top = null; lastWasItem = false; if (h[1].length === 2) section = h[2]; tableRow = 0; continue }
+    if (!line) { flush(); tableRow = 0; lastWasItem = false; continue }
+    if (RULE_RE.test(line)) { flush(); top = null; lastWasItem = false; continue } // horizontal rule (Nitpick D2)
+    if (section == null || isSummaryHeading(section)) continue
 
     if (line.startsWith('|')) {
       flush(); top = null
@@ -86,10 +100,14 @@ export function checkSources(markdown) {
         top = { section, text: item[1] }
         claims.push(top)
       }
+      lastWasItem = true
       continue
     }
-    if (indent >= 2 && top) { top.text += ' ' + line; continue } // continuation of the list item
+    // Continuation of the list item: indented, or a "lazy" line straight after
+    // it with no blank line in between (Nitpick A2).
+    if (top && (indent >= 2 || lastWasItem)) { top.text += ' ' + line; lastWasItem = true; continue }
     top = null
+    lastWasItem = false
     para.push(line)
   }
   flush()
@@ -100,8 +118,10 @@ export function checkSources(markdown) {
   })
   const result = { claims: real.length, sourced: 0, unverified: 0, unsourced: [] }
   for (const c of real) {
-    if (LINK_RE.test(c.text) || (c.parent && LINK_RE.test(c.parent.text))) result.sourced++
+    // The item's own marks win over inheritance (Nitpick A3).
+    if (LINK_RE.test(c.text)) result.sourced++
     else if (UNVERIFIED_RE.test(c.text)) result.unverified++
+    else if (c.parent && LINK_RE.test(c.parent.text)) result.sourced++
     else result.unsourced.push({ section: c.section, text: c.text })
   }
   return result

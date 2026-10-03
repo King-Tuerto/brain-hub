@@ -153,6 +153,28 @@ the checker's fault, so the rules change.
   revised checker still flags its method statements, which run 1 didn't
   mark with `Note:`.
 
+### 2b. Amendments after Nitpick's Phase 3 test pass (2026-10-03)
+
+- **D1:** `~~~` fences count as code fences, the same as ```` ``` ````.
+- **D2:** horizontal rules (`---`, `***`, `___`) are neither claims nor
+  continuation lines.
+- **D3:** Summary headings are recognised the same way by `parseOutput` and
+  `checkSources` (`isSummaryHeading`, the same normalisation), so
+  `## **Summary**` and `## Summary:` both count.
+- **A1:** a label is wholly emphasised, at most 15 words, and doesn't end in
+  `.`, `!` or `?`. A wholly bold sentence is a claim.
+- **A2:** a non-list line straight after a list item, with no blank line
+  between, continues that item (lazy continuation).
+- **A3:** an item's own marks win. Its own link means sourced; otherwise its
+  own `[unverified]` means unverified; only then is a source inherited from
+  the parent.
+- **A4:** see DECISIONS #13. The saved `content` is the summary plus a context
+  line, so the next run's brain query (built from the same inputs) finds it
+  with keyword-only search.
+- **A5:** see DECISIONS #14.
+- **A6:** the paragraph reading is confirmed.
+- **A7:** Nitpick's extra bars for the real answer are accepted.
+
 ## Tests Nitpick writes (Phase 3)
 
 - **Unit:**

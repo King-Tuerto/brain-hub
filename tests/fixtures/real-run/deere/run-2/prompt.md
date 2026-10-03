@@ -16,7 +16,7 @@ Business units: one bullet per reporting segment or business unit, with what it 
 
 Industries and main competitors: for each industry the company competes in, name the industry, then list two to four main competitors. For each competitor give one strength and one weakness relative to the company.
 
-Environmental scan: a PESTLE scan (political, economic, social, technological, legal, environmental) for the chosen business unit only. Open the section with one line starting "Note:" that names the business unit scanned. Then one or two bullets per factor, each saying what the factor is and how it helps or hurts that business unit.
+Environmental scan: a PESTLE scan (political, economic, social, technological, legal, environmental) for the chosen business unit only. One or two bullets per factor, each saying what the factor is and how it helps or hurts that business unit.
 
 Research summary: three to five bullets with the most important conclusions a strategist would draw.
 
