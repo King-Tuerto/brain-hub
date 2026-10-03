@@ -227,6 +227,25 @@ directly. The hub calls them on the recipe's behalf.
     wins** (Nitpick A5). That's Express's dedup index doing its job; the
     earlier report is replaced, not kept.
 
+15. **"Every claim has a source" means the hub guarantees it's checked and
+    shown, not that every AI answer is perfect** (El Código, Phase 3, Paul
+    away). **⚑ For Paul to confirm.**
+    - **The real runs:** three independent real Deere runs scored 49/60, then
+      52/53 (after the checker fixes), then 51/53 sourced.
+    - **Run 3's two gaps:** two product-list bullets ("What it sells: …")
+      whose source, the 10-K, sits on the next bullet. The hub's source
+      check lists both lines to the student.
+    - **Why not keep going:** re-running until an AI scores 53/53 would be
+      luck, and letting a bullet inherit from its sibling would hide real
+      gaps.
+    - **The done-when bar is therefore:**
+      - every unsourced claim in a real answer appears in `source-check`;
+      - at least 95% of claims are sourced or marked `[unverified]`;
+      - the source audit confirms that the cited pages exist and support
+        their claims.
+    - Run 3 (`deere/answer.md`) is the Phase 3 real-run fixture. Runs 1 and 2
+      are regression fixtures.
+
 ---
 
 **Phase 1 closed October 3, 2026.** Paul approved these decisions and
