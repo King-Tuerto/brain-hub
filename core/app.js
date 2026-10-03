@@ -765,7 +765,12 @@ async function renderTool(id) {
       ? h('ul', { tid: 'checker-fixes' }, result.fixes.map((f) => h('li', { 'data-kind': f.kind, text: f.text })))
       : h('p', { tid: 'checker-fixes', text: 'No fixes needed.' })
 
-    const kids = [h('h2', { text: 'Check' }), h('p', { tid: 'checker-score' }, h('strong', { text: head })), parts, fixes]
+    const kids = [h('h2', { text: 'Check' }), h('p', { tid: 'checker-score' }, h('strong', { text: head })), parts]
+    const contradicted = result.counts?.['NOT SUPPORTED'] ?? 0
+    if (contradicted) {
+      kids.push(note('bad', 'checker-contradicted', `${contradicted} claim${contradicted === 1 ? ' is' : 's are'} not supported by ${contradicted === 1 ? 'its own source' : 'their own sources'}. Fix or remove ${contradicted === 1 ? 'it' : 'them'} before you use or share this.`))
+    }
+    kids.push(fixes)
     if (citation && !citation.verdicts.length) {
       kids.push(note('bad', 'checker-error', 'Could not find a verdict table in that answer. Ask the AI to reply with only the table, then paste it again.'))
     }

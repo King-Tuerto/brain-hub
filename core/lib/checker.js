@@ -135,10 +135,12 @@ export function scoreReport(report, recipe, citation = null) {
   }
 }
 
+// A report with even one claim its own source contradicts is not "Good",
+// whatever its points: one invented "fact" is what a reader remembers
+// (Phase 5 finding: the planted report with a fabricated claim scored 86).
 export function grade(result) {
   const pct = result.outOf ? result.score / result.outOf : 0
-  if (pct >= 0.9) return 'Strong'
-  if (pct >= 0.75) return 'Good'
-  if (pct >= 0.5) return 'Needs work'
-  return 'Weak'
+  const byPoints = pct >= 0.9 ? 'Strong' : pct >= 0.75 ? 'Good' : pct >= 0.5 ? 'Needs work' : 'Weak'
+  if ((result.counts?.['NOT SUPPORTED'] ?? 0) > 0 && (byPoints === 'Strong' || byPoints === 'Good')) return 'Needs work'
+  return byPoints
 }

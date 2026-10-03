@@ -84,7 +84,9 @@ claimsToCheck(report, recipe) → { checked: [{ n, section, text, urls }], skipp
 buildCheckerPrompt(checked) → string
 parseCheckerAnswer(text, checked) → { verdicts: [{ n, verdict, evidence, fix }], missing: [n] }
 scoreReport(report, recipe, citation|null) → { score, outOf, complete, parts, counts, checked, skipped, fixes: [{ kind, n?, text }] }
-grade(result) → 'Strong' | 'Good' | 'Needs work' | 'Weak'   // ≥90%, ≥75%, ≥50% of outOf
+grade(result) → 'Strong' | 'Good' | 'Needs work' | 'Weak'   // ≥90%, ≥75%, ≥50% of outOf;
+// any NOT SUPPORTED caps the grade at 'Needs work' (amended after the real check:
+// the planted report with a fabricated claim scored 86 = 'Good'). UI shows `checker-contradicted`.
 ```
 
 - **Rubric (100):**
