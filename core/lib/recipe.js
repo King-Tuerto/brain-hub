@@ -12,8 +12,9 @@ export const INPUT_TYPES = ['text', 'long_text', 'choose_one', 'number']
 export const SAVE_TYPES = ['work_product', 'personal_note', 'job_history', 'profile']
 export const PROFILE_PARTS = ['skills', 'experience', 'job-history', 'education', 'goals']
 
+export const SOURCING = ['facts', 'advice']
 const TOP_FIELDS = ['recipe_format', 'id', 'name', 'description', 'version', 'author',
-  'permissions', 'web_search', 'inputs', 'brain_context', 'output', 'save']
+  'permissions', 'web_search', 'sourcing', 'inputs', 'brain_context', 'output', 'save']
 const REQUIRED = ['recipe_format', 'id', 'name', 'description', 'version', 'author',
   'permissions', 'web_search', 'inputs', 'output']
 const INPUT_FIELDS = ['id', 'label', 'type', 'required', 'options', 'help', 'placeholder']
@@ -108,6 +109,9 @@ export function parseRecipe(text, { fileName } = {}) {
 
   if (fm.web_search != null && !WEB_SEARCH.includes(fm.web_search)) {
     errors.push(`web_search must be one of ${WEB_SEARCH.join(', ')}`)
+  }
+  if (fm.sourcing !== undefined && !SOURCING.includes(fm.sourcing)) {
+    errors.push(`sourcing must be one of ${SOURCING.join(', ')} (or left out, which means facts)`)
   }
 
   // inputs

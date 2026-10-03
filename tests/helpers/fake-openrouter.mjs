@@ -1,5 +1,5 @@
 // In-memory fake of the OpenRouter API (models list + chat completions).
-// Per-model scripts: 'ok' | 429 | 401 | 402 | 400 | 'empty'. A script may be
+// Per-model scripts: 'ok' | 429 | 401 | 402 | 400 | 'empty' | { text }. A script may be
 // an array, consumed one entry per call; the last entry repeats.
 export const OPENROUTER = 'https://openrouter.ai'
 export const OR_KEY = 'sk-or-v1-fake-e2e-key-0000'
@@ -89,6 +89,13 @@ export class FakeOpenRouter {
         return this.json(route, 200, {
           id: `gen-${this.log.length}`, model: body.model,
           choices: [{ index: 0, finish_reason: 'stop', message: { role: 'assistant', content: answerFor(entry.prompt) } }],
+        })
+      }
+      // Phase 5: a scripted reply text, e.g. a checker verdict table.
+      if (s && typeof s === 'object' && typeof s.text === 'string') {
+        return this.json(route, 200, {
+          id: `gen-${this.log.length}`, model: body.model,
+          choices: [{ index: 0, finish_reason: 'stop', message: { role: 'assistant', content: s.text } }],
         })
       }
       if (s === 'empty') return this.json(route, 200, { id: 'gen-x', choices: [] })

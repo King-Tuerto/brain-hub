@@ -1,0 +1,47 @@
+{
+  "source": "tests/fixtures/real-run/deere/answer.md (run 3)",
+  "plants": [
+    {
+      "id": "P1",
+      "kind": "missing-source",
+      "expect": "unsourced",
+      "find": "One John Deere Place"
+    },
+    {
+      "id": "P2",
+      "kind": "wrong-figure",
+      "expect": "not supported or partly",
+      "find": "$21.406 billion",
+      "claim_n": 9
+    },
+    {
+      "id": "P3",
+      "kind": "wrong-link",
+      "expect": "not supported",
+      "find": "L120 Electric",
+      "url": "https://en.wikipedia.org/wiki/Tractor",
+      "claim_n": 23
+    },
+    {
+      "id": "P4",
+      "kind": "missing-section",
+      "expect": "missing section",
+      "find": "Suggested further research"
+    },
+    {
+      "id": "P5",
+      "kind": "fabricated-claim",
+      "expect": "not supported",
+      "find": "spin off Construction & Forestry",
+      "url": "https://www.sec.gov/Archives/edgar/data/0000315189/000110465926098904/de-20260820xex99d1.htm",
+      "claim_n": 51
+    },
+    {
+      "id": "P6",
+      "kind": "wrong-date",
+      "expect": "not supported or partly",
+      "find": "16 March 2026",
+      "claim_n": 36
+    }
+  ]
+}

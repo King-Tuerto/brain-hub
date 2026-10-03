@@ -61,7 +61,18 @@ const RULE_RE = /^(?:-{3,}|\*{3,}|_{3,})$/
 // Same normalisation as parseOutput, so "## **Summary**" and "## Summary:" agree (Nitpick D3).
 export const isSummaryHeading = (name) => norm(name) === 'summary'
 
-export function checkSources(markdown) {
+// In `sourcing: advice` recipes only factual-looking statements need a source:
+// ones with a figure, a percentage, a currency amount or a quotation. Coaching
+// ("Lead with the metric…") is not counted; an invented "attendance up 40%" is.
+// Quotations are not counted: in coaching answers they are suggested wording
+// or words quoted from the student's own input (Phase 5 rerun finding).
+// Placeholders like [X%] and enumerators like (1) are ignored.
+const FACT_RE = /\d|%|[$€£]/
+const forFactTest = (t) => t.replace(/\[[^\]]*\]/g, ' ').replace(/\(\d+\)/g, ' ')
+// "…?" followed only by closing quotes, brackets or a trailing [note] is a question.
+const isQuestion = (t) => /\?["”'’)\]]*$/.test(t.replace(/\s*\[[^\]]*\]\s*$/, '').trim())
+
+export function checkSources(markdown, { sourcing = 'facts', returnItems = false } = {}) {
   const lines = String(markdown ?? '').split(/\r?\n/)
   const claims = []
   let section = null
@@ -114,17 +125,38 @@ export function checkSources(markdown) {
 
   const real = claims.filter((c) => {
     const t = plain(c.text)
-    return t && !t.endsWith('?') && !t.endsWith(':') && !isLabel(c.text) && !isNote(c.text)
+    if (!t || isQuestion(t) || t.endsWith(':') || isLabel(c.text) || isNote(c.text)) return false
+    return sourcing !== 'advice' || FACT_RE.test(forFactTest(t))
   })
   const result = { claims: real.length, sourced: 0, unverified: 0, unsourced: [] }
-  for (const c of real) {
-    // The item's own marks win over inheritance (Nitpick A3).
-    if (LINK_RE.test(c.text)) result.sourced++
-    else if (UNVERIFIED_RE.test(c.text)) result.unverified++
-    else if (c.parent && LINK_RE.test(c.parent.text)) result.sourced++
+  for (const c of classify(real)) {
+    if (c.status === 'sourced') result.sourced++
+    else if (c.status === 'unverified') result.unverified++
     else result.unsourced.push({ section: c.section, text: c.text })
   }
+  if (returnItems) return classify(real)
   return result
+}
+
+const urlsIn = (t) => [...t.matchAll(new RegExp(LINK_RE.source, 'g'))].map((m) => m[0].replace(/[).,;]+$/, ''))
+
+// The item's own marks win over inheritance (Nitpick A3).
+function classify(claims) {
+  return claims.map((c) => {
+    let urls = urlsIn(c.text)
+    let status
+    if (urls.length) status = 'sourced'
+    else if (UNVERIFIED_RE.test(c.text)) status = 'unverified'
+    else if (c.parent && LINK_RE.test(c.parent.text)) { status = 'sourced'; urls = urlsIn(c.parent.text) }
+    else status = 'unsourced'
+    return { section: c.section, text: c.text, status, urls }
+  })
+}
+
+// Every counted claim with its status and the URLs that back it. Used by the
+// Checker (Phase 5) to ask an AI to verify each claim against its own link.
+export function claimItems(markdown, { sourcing = 'facts' } = {}) {
+  return checkSources(markdown, { sourcing, returnItems: true })
 }
 
 export function extractSources(markdown) {

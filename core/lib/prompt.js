@@ -12,6 +12,12 @@ export function fillTemplate(template, values) {
     Object.prototype.hasOwnProperty.call(values, key) ? String(values[key]) : whole)
 }
 
+export const SOURCE_RULE_FACTS = 'Every factual claim must include a source link in Markdown form [title](https://…). If you cannot source a claim, mark it [unverified].'
+export const SOURCE_RULE_ADVICE = 'Every factual statement (figures, dates, names, statistics, quotations, claims about real organisations) must include a source link in Markdown form [title](https://…), or be marked [unverified]. Advice and recommendations do not need sources.'
+export const NOTE_RULE = 'Statements about your own method or about what you could not verify are not factual claims: start them with "Note:".'
+// DECISIONS #18: appended to every prompt, whatever the recipe says.
+export const NO_INVENTION_RULE = 'Never invent facts about me (numbers, achievements, dates, names). Where a real detail of mine is needed and you do not have it, write a placeholder like [your number].'
+
 export function STANDARD_BLOCK(recipe) {
   const sections = recipe?.output?.sections ?? []
   return [
@@ -19,8 +25,9 @@ export function STANDARD_BLOCK(recipe) {
     'Format your answer in Markdown with these sections, in this order, each as a "## " heading:',
     ...sections.map((s) => `- ${s}`),
     '- Summary',
-    'Every factual claim must include a source link in Markdown form [title](https://…). If you cannot source a claim, mark it [unverified].',
-    'Statements about your own method or about what you could not verify are not factual claims: start them with "Note:".',
+    recipe?.sourcing === 'advice' ? SOURCE_RULE_ADVICE : SOURCE_RULE_FACTS,
+    NOTE_RULE,
+    NO_INVENTION_RULE,
     'End with "## Summary": 2–3 sentences someone could search for later.',
   ].join('\n')
 }
