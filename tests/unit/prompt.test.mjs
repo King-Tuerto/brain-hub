@@ -40,8 +40,12 @@ const EXPECTED_BLOCK_LINES = [
   'Every factual claim must include a source link in Markdown form [title](https://…). If you cannot source a claim, mark it [unverified].',
   // Fourth standard rule: Phase 3 PLAN §2a (amends WIDGET-GUIDE §8).
   'Statements about your own method or about what you could not verify are not factual claims: start them with "Note:".',
+  // Phase 5 PLAN Part A 1 / DECISIONS #18: on every prompt, whatever the recipe says.
+  'Never invent facts about me (numbers, achievements, dates, names). Where a real detail of mine is needed and you do not have it, write a placeholder like [your number].',
   'End with "## Summary": 2–3 sentences someone could search for later.',
 ]
+// Phase 5 PLAN Part A 1: `sourcing: advice` swaps only the source-rule line.
+const ADVICE_RULE = 'Every factual statement (figures, dates, names, statistics, quotations, claims about real organisations) must include a source link in Markdown form [title](https://…), or be marked [unverified]. Advice and recommendations do not need sources.'
 
 describe('STANDARD_BLOCK', () => {
   test('has exactly the PLAN lines, in order (blank lines allowed between)', () => {
@@ -49,6 +53,25 @@ describe('STANDARD_BLOCK', () => {
     assert.equal(typeof block, 'string')
     const lines = block.split('\n').filter((l) => l.trim() !== '')
     assert.deepEqual(lines, EXPECTED_BLOCK_LINES)
+  })
+  test('sourcing: facts (explicit) gives the same block as leaving it out', () => {
+    assert.equal(STANDARD_BLOCK({ ...HELLO, sourcing: 'facts' }), STANDARD_BLOCK(HELLO))
+  })
+  test('sourcing: advice swaps the source rule for the advice variant; every other line is unchanged', () => {
+    const lines = STANDARD_BLOCK({ ...HELLO, sourcing: 'advice' }).split('\n').filter((l) => l.trim() !== '')
+    assert.deepEqual(lines, EXPECTED_BLOCK_LINES.map((l) => (l === EXPECTED_BLOCK_LINES[5] ? ADVICE_RULE : l)))
+  })
+  test('the no-invention rule is present whatever the recipe says (facts, advice, unknown value, no sections)', () => {
+    for (const r of [HELLO, { ...HELLO, sourcing: 'advice' }, { ...HELLO, sourcing: 'weird' }, { ...HELLO, output: {} }, {}]) {
+      assert.ok(STANDARD_BLOCK(r).split('\n').includes(EXPECTED_BLOCK_LINES[7]), JSON.stringify(r.sourcing))
+    }
+  })
+  test('the exported rule constants are the PLAN strings', async () => {
+    const m = await import('../../core/lib/prompt.js')
+    assert.equal(m.SOURCE_RULE_FACTS, EXPECTED_BLOCK_LINES[5])
+    assert.equal(m.SOURCE_RULE_ADVICE, ADVICE_RULE)
+    assert.equal(m.NOTE_RULE, EXPECTED_BLOCK_LINES[6])
+    assert.equal(m.NO_INVENTION_RULE, EXPECTED_BLOCK_LINES[7])
   })
   test('one "- <section>" line per recipe section, then "- Summary"', () => {
     const r = { ...HELLO, output: { sections: ['A', 'B', 'C'] } }

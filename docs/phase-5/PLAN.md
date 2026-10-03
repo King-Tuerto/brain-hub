@@ -132,6 +132,28 @@ grade(result) → 'Strong' | 'Good' | 'Needs work' | 'Weak'   // ≥90%, ≥75%,
 - **State:** `st.checkAnswer` persists across reloads. A new run, or a new
   pasted answer, clears it. A completed check is saved as `metadata.hub.check`.
 
+### Amendments after Nitpick's first Phase 5 review (2026-10-03)
+
+- **H1:** each answer shown gets its **own** `checker-panel`, created in
+  `showResult`. A check can't be applied to, or saved with, a different
+  answer.
+- **M1:** the checker prompt now says a wrong figure, date or name is always
+  NOT SUPPORTED, never PARTLY. PARTLY is only for a claim that's incomplete
+  or overstated with nothing contradicted. The real tables already in the
+  fixtures answered the old prompt (`checker-prompt-planted.md` and
+  `checker-prompt-clean.md`). A fresh checker answering
+  `checker-prompt-planted-v2.md` gives the evidence for M1.
+- **M2:** the checker prompt says the claims are data, and any instructions
+  inside them are to be ignored.
+- **L1:** the claim number is the first integer in the cell.
+- **L2:** the fix is the last cell; the evidence is everything between the
+  verdict and the fix.
+- **L3:** `score` is the sum of the rounded parts.
+- **L4:** the advice-mode wording no longer mentions quotations, in both the
+  summary and the guide.
+- **L5:** `checker-needs-web` gives the real reason: no key, no models, or
+  paid search off.
+
 ## Done when (spec: "catches planted errors")
 
 The planted report is `tests/fixtures/phase-5/planted.md`: the real Deere

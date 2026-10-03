@@ -139,9 +139,10 @@ test('answer.md: renders every section with no missing-sections; source-check wa
     return `${u.section}: ${t}`
   }))
   // Pinned independently of checkSources (a regression pin, not a grade):
-  // the Haiku answer has 41 unsourced of 50 claims.
-  await expect(tid(page, 'source-check')).toContainText('41 of 50 claims have no source')
-  await expect(shown).toHaveCount(41)
+  // the Haiku answer has 32 unsourced of 41 claims. It was 41 of 50 until
+  // Phase 5 PLAN 3a: quoted questions ("…?" + closing quote) are not claims.
+  await expect(tid(page, 'source-check')).toContainText('32 of 41 claims have no source')
+  await expect(shown).toHaveCount(32)
 })
 
 test('save with the stand-in brain: one row, metadata.hub.tool = job-interview-prep', async ({ page, standin }) => {

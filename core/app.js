@@ -685,6 +685,9 @@ async function renderTool(id) {
     persist()
     const parsed = parseOutput(text, recipe)
     const sc = checkSources(text, { sourcing: recipe.sourcing })
+    // A fresh panel for every answer shown, so a check can never be applied to,
+    // or saved with, a different answer (Nitpick Phase 5 H1).
+    const checkerBox = h('div', { tid: 'checker-panel', class: 'card', hidden: true })
     const body = h('div', { class: 'result', tid: 'result' })
     body.innerHTML = renderAnswer(text)
     body.querySelectorAll('a').forEach((a) => { a.target = '_blank'; a.rel = 'noopener noreferrer' })
@@ -745,7 +748,6 @@ async function renderTool(id) {
   }
 
   // ---- The Checker (Phase 5): rubric score + fixes, with an AI citation check.
-  const checkerBox = h('div', { tid: 'checker-panel', class: 'card', hidden: true })
 
   function showChecker(text, box) {
     const { checked } = claimsToCheck(text, recipe)
@@ -801,7 +803,11 @@ async function renderTool(id) {
       } }, 'Check the sources'), status,
       h('p', { class: 'help', text: 'Automatic web search finds pages by searching, which is weaker than opening each link. For a strict check, use copy-and-paste with an AI app that can browse.' }))
     } else if (s.aiMode === 'auto') {
-      out.push(note('warn', 'checker-needs-web', 'Checking sources needs web access. Paid web search is off in your settings, so use your AI app instead (free):'))
+      // Say the real reason (Nitpick L5).
+      const why = !key ? 'Automatic mode has no OpenRouter key yet'
+        : !s.models?.length ? 'no Automatic-mode models are chosen'
+        : 'paid web search is off in your settings'
+      out.push(note('warn', 'checker-needs-web', `Checking sources needs web access, and ${why}. Use your AI app instead (free):`))
     }
     const app = AI_APPS[s.aiApp] ?? AI_APPS.claude
     const promptBox = h('textarea', { tid: 'checker-prompt', readonly: true, rows: 6, class: 'mono', 'aria-label': 'Checker prompt' })

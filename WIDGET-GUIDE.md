@@ -156,7 +156,7 @@ How to choose:
 | Value | Use when | What the hub asks of the AI and checks |
 |---|---|---|
 | `facts` (default) | Research and analysis tools, where the answer is mostly claims about the world. | Every factual claim needs a source link or `[unverified]`. The hub counts every list item, table row and paragraph. |
-| `advice` | Coaching tools, where the answer is mostly recommendations: interview prep, study plans, writing feedback. | Only factual statements need sources: figures, dates, names, statistics, quotations, claims about real organisations. The hub counts only lines containing a figure, a percentage, an amount or a quotation, so an invented statistic is still caught. |
+| `advice` | Coaching tools, where the answer is mostly recommendations: interview prep, study plans, writing feedback. | Only factual statements need sources: figures, dates, names, statistics, claims about real organisations. The hub counts only lines containing a figure, a percentage or an amount (ignoring `[placeholders]`), so an invented statistic is still caught, and suggested wording in quotation marks is not counted. |
 
 ## 7. Save rules (optional)
 
