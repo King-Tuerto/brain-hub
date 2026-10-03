@@ -35,8 +35,19 @@ export function parseOutput(markdown, recipe) {
 // (WIDGET-GUIDE §8). A "claim" is each list item, table row or paragraph
 // inside a ## section, except the Summary. Not claims: questions (end in "?"),
 // lead-in lines (end in ":"), table header and separator rows, and code blocks.
+// Rules (docs/phase-3/PLAN.md §2 and §2a):
+// - labels (an item or paragraph that is entirely **bold** / *italic*) are not claims;
+// - "Note: …" lines (about the analysis itself) are not claims;
+// - a list item plus its indented continuation lines is one block; a nested
+//   item with no link of its own inherits its top-level item's source.
 const LINK_RE = /https?:\/\/[^\s)>\]]+/
-const UNVERIFIED_RE = /\[unverified\]/i
+const UNVERIFIED_RE = /\[unverified\b[^\]]*\]/i
+const LIST_RE = /^(?:[-*+]|\d+[.)])\s+(.*)$/
+
+const indentOf = (raw) => raw.replace(/\t/g, '    ').match(/^ */)[0].length
+const plain = (t) => t.replace(/[*_`]/g, '').trim()
+const isLabel = (t) => /^(\*\*|__)[^*_]+\1[.:]?$/.test(t.trim()) || /^(\*|_)[^*_]+\1[.:]?$/.test(t.trim())
+const isNote = (t) => /^note\s*:/i.test(plain(t))
 
 export function checkSources(markdown) {
   const lines = String(markdown ?? '').split(/\r?\n/)
@@ -45,6 +56,7 @@ export function checkSources(markdown) {
   let para = []
   let inCode = false
   let tableRow = 0
+  let top = null // the current top-level list item, which collects its continuation lines
   const flush = () => { if (para.length) claims.push({ section, text: para.join(' ') }); para = [] }
 
   for (const raw of lines) {
@@ -52,31 +64,43 @@ export function checkSources(markdown) {
     if (line.startsWith('```')) { flush(); inCode = !inCode; continue }
     if (inCode) continue
     const h = /^(#{1,6})\s+(.+?)\s*#*$/.exec(line)
-    if (h) { flush(); if (h[1].length === 2) section = h[2]; tableRow = 0; continue }
+    if (h) { flush(); top = null; if (h[1].length === 2) section = h[2]; tableRow = 0; continue }
     if (!line) { flush(); tableRow = 0; continue }
     if (section == null || section.trim().toLowerCase() === 'summary') continue
 
     if (line.startsWith('|')) {
-      flush()
+      flush(); top = null
       tableRow++
       if (tableRow === 1 || /^\|[\s:|-]+\|?$/.test(line)) continue // header or separator
       claims.push({ section, text: line })
       continue
     }
     tableRow = 0
-    const item = /^(?:[-*+]|\d+[.)])\s+(.*)$/.exec(line)
-    if (item) { flush(); claims.push({ section, text: item[1] }); continue }
+    const indent = indentOf(raw)
+    const item = LIST_RE.exec(line)
+    if (item) {
+      flush()
+      if (indent >= 2 && top) {
+        claims.push({ section, text: item[1], parent: top })
+      } else {
+        top = { section, text: item[1] }
+        claims.push(top)
+      }
+      continue
+    }
+    if (indent >= 2 && top) { top.text += ' ' + line; continue } // continuation of the list item
+    top = null
     para.push(line)
   }
   flush()
 
   const real = claims.filter((c) => {
-    const t = c.text.replace(/[*_`]/g, '').trim()
-    return t && !t.endsWith('?') && !t.endsWith(':')
+    const t = plain(c.text)
+    return t && !t.endsWith('?') && !t.endsWith(':') && !isLabel(c.text) && !isNote(c.text)
   })
   const result = { claims: real.length, sourced: 0, unverified: 0, unsourced: [] }
   for (const c of real) {
-    if (LINK_RE.test(c.text)) result.sourced++
+    if (LINK_RE.test(c.text) || (c.parent && LINK_RE.test(c.parent.text))) result.sourced++
     else if (UNVERIFIED_RE.test(c.text)) result.unverified++
     else result.unsourced.push({ section: c.section, text: c.text })
   }

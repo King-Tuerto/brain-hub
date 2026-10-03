@@ -20,6 +20,7 @@ export function STANDARD_BLOCK(recipe) {
     ...sections.map((s) => `- ${s}`),
     '- Summary',
     'Every factual claim must include a source link in Markdown form [title](https://…). If you cannot source a claim, mark it [unverified].',
+    'Statements about your own method or about what you could not verify are not factual claims: start them with "Note:".',
     'End with "## Summary": 2–3 sentences someone could search for later.',
   ].join('\n')
 }

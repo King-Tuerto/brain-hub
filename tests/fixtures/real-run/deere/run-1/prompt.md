@@ -39,5 +39,4 @@ Format your answer in Markdown with these sections, in this order, each as a "##
 - Limits of this analysis
 - Summary
 Every factual claim must include a source link in Markdown form [title](https://…). If you cannot source a claim, mark it [unverified].
-Statements about your own method or about what you could not verify are not factual claims: start them with "Note:".
 End with "## Summary": 2–3 sentences someone could search for later.

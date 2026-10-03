@@ -123,6 +123,36 @@ directs, outside the test suite:
 **Pass bar:** at least 90% of URLs resolve, and no spot-checked claim is "not
 supported" without a fix to the answer being recorded.
 
+### 2a. Source-check revision after the first real run (2026-10-03, before any Phase 3 test ran)
+
+The first real Deere answer (kept as `tests/fixtures/real-run/deere/run-1/`)
+scored 76 claims: 45 sourced, 2 unverified, 29 unsourced. Most of the 29 were
+the checker's fault, so the rules change.
+
+- **Labels aren't claims.** If an item or paragraph is entirely emphasis
+  (`**Caterpillar**`, `**1. Construction equipment**`, `*Political*`), it's a
+  label.
+- **`[unverified …]` with extra words counts as unverified.** The pattern is
+  `/\[unverified\b[^\]]*\]/i`, so `[unverified – not checked]` counts.
+- **List items are blocks.** Indented non-list lines after a list item belong
+  to that item, not to a new paragraph. A nested list item without its own
+  link is **sourced by inheritance** when its top-level item's block has one.
+  The block is the item text plus its continuation lines, not its siblings.
+- **Notes aren't claims.** Statements about the analysis itself start with
+  `Note:` (case-insensitive, after list markers and emphasis). That covers
+  method, own arithmetic, and what couldn't be verified. The hub's standard
+  block now tells every AI: *"Statements about your own method or about what
+  you could not verify are not factual claims: start them with "Note:"."*
+  WIDGET-GUIDE §8 lists this as the hub's fourth standard rule.
+- **What run 1 showed:** the checker caught real gaps that the prompt
+  allowed: method statements, and a product list under a lead-in line. The
+  fix is the Note rule and inheritance, not looser checking.
+- **Run 2:** a fresh research agent answers the revised prompt. Done-when #2
+  applies to run 2.
+- **Run 1 stays as evidence:** it's a regression fixture that shows the
+  revised checker still flags its method statements, which run 1 didn't
+  mark with `Note:`.
+
 ## Tests Nitpick writes (Phase 3)
 
 - **Unit:**
