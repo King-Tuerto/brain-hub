@@ -1,11 +1,111 @@
 # Phase 2 — Nitpick Sign-off
 
 **Reviewer:** Nitpick · **Date:** 2026-10-03 · **Branch:** `phase-2-hub-core`
-**Re-verified at:** El Código's commit `b1d130a`, plus Nitpick's second-pass
-tests (`tests/unit/signoff2.test.mjs`, `tests/e2e/signoff2.spec.mjs`, and a
-global CSP tripwire in `tests/helpers/fixtures.mjs`).
+**Third verification at:** El Código's commit `9559a06`, plus Nitpick's
+third-pass tests (`tests/e2e/signoff3.spec.mjs`).
 
-## Verdict: NOT SIGNED OFF
+## Verdict: NOT SIGNED OFF — one regression left (R3), low severity
+
+- **R1 is fixed.** Every bypass I tried failed (below).
+- **R2 is fixed for clicks.**
+- **The R2 fix introduced R3:** pressing Enter no longer connects. Every other
+  finding is fixed or accepted. No high or medium finding remains.
+
+I am holding sign-off only because the agreed rule is "everything passes",
+and 3 tests × 3 projects fail on R3. Fix R3 and make
+`tests/e2e/signoff3.spec.mjs` pass, and Phase 2 is **SIGNED OFF** with no
+further review needed from me. I'll just confirm the green run.
+
+**R3 (low): Enter in the setup brain form does nothing.**
+- **Where:** `core/app.js`, `setupBrain`.
+- **Cause:** `brain-connect` is now `type="button"`, and the form has no
+  other submit button. Under HTML's implicit-submission rules, a form with
+  several fields and no submit button doesn't submit on Enter, so
+  `onsubmit` never fires. That holds in Chromium and WebKit alike.
+- **Effect:**
+  - Before the fix, Enter connected (twice).
+  - Now it does nothing at all: no probe, no message. A phone keyboard's
+    "Go" key will do the same.
+  - The code comment ("the form's own submit (Enter key) relays to this
+    click") describes behavior that no longer happens.
+- **Fix, either one:**
+  - Make `brain-connect` `type="submit"` with no click listener of its own,
+    so the form's `onsubmit` is the only path. Enter and click then both run
+    it once.
+  - Or keep `type="button"` and add a hidden submit button, or an Enter
+    keydown handler that calls the same function.
+- **Tests:** `signoff3.spec` checks Enter and click both give exactly one
+  probe and one sign-in, the secret-key refusal, and the address message. A
+  double-click is also checked: one probe. It already passes.
+
+## Test results (`npm test`, full run at `9559a06`)
+
+| Suite | Tests | Passed | Failed | Skipped |
+|---|---|---|---|---|
+| Unit (`tests/unit`) | 248 | 248 | 0 | 0 |
+| Database proof (`tests/db`) | 10 | 10 | 0 | 0 |
+| Browser (`tests/e2e`), 95 tests × 3 projects | 285 | 274 | **9** | 2 |
+
+- **The 9 failures** are the three "via Enter in the password field" tests
+  in `signoff3.spec` (R3), each failing in all three projects.
+- **The 2 skips** are unchanged: tap targets don't apply at laptop size, and
+  WebKit can't reload a page while offline.
+- **El Código's 244/2** was the suite before `signoff3.spec` existed. That
+  matches.
+
+## R1 re-attack (all passing, all three projects)
+
+| Attempt | Result |
+|---|---|
+| One-character edit to the accepted recipe text (`.` → `!`), same id, version and permissions | Reviewed again |
+| Same version, with `search_brain` and a brain query added | Reviewed again, privacy warning shown (and in `signoff2.spec`) |
+| Identical recipe text from a different repo (`mallory/hub`) | Reviewed again |
+| Look-alike repos `carol/hub2` and `carol-x/hub` | Reviewed again |
+| Case and whitespace variants of the same repo (`Carol/Hub`, `  CAROL/HUB  `) | Acceptance kept. Correct, because GitHub names are case-insensitive, so these are the same repo |
+| Edited recipe, then reverted to the accepted text | Edited: reviewed. Reverted: no new review (same hash) |
+| What is stored | `hub.toolAcks` has exactly one key, `carol/hub\|<sha256 of the exact text>`, matching a SHA-256 the test computes itself |
+
+- **Code read:** the hashed text is the same `tool.text` that then runs.
+  Both come from one `loadTools` fetch, so there is no gap where the reviewed
+  text and the run text could differ.
+- A repo override clears the tool state and the plugin cache, so tools from
+  the old repo can't carry over.
+
+## R2 (clicks): fixed
+
+- A click gives one probe and one sign-in.
+- A double-click while the check runs still gives one probe.
+- The secret-key refusal stays visible, with its "rotate" advice.
+- The `supabase.co` address message stays.
+- No request is sent for a refused key or address.
+
+## Status of every finding
+
+| # | Status |
+|---|---|
+| H1 | Fixed; re-attacked at the sanitizer and CSP layers (second pass) |
+| M1–M4 | Fixed (second pass) |
+| M5 | Fixed, including the R1 bypasses |
+| L1–L6 | Fixed (second pass) |
+| L7, L8 | Fixed, including their on-screen messages now that R2 is fixed (by click; Enter is R3) |
+| L9, L11 | Accepted by El Código as noted |
+| L10 | Accepted as a decision: DECISIONS #8 (`*.supabase.co` only) |
+| R1 | Fixed |
+| R2 | Fixed |
+| **R3** | **Open: Enter key does nothing (low)** |
+| L12 (new, low) | `sha256` uses `crypto.subtle`, which only exists in secure contexts (https or localhost). GitHub Pages is https, so students are fine. On a plain-http LAN address, opening a reviewed tool would throw. Note only. |
+
+## What is proven, and what is not
+
+Unchanged: see the first review below and `docs/PILOT-CHECKLIST.md` for
+everything that needs real phones or real services.
+
+---
+
+## History: second verification at `b1d130a`
+
+
+### Verdict: NOT SIGNED OFF
 
 **H1, the high-severity finding, is fixed, and I re-attacked it at both
 layers.** No high-severity finding remains. Two problems still block, because
@@ -40,7 +140,7 @@ sign-off requires every test to pass:
 Fix R1 and R2 and make `tests/e2e/signoff2.spec.mjs` pass in all three
 projects, and I'll sign off. Nothing else is outstanding.
 
-## Test results (`npm test`, full run at `b1d130a`)
+### Test results (`npm test`, full run at `b1d130a`)
 
 | Suite | Tests | Passed | Failed | Skipped |
 |---|---|---|---|---|
@@ -59,7 +159,7 @@ projects, and I'll sign off. Nothing else is outstanding.
 - **El Código reported 190/2** before my new tests existed. That matches the
   first-pass suite.
 
-## Status of every finding
+### Status of every finding
 
 | # | Finding | Status | Evidence |
 |---|---|---|---|
@@ -78,7 +178,7 @@ projects, and I'll sign off. Nothing else is outstanding.
 | L7 | Any https brain address | **Logic fixed; UI message broken by R2** | Unit: `isSupabaseUrl` refuses http, look-alike hosts and paths. e2e fails on the message (R2) |
 | L8 | Secret key refused as "open" | **Logic fixed; UI message broken by R2** | Unit: `keyProblem` catches `sb_secret_` and service-role JWTs, including base64url payloads. e2e fails on the hidden refusal (R2) |
 
-## H1 re-attack
+### H1 re-attack
 
 **Sanitizer layer** (`signoff2.spec`, all three projects, passing).
 
@@ -130,7 +230,7 @@ normal flows pass under it:
 
 The only exempt tests are the deliberate attack tests.
 
-## New low-severity notes (not blocking)
+### New low-severity notes (not blocking)
 
 - **L9 — harmless console noise in Chromium.** When an answer contains inline
   `style` or `<base>`, DOMPurify parses it in an inert document that inherits
@@ -144,7 +244,7 @@ The only exempt tests are the deliberate attack tests.
   the app runs, and the CSP's `script-src 'self'` keeps injected script out.
   No action needed.
 
-## What is proven, and what is not
+### What is proven, and what is not
 
 Unchanged from the first review (below), plus everything in the status table
 above. Real-device and real-service items are still on

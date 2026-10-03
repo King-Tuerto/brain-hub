@@ -172,9 +172,11 @@ function setupBrain() {
   const password = h('input', { type: 'password', id: 'brain-password', tid: 'brain-password', autocomplete: 'current-password' })
   const status = h('div', { tid: 'brain-status', role: 'status', 'aria-live': 'polite' })
   const refused = h('div', { tid: 'brain-refused', class: 'note bad', role: 'alert', hidden: true })
-  // type=button: the form's own submit (Enter key) relays to this click, so a
-  // submit button would run the connect twice (Nitpick R2).
-  const connect = h('button', { type: 'button', class: 'primary', tid: 'brain-connect' }, 'Connect my brain')
+  // The form's submit event is the ONLY path into doConnect: a tap on this
+  // submit button and Enter / the phone's Go key both fire it exactly once
+  // (Nitpick R2, R3). `busy` stops a second submit while one is running.
+  const connect = h('button', { type: 'submit', class: 'primary', tid: 'brain-connect' }, 'Connect my brain')
+  let busy = false
 
   const say = (kind, text) => { status.replaceChildren(text ? note(kind, null, text) : '') }
   const refuse = (text) => {
@@ -183,7 +185,8 @@ function setupBrain() {
     refused.hidden = false
   }
 
-  connect.addEventListener('click', async () => {
+  async function doConnect() {
+    if (busy) return
     refused.hidden = true
     const u = url.value.trim()
     const k = key.value.trim()
@@ -198,6 +201,7 @@ function setupBrain() {
       return
     }
     connect.disabled = true
+    busy = true
     say('', 'Checking your brain is locked to you…')
     try {
       const b = createBrain({ url: u, anonKey: k, store: S.store })
@@ -226,8 +230,9 @@ function setupBrain() {
       location.hash = '#/setup/3'
     } finally {
       connect.disabled = false
+      busy = false
     }
-  })
+  }
 
   render(h('section', { tid: 'screen-setup', class: 'card' },
     steps(2),
@@ -237,7 +242,7 @@ function setupBrain() {
       S.remove('hub.brain'); S.remove('hub.session')
       location.hash = '#/setup/3'
     } }, 'Skip — I don’t have a brain yet'),
-    h('form', { onsubmit: (ev) => { ev.preventDefault(); connect.click() } },
+    h('form', { onsubmit: (ev) => { ev.preventDefault(); doConnect() } },
       h('label', { for: 'brain-url', text: 'Brain address (Project URL)' }), url,
       h('label', { for: 'brain-key', text: 'Public key (publishable / anon key)' }), key,
       h('p', { class: 'help', text: 'Never paste the service role key or any “secret” key here.' }),
