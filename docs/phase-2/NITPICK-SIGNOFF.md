@@ -1,10 +1,48 @@
 # Phase 2 — Nitpick Sign-off
 
 **Reviewer:** Nitpick · **Date:** 2026-10-03 · **Branch:** `phase-2-hub-core`
-**Third verification at:** El Código's commit `9559a06`, plus Nitpick's
-third-pass tests (`tests/e2e/signoff3.spec.mjs`).
+**Final verification at:** El Código's commit `18b3583`
 
-## Verdict: NOT SIGNED OFF — one regression left (R3), low severity
+## Verdict: SIGNED OFF
+
+Every test passes in a full `npm test` I ran myself, and no finding is open
+at any severity.
+
+**R3 is fixed.** `brain-connect` is now a submit button with no click
+listener, so the form's `onsubmit` is the only path into `doConnect`, and a
+`busy` flag drops a second submit. `signoff3.spec` confirms, in all three
+projects, that Enter and a tap each run Connect exactly once, and a
+double-tap makes one probe.
+
+| Suite | Tests | Passed | Failed | Skipped |
+|---|---|---|---|---|
+| Unit (`tests/unit`) | 248 | 248 | 0 | 0 |
+| Database proof (`tests/db`) | 10 | 10 | 0 | 0 |
+| Browser (`tests/e2e`), 95 tests × 3 projects | 285 | 283 | 0 | 2 |
+
+The 2 skips are deliberate:
+- the tap-target check doesn't apply at laptop size;
+- Playwright's WebKit can't reload a page while offline.
+
+### Finding status
+
+| # | Status |
+|---|---|
+| H1 | Fixed; re-attacked at the sanitizer and CSP layers |
+| M1–M5 | Fixed (M5 including the R1 bypasses) |
+| L1–L8 | Fixed |
+| L9, L11, L12 | Accepted as noted (harmless console noise; the CSP's Supabase wildcard; `crypto.subtle` needs https, which Pages has) |
+| L10 | Accepted as a decision: DECISIONS #8 |
+| R1, R2, R3 | Fixed |
+
+**Not proven by emulation:** every item on `docs/PILOT-CHECKLIST.md`. Real
+phones and real services are checked in the Phase 7 pilot.
+
+---
+
+## History: third verification at `9559a06`
+
+### Verdict: NOT SIGNED OFF — one regression left (R3), low severity
 
 - **R1 is fixed.** Every bypass I tried failed (below).
 - **R2 is fixed for clicks.**
@@ -38,7 +76,7 @@ further review needed from me. I'll just confirm the green run.
   probe and one sign-in, the secret-key refusal, and the address message. A
   double-click is also checked: one probe. It already passes.
 
-## Test results (`npm test`, full run at `9559a06`)
+### Test results (`npm test`, full run at `9559a06`)
 
 | Suite | Tests | Passed | Failed | Skipped |
 |---|---|---|---|---|
@@ -53,7 +91,7 @@ further review needed from me. I'll just confirm the green run.
 - **El Código's 244/2** was the suite before `signoff3.spec` existed. That
   matches.
 
-## R1 re-attack (all passing, all three projects)
+### R1 re-attack (all passing, all three projects)
 
 | Attempt | Result |
 |---|---|
@@ -71,7 +109,7 @@ further review needed from me. I'll just confirm the green run.
 - A repo override clears the tool state and the plugin cache, so tools from
   the old repo can't carry over.
 
-## R2 (clicks): fixed
+### R2 (clicks): fixed
 
 - A click gives one probe and one sign-in.
 - A double-click while the check runs still gives one probe.
@@ -79,7 +117,7 @@ further review needed from me. I'll just confirm the green run.
 - The `supabase.co` address message stays.
 - No request is sent for a refused key or address.
 
-## Status of every finding
+### Status of every finding
 
 | # | Status |
 |---|---|
@@ -95,7 +133,7 @@ further review needed from me. I'll just confirm the green run.
 | **R3** | **Open: Enter key does nothing (low)** |
 | L12 (new, low) | `sha256` uses `crypto.subtle`, which only exists in secure contexts (https or localhost). GitHub Pages is https, so students are fine. On a plain-http LAN address, opening a reviewed tool would throw. Note only. |
 
-## What is proven, and what is not
+### What is proven, and what is not
 
 Unchanged: see the first review below and `docs/PILOT-CHECKLIST.md` for
 everything that needs real phones or real services.
