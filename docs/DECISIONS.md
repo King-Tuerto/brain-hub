@@ -169,6 +169,21 @@ directly. The hub calls them on the recipe's behalf.
    recipe combines `search_brain` with `run_ai`: in Automatic mode, brain
    notes go to OpenRouter and the model's provider. `WIDGET-GUIDE.md` §6.
 
+7. **Testing and sign-off (Paul, October 3, after Phase 1):** Paul does no
+   hands-on checks. In every phase, his check is replaced by **automated
+   browser tests run by Claude**, at laptop size and in phone emulation
+   (iPhone on WebKit, Android on Chromium). **Nitpick signs off on those
+   test results.** Real-phone testing moves to the Phase 7 student pilot.
+   Anything emulation can't prove goes on `docs/PILOT-CHECKLIST.md`. PRs
+   still wait for Paul's merge approval.
+
+8. **Brain address must be `*.supabase.co`** (El Código, Phase 2, made while
+   Paul was away). Every Express brain lives there, and refusing everything
+   else stops a student's password reaching a look-alike server.
+   - **Cost:** a brain on a custom Supabase domain is refused (Nitpick L10).
+   - **Revisit if** a student has a custom domain. It means changing the
+     check in `brain.js` and the CSP in `index.html`.
+
 ---
 
 **Phase 1 closed October 3, 2026.** Paul approved these decisions and

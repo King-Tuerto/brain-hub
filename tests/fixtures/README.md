@@ -1,0 +1,1 @@
+﻿express-migration.sql is a verbatim copy of migration.sql from King-Tuerto/open-brain-express at commit 14890f1. Never edit it; tests that need changes edit an in-memory copy. Refresh it when Express changes.

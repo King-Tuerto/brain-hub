@@ -6,8 +6,18 @@ Forkable student command center. Read `docs/SPEC-v1.0.md`, then
 
 ## Rules
 
+- **Only modify files in this repo (brain-hub).** You may READ the sibling
+  `Open-Brain` folder and the `open-brain-express` and `open-brain-student`
+  repos, but never edit, commit or push to them. If you think another repo
+  needs a change, stop and tell Paul why instead. (Paul's rule, 2026-10-03.)
+
 - **No full drive paths in any file.** Paul works on three machines. Refer to
   sibling projects by name, e.g. "the `Open-Brain` folder next to this one".
+- **Scripts write only inside this folder, using relative paths.** Never
+  build a file path from a URL's `.pathname` (it keeps `%20` for spaces; one
+  script created a stray `Claude%20Projects` folder that way). Use
+  `fileURLToPath`, `chdir` into the repo, and refuse any path that resolves
+  outside it — see `tests/make-icons.mjs`.
 - **No keys, passwords or tokens in any file.** Forks are public. Credentials
   are entered in the browser and stay there.
 - **Core vs plugins.** Core features go in `core/`. Never change anything in
@@ -18,6 +28,10 @@ Forkable student command center. Read `docs/SPEC-v1.0.md`, then
   throwaway Postgres, or report them as unverified.
 - **TDD flow:** El Código specs → Nitpick test plan → El Código codes → Nitpick
   review. No freelancing outside it.
+- **Paul does no hands-on checks.** Every phase ends with automated browser
+  tests (`npm test`), at laptop size and in phone emulation, plus Nitpick's
+  written sign-off. Anything emulation can't prove goes on
+  `docs/PILOT-CHECKLIST.md`. PRs still wait for Paul's merge approval.
 - **Phone first.** Every screen must work at phone width.
 - **The brain contract is Express.** The hub targets `open-brain-express` main.
   Check that repo before assuming anything about the brain's schema or
