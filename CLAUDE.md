@@ -13,6 +13,11 @@ Forkable student command center. Read `docs/SPEC-v1.0.md`, then
 
 - **No full drive paths in any file.** Paul works on three machines. Refer to
   sibling projects by name, e.g. "the `Open-Brain` folder next to this one".
+- **Scripts write only inside this folder, using relative paths.** Never
+  build a file path from a URL's `.pathname` (it keeps `%20` for spaces; one
+  script created a stray `Claude%20Projects` folder that way). Use
+  `fileURLToPath`, `chdir` into the repo, and refuse any path that resolves
+  outside it — see `tests/make-icons.mjs`.
 - **No keys, passwords or tokens in any file.** Forks are public. Credentials
   are entered in the browser and stay there.
 - **Core vs plugins.** Core features go in `core/`. Never change anything in
