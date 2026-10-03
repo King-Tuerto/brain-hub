@@ -12,7 +12,8 @@ tools you build yourself.
 - **Build your own tools.** Paste `WIDGET-GUIDE.md` into any AI and ask it
   for a tool.
 
-**Status:** Phase 1, spec lock. Nothing runs yet. See `docs/`.
+**Status:** Phase 1 (spec lock) is complete. Nothing runs yet; Phase 2
+builds the hub core. See `docs/`.
 
 ## Where things go
 

@@ -1,6 +1,6 @@
 # Brain Hub — Widget Guide (recipe format v1)
 
-**DRAFT — Phase 1, not yet approved.**
+**Approved October 3, 2026 (end of Phase 1).**
 
 This document is written for an AI. A student pastes it into Claude, ChatGPT,
 or any other AI and asks for a tool. Follow it exactly. A recipe that follows
@@ -47,6 +47,7 @@ don't wrap it in a code fence.
 | `version` | yes | `MAJOR.MINOR.PATCH`, starting at `1.0.0`. |
 | `author` | yes | The student's name or handle. |
 | `permissions` | yes | A list drawn **only** from: `search_brain`, `save_to_brain`, `run_ai`. See §6. |
+| `web_search` | yes | `required`, `helpful` or `none`. See §6a. |
 | `inputs` | yes | 1–8 fields. See §4. |
 | `brain_context` | no | What to search the brain for. See §5. Requires `search_brain`. |
 | `output` | yes | `sections:` a list of 2–10 heading names the answer must contain, in order. |
@@ -94,7 +95,31 @@ brain_context:
 | `run_ai` | Send the prompt to the AI automatically (Automatic mode). Without it, the tool only offers copy-paste. |
 
 Building the prompt and downloading the result are always allowed. Ask only
-for what the tool needs; the student sees this list before installing.
+for what the tool needs.
+
+**Before installing, the student sees an install summary** that shows:
+
+- each permission, in plain English;
+- the exact `brain_context` query, with inputs shown as `[their label]`;
+- the `web_search` setting;
+- a warning when a recipe asks for both `search_brain` and `run_ai`:
+  *"In Automatic mode, notes from your brain are sent to OpenRouter and the
+  AI company behind the model you picked."*
+
+So keep the query narrow, and don't ask for `search_brain` unless the tool
+really uses the student's notes.
+
+## 6a. Web search
+
+| Value | Use when | What the hub does |
+|---|---|---|
+| `required` | The answer depends on current facts from the web: companies, events, prices, news. | **Automatic mode with paid search on:** turns on OpenRouter web search. **Automatic mode with paid search off:** warns before running and steers the student to Manual mode, where their AI app searches the web for free. **Manual mode:** adds a line to the prompt telling the AI to search the web. |
+| `helpful` | The tool works from the student's inputs, and web search makes it better. | Same as `required`, except that with paid search off it runs without search and labels the result "no web search". |
+| `none` | The tool only reworks what the student gave it. | Never searches. |
+
+Paid search costs money per call, so it's off until the student turns it on
+in Settings. If you aren't sure, choose `required` for anything that names a
+real company, person or event.
 
 ## 7. Save rules (optional)
 
@@ -145,6 +170,7 @@ Any `{{...}}` that isn't listed above is an error.
 5. No `<script`, `<iframe`, `javascript:` or other HTML tags anywhere.
 6. Limits are respected: 1–8 inputs, 2–10 sections, 1–5 tags, file under
    20 KB.
+7. `web_search` is one of `required`, `helpful`, `none`.
 
 ## 10. Complete example
 
@@ -157,6 +183,7 @@ description: Get ready for a networking event — who to meet, what to say, what
 version: 1.0.0
 author: Paul Waterman
 permissions: [search_brain, save_to_brain, run_ai]
+web_search: required
 inputs:
   - id: event_name
     label: Event name
@@ -201,5 +228,8 @@ homework, and give me a follow-up plan for the week after.
 - [ ] Output is only the file, starting with `---`.
 - [ ] Every input `id` used in the body exists, and every placeholder is valid.
 - [ ] Permissions match what the recipe uses.
+- [ ] `web_search` is set, and is `required` if the tool needs current facts.
 - [ ] The template still makes sense when there's no brain.
-- [ ] Tell the student the file name: `<id>.recipe.md`.
+- [ ] Tell the student the file name, `<id>.recipe.md`, and that it goes in
+      the `plugins/` folder of their copy of the hub. Nothing else needs
+      editing; the hub finds it on its own.

@@ -10,9 +10,10 @@ Forkable student command center. Read `docs/SPEC-v1.0.md`, then
   sibling projects by name, e.g. "the `Open-Brain` folder next to this one".
 - **No keys, passwords or tokens in any file.** Forks are public. Credentials
   are entered in the browser and stay there.
-- **Core vs plugins.** Core features go in `core/`. Never write to `plugins/`
-  except `plugins/plugins.json` in its initial form, and never change that file
-  after it ships, or student forks will conflict on Sync.
+- **Core vs plugins.** Core features go in `core/`. Never change anything in
+  `plugins/` after it ships, or student forks will conflict on Sync. The hub
+  finds tools by listing `plugins/` through the GitHub API, so students never
+  edit a manifest; `plugins.json` is an optional fallback only.
 - **Never create a test Supabase project.** Test brain changes against a local
   throwaway Postgres, or report them as unverified.
 - **TDD flow:** El Código specs → Nitpick test plan → El Código codes → Nitpick
