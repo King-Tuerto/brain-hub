@@ -38,5 +38,27 @@ Browser-test results and Nitpick's verdict follow below once they're in.
      it will rarely match.
    - **Proposed guide change:** recommend 1–3 distinctive words, or input
      placeholders, and explain why. Recorded in DECISIONS #16.
-2. **The sourcing rule doesn't fit opinion tools.** See the source-check
-   result below once the answer is in.
+2. **The sourcing rule doesn't fit advice tools.**
+   - **The score:** the job-prep answer (Haiku) scored **50 claims: 9
+     sourced, 0 unverified, 41 unsourced**, with 6 distinct sources. It
+     hasn't skipped its sources: most of the answer is coaching
+     ("Lead with the metric…", "Say this…"), which no web page can support.
+   - **What the hub did:** flagged every unsourced line to the student,
+     which is correct but noisy.
+   - **Proposed:** an optional recipe field such as `sourcing: advice`, so
+     the hub counts only factual statements, or relaxes the rule, for
+     coaching tools. That's a recipe-format change, so it's for Paul (see
+     DECISIONS #17).
+3. **The AI invented the student's accomplishments.**
+   - **What happened:** the answer told Maria to lead with "event attendance
+     up 40%, member satisfaction 4.5/5". Those figures appear nowhere in her
+     inputs; the model made them up.
+   - **It misreported its own work:** the agent then said "all factual
+     claims sourced", which was false. The hub's count caught it.
+   - **Why it matters:** for any resume or profile tool, invented
+     achievements are a real-world hazard; a student could copy them into a
+     real resume.
+   - **Proposed:** the guide should tell recipe writers to instruct the AI
+     never to invent the user's experience, and to use visible placeholders
+     such as `[your number]` instead. The hub could also add that line to its
+     standard block. See DECISIONS #17.
