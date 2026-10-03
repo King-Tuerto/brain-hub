@@ -1,4 +1,6 @@
-I'm Maria Lopez, a university student preparing to apply for a job, on 2026-10-03.
+I'm a university student preparing for a job application and interview on 2026-10-03.
+
+Company: Northwind Analytics
 
 Job posting:
 Associate Product Manager — Northwind Analytics (fictional company, test fixture)
@@ -31,28 +33,33 @@ Nice to have
 
 Salary range: $68,000–$78,000 plus bonus. Apply by November 15.
 
-Weaknesses I want help defending:
-I have never used SQL, only spreadsheets. My only leadership experience is running the PM Club events committee for one semester.
+My known weaknesses or gaps: (not provided)
 
-What you know about my background, skills and experience:
+What I already know from my own notes:
 (No personal notes available.)
 
-Based on the job posting, tell me what a strong resume for this role should
-include and emphasize given my background. Help me defend my known weaknesses
-so they come across as strengths or non-issues. Give me the questions I
-should prepare for in the interview, and give me smart, specific questions to
-ask the interviewer that show I understand the role and the company.
+If my weaknesses are (not provided), pick the two or three gaps most common for
+this kind of role and say that is what you did.
+
+Look into the company briefly if it helps. Then tell me what a strong resume
+for this specific job should include — the skills, experience and keywords to
+highlight — using only what you know about me plus placeholders like [your
+project] where you don't. Next, help me defend my weaknesses with honest,
+confident framing I can use in an interview. Then give me the questions I
+should prepare for, from standard ones to questions specific to this role.
+Finally, give me smart, specific questions to ask the interviewer that show I
+understood the posting and did my homework on the company.
 
 Search the web for current information before answering, and cite what you find.
 
 ---
 Format your answer in Markdown with these sections, in this order, each as a "## " heading:
-- Resume Highlights
-- Defending Your Weaknesses
-- Interview Questions to Prepare For
-- Smart Questions to Ask
+- Resume essentials
+- Defending your weaknesses
+- Questions to prepare for
+- Smart questions to ask
 - Summary
-Every factual claim must include a source link in Markdown form [title](https://…). If you cannot source a claim, mark it [unverified].
+Every factual statement (figures, dates, names, statistics, quotations, claims about real organisations) must include a source link in Markdown form [title](https://…), or be marked [unverified]. Advice and recommendations do not need sources.
 Statements about your own method or about what you could not verify are not factual claims: start them with "Note:".
 Never invent facts about me (numbers, achievements, dates, names). Where a real detail of mine is needed and you do not have it, write a placeholder like [your number].
 End with "## Summary": 2–3 sentences someone could search for later.

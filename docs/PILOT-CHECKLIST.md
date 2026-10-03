@@ -8,6 +8,20 @@ real device has proved it.
 
 Format: **item** — why emulation can't prove it — phase added.
 
+## Prove first (Paul, October 3, 2026)
+
+- **Real Supabase brain: save and re-find.**
+  - **The test:** a student with a real, upgraded Express brain connects
+    the hub, runs a tool (company-analysis), and saves the result. They then
+    find it again three ways: in Home's recent list, through brain search,
+    and by running the tool again for the same company and seeing the saved
+    summary in the prompt.
+  - **Why it's unproven:** every test so far used either an in-memory fake
+    or the local stand-in, which is the real migration in PGlite, so real
+    Supabase Auth, the gateway, CORS, the deployed `search-brain` and
+    embeddings have never been exercised. Details are in the Phase 3 section
+    below. — Phase 5
+
 ## Manual (copy-paste) mode
 
 - **Copy prompt on iPhone Safari and the installed iPhone app**: iOS only

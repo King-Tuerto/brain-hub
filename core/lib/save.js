@@ -14,7 +14,7 @@ export function resolveTags(recipe, inputs, now) {
   return [...new Set(tags)]
 }
 
-export function buildSaveRow({ recipe, inputs, report, summary, sources, userId, now, tags, sourceCheck }) {
+export function buildSaveRow({ recipe, inputs, report, summary, sources, userId, now, tags, sourceCheck, check }) {
   const hub = {
     tool: recipe.id,
     tool_version: recipe.version,
@@ -27,6 +27,7 @@ export function buildSaveRow({ recipe, inputs, report, summary, sources, userId,
   }
   if (recipe.save?.type === 'profile') hub.profile_part = recipe.save.profile_part
   if (sourceCheck) hub.source_check = sourceCheck
+  if (check) hub.check = check
   return { user_id: userId, source: 'brain-hub', content: withContext(summary, recipe, inputs), metadata: { hub } }
 }
 

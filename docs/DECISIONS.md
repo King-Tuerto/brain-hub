@@ -283,6 +283,27 @@ directly. The hub calls them on the recipe's behalf.
     - **If Paul approves (b)–(e) plus #16:** revise the guide, then rerun
       Phase 4 with a fresh Sonnet agent to prove the revised guide.
 
+18. **Paul's answers on returning (October 3, 2026)** — DECIDED.
+    - **PRs #3 and #4:** merge both. Done, in that order.
+    - **#15:** accepted. The sourcing bar is ≥95% sourced or `[unverified]`,
+      with every gap shown to the student.
+    - **#16 and #17 (a)–(e):** all approved. "Never invent facts about me"
+      becomes a **standard rule the hub appends to every prompt**, not just
+      guide advice. Then the Phase 4 test is rerun with a fresh agent.
+    - **#8 (Supabase-only addresses):** OK.
+    - **The two accepted risks:** accepted (the open check may write one
+      empty row on an old open brain; Express detection may not fire on real
+      Supabase).
+    - **#9–#14:** accepted.
+    - **The stray Desktop folder:** Paul deleted it.
+    - **PILOT-CHECKLIST:** gains "real Supabase brain save and re-find".
+    - **Phase 5 (Checker):** build it through El Código → Nitpick. **Claude
+      merges it when Nitpick signs off.** The guide revision and the Phase 4
+      rerun ride on the same branch, so they ship with that merge.
+    - **STOP before Phase 6.** It changes the brain connector (the MCP
+      server in another repo), which the repo rule forbids. Claude writes up
+      what Phase 6 would change in the other repos and waits.
+
 ---
 
 **Phase 1 closed October 3, 2026.** Paul approved these decisions and

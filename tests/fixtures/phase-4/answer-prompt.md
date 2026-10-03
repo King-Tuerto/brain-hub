@@ -54,5 +54,4 @@ Format your answer in Markdown with these sections, in this order, each as a "##
 - Summary
 Every factual claim must include a source link in Markdown form [title](https://…). If you cannot source a claim, mark it [unverified].
 Statements about your own method or about what you could not verify are not factual claims: start them with "Note:".
-Never invent facts about me (numbers, achievements, dates, names). Where a real detail of mine is needed and you do not have it, write a placeholder like [your number].
 End with "## Summary": 2–3 sentences someone could search for later.

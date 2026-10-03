@@ -1,12 +1,12 @@
 // Brain Hub service worker. Network first for the app shell, so students always
 // get updates when online; the cache only matters when the network fails.
 // Never caches other origins (brain, AI, GitHub) or tool recipes.
-const CACHE = 'brain-hub-v2'
+const CACHE = 'brain-hub-v3'
 const SHELL = [
   './', 'index.html', 'manifest.json', 'icon.svg', 'icon-192.png', 'icon-512.png',
   'core/styles.css', 'core/app.js', 'core/sw-register.js',
   'core/lib/recipe.js', 'core/lib/prompt.js', 'core/lib/summary.js', 'core/lib/output.js',
-  'core/lib/brain.js', 'core/lib/ai.js', 'core/lib/plugins.js', 'core/lib/save.js', 'core/lib/store.js',
+  'core/lib/brain.js', 'core/lib/ai.js', 'core/lib/plugins.js', 'core/lib/save.js', 'core/lib/store.js', 'core/lib/checker.js',
   'core/vendor/js-yaml.mjs', 'core/vendor/marked.esm.js', 'core/vendor/purify.es.mjs',
 ]
 

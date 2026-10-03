@@ -9,6 +9,7 @@ import { createBrain, keyProblem, isSupabaseUrl } from './lib/brain.js'
 import { createAI } from './lib/ai.js'
 import { discoverTools, loadTools, repoFromLocation, parseRepo } from './lib/plugins.js'
 import { buildSaveRow, downloadFile, resolveTags, localDate } from './lib/save.js'
+import { claimsToCheck, buildCheckerPrompt, parseCheckerAnswer, scoreReport, grade } from './lib/checker.js'
 import { marked } from './vendor/marked.esm.js'
 import DOMPurify from './vendor/purify.es.mjs'
 
@@ -550,7 +551,7 @@ async function renderTool(id) {
       formError.hidden = false
       return
     }
-    st.result = null; st.answer = ''; st.noWebSearch = false
+    st.result = null; st.answer = ''; st.noWebSearch = false; st.checkAnswer = null; st.checkResult = null
     resultBox.replaceChildren()
     const mode = effectiveMode()
     const s = settings()
@@ -671,7 +672,7 @@ async function renderTool(id) {
           h('button', { class: 'primary', tid: 'use-answer', onclick: () => {
             const text = answer.value.trim()
             if (!text) { pasteHelp.hidden = false; answer.focus(); return }
-            st.answer = text; persist()
+            st.answer = text; st.checkAnswer = null; st.checkResult = null; persist()
             showResult(text)
           } }, 'Use this answer')),
         pasteHelp),
@@ -683,7 +684,7 @@ async function renderTool(id) {
     st.result = text
     persist()
     const parsed = parseOutput(text, recipe)
-    const sc = checkSources(text)
+    const sc = checkSources(text, { sourcing: recipe.sourcing })
     const body = h('div', { class: 'result', tid: 'result' })
     body.innerHTML = renderAnswer(text)
     body.querySelectorAll('a').forEach((a) => { a.target = '_blank'; a.rel = 'noopener noreferrer' })
@@ -711,6 +712,7 @@ async function renderTool(id) {
               recipe, inputs: st.inputs, report: text, summary: sum, sources: parsed.sources, userId,
               tags: [...new Set(tags.value.split(',').map((t) => t.trim().toLowerCase()).filter(Boolean))],
               sourceCheck: { claims: sc.claims, sourced: sc.sourced, unverified: sc.unverified, unsourced: sc.unsourced.length },
+              check: st.checkResult ?? undefined,
             })
             let res
             try { res = await b.save(row) } catch (e) { res = { ok: false, error: String(e?.message ?? e) } }
@@ -733,10 +735,90 @@ async function renderTool(id) {
         h('button', { tid: 'download-btn', onclick: () => {
           const f = downloadFile({ recipe, inputs: st.inputs, report: text })
           saveFile(f.fileName, f.text)
-        } }, 'Download')),
+        } }, 'Download'),
+        h('button', { tid: 'check-btn', onclick: () => { checkerBox.hidden = false; showChecker(text, checkerBox) } }, 'Check this answer')),
       savePanel,
+      checkerBox,
       b ? null : noBrainNudge()))
+    if (st.checkAnswer != null) { checkerBox.hidden = false; showChecker(text, checkerBox) }
     resultBox.scrollIntoView?.({ block: 'start' })
+  }
+
+  // ---- The Checker (Phase 5): rubric score + fixes, with an AI citation check.
+  const checkerBox = h('div', { tid: 'checker-panel', class: 'card', hidden: true })
+
+  function showChecker(text, box) {
+    const { checked } = claimsToCheck(text, recipe)
+    const citation = st.checkAnswer ? parseCheckerAnswer(st.checkAnswer, checked) : null
+    const usable = citation && citation.verdicts.length ? citation : null
+    const result = scoreReport(text, recipe, usable)
+    st.checkResult = usable ? { score: result.score, outOf: result.outOf, parts: result.parts, counts: result.counts, checked: result.checked } : null
+    persist()
+
+    const head = usable
+      ? `Score: ${result.score} / 100 — ${grade(result)}`
+      : `Score so far: ${result.score} / ${result.outOf} — the citation check has not been run yet`
+    const parts = h('p', { class: 'small muted', tid: 'checker-parts',
+      text: `Sections ${result.parts.sections}/20 · Sources present ${result.parts.sources}/30 · Claims supported ${result.parts.support == null ? '–' : result.parts.support}/50`
+        + (result.counts ? ` (${result.counts.SUPPORTED} supported, ${result.counts.PARTLY} partly, ${result.counts['NOT SUPPORTED']} not supported, ${result.counts.UNREACHABLE} unreachable)` : '') })
+    const fixes = result.fixes.length
+      ? h('ul', { tid: 'checker-fixes' }, result.fixes.map((f) => h('li', { 'data-kind': f.kind, text: f.text })))
+      : h('p', { tid: 'checker-fixes', text: 'No fixes needed.' })
+
+    const kids = [h('h2', { text: 'Check' }), h('p', { tid: 'checker-score' }, h('strong', { text: head })), parts, fixes]
+    if (citation && !citation.verdicts.length) {
+      kids.push(note('bad', 'checker-error', 'Could not find a verdict table in that answer. Ask the AI to reply with only the table, then paste it again.'))
+    }
+    if (!usable) kids.push(...citationStep(text, checked, box))
+    else kids.push(h('button', { class: 'ghost', tid: 'checker-redo', onclick: () => { st.checkAnswer = null; st.checkResult = null; persist(); showChecker(text, box) } }, 'Check again'))
+    box.replaceChildren(...kids)
+  }
+
+  function citationStep(text, checked, box) {
+    if (!checked.length) return [h('p', { class: 'muted', text: 'There are no sourced claims to check against their links.' })]
+    const prompt = buildCheckerPrompt(checked)
+    const s = settings()
+    const key = S.get('hub.openrouterKey', '')
+    const intro = h('p', { text: `Next, an AI with web access opens each of the ${checked.length} cited links and says whether it supports its claim.` })
+    const out = [h('h3', { text: 'Check the sources' }), intro]
+
+    if (s.aiMode === 'auto' && key && s.models?.length && s.paidSearch) {
+      const status = h('div', { role: 'status' })
+      out.push(h('button', { class: 'primary', tid: 'run-checker', onclick: async (ev) => {
+        const btn = ev.currentTarget
+        btn.disabled = true
+        status.replaceChildren(note('', null, 'Checking the links… this can take a few minutes.'))
+        const res = await createAI({ key }).run(prompt, { models: s.models, webSearch: true })
+        btn.disabled = false
+        if (!res.ok) { status.replaceChildren(note('bad', 'checker-error', aiErrorText(res))); return }
+        st.checkAnswer = res.text
+        showChecker(text, box)
+      } }, 'Check the sources'), status,
+      h('p', { class: 'help', text: 'Automatic web search finds pages by searching, which is weaker than opening each link. For a strict check, use copy-and-paste with an AI app that can browse.' }))
+    } else if (s.aiMode === 'auto') {
+      out.push(note('warn', 'checker-needs-web', 'Checking sources needs web access. Paid web search is off in your settings, so use your AI app instead (free):'))
+    }
+    const app = AI_APPS[s.aiApp] ?? AI_APPS.claude
+    const promptBox = h('textarea', { tid: 'checker-prompt', readonly: true, rows: 6, class: 'mono', 'aria-label': 'Checker prompt' })
+    promptBox.value = prompt
+    const copied = h('span', { class: 'small muted', role: 'status' })
+    const answer = h('textarea', { tid: 'checker-answer', rows: 6, 'aria-label': 'The checker’s answer', placeholder: 'Paste the AI’s verdict table here' })
+    out.push(
+      promptBox,
+      h('div', { class: 'row' },
+        h('button', { tid: 'copy-checker-prompt', onclick: async () => {
+          try { await navigator.clipboard.writeText(prompt); copied.textContent = 'Copied.' }
+          catch { promptBox.focus(); promptBox.select(); copied.textContent = 'Selected — now copy it.' }
+        } }, 'Copy check prompt'),
+        h('a', { class: 'btn', tid: 'checker-open-ai', href: app.url, target: '_blank', rel: 'noopener' }, `Open ${app.name}`),
+        copied),
+      answer,
+      h('button', { class: 'primary', tid: 'use-checker-answer', onclick: () => {
+        if (!answer.value.trim()) { answer.focus(); return }
+        st.checkAnswer = answer.value
+        showChecker(text, box)
+      } }, 'Score it'))
+    return out
   }
 
   render(h('section', { tid: 'screen-tool' },
@@ -791,6 +873,7 @@ function renderAdd() {
       h('p', {}, h('strong', { text: 'Brain search: ' }),
         h('span', { tid: 'summary-query', class: 'mono', text: sum.query ?? 'none — this tool never reads your brain' })),
       h('p', {}, h('strong', { text: 'Web search: ' }), h('span', { tid: 'summary-websearch', text: sum.webSearch })),
+      h('p', {}, h('strong', { text: 'Sources: ' }), h('span', { tid: 'summary-sourcing', text: sum.sourcing })),
       sum.warnings.length ? note('warn', 'summary-warning', ...sum.warnings.map((w) => h('p', { text: w }))) : null,
       h('button', { class: 'primary', tid: 'install-btn', onclick: () => {
         const local = (S.get('hub.localTools', []) ?? []).filter((t) => t.id !== r.id)
