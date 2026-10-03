@@ -246,6 +246,43 @@ directly. The hub calls them on the recipe's behalf.
     - Run 3 (`deere/answer.md`) is the Phase 3 real-run fixture. Runs 1 and 2
       are regression fixtures.
 
+16. **Proposed guide change (not made): brain-query advice** (El Código,
+    Phase 4, Paul away). **⚑ For Paul.**
+    - **The problem:** WIDGET-GUIDE §5 says queries should be 2–6 words. The
+      Sonnet agent followed it with a fixed four-word query, "resume
+      background skills experience". Without embeddings, search needs every
+      word in one note, so that query will rarely find anything.
+    - **The proposed change:** advise 1–3 distinctive words or an input
+      placeholder, and say why.
+    - **Why it isn't made yet:** changing the approved guide in the middle
+      of the Phase 4 test would muddy what the test proved.
+
+17. **Two proposed changes from Phase 4 (not made)** (El Código, Paul
+    away). **⚑ For Paul.**
+    - **(a) Optional `sourcing: advice`:** for coaching tools such as job
+      prep. The job-prep answer was 41/50 "unsourced" because advice can't
+      be cited.
+    - **(b) A standard rule against inventing the user's facts:** add a line
+      to the hub's standard block, and to the guide, such as *"Never invent
+      facts about me (numbers, achievements, dates); use a placeholder like
+      [your number]."* The Haiku answer invented a student's attendance and
+      satisfaction figures.
+    - **Recommendation:** (b) soon, because it's cheap and protects
+      students. (a) after the pilot shows how often it matters.
+    - **Nitpick's further guide weaknesses** (Phase 4 sign-off). None blocks
+      sign-off; all are guide-text changes for Paul.
+      - **(c) The prompt body is shared.** The Sonnet recipe says "I'm Maria
+        Lopez", so everyone who installs it would claim to be Maria. The
+        guide should say the body goes to every installer and must not
+        contain the author's personal details.
+      - **(d) No help choosing `web_search`.** `required` invites invented
+        links when the AI app can't browse. The guide should explain when
+        each value fits.
+      - **(e) Optional inputs.** The guide should tell authors to say what
+        the AI does with "(not provided)".
+    - **If Paul approves (b)–(e) plus #16:** revise the guide, then rerun
+      Phase 4 with a fresh Sonnet agent to prove the revised guide.
+
 ---
 
 **Phase 1 closed October 3, 2026.** Paul approved these decisions and
