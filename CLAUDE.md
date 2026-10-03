@@ -18,6 +18,10 @@ Forkable student command center. Read `docs/SPEC-v1.0.md`, then
   throwaway Postgres, or report them as unverified.
 - **TDD flow:** El Código specs → Nitpick test plan → El Código codes → Nitpick
   review. No freelancing outside it.
+- **Paul does no hands-on checks.** Every phase ends with automated browser
+  tests (`npm test`), at laptop size and in phone emulation, plus Nitpick's
+  written sign-off. Anything emulation can't prove goes on
+  `docs/PILOT-CHECKLIST.md`. PRs still wait for Paul's merge approval.
 - **Phone first.** Every screen must work at phone width.
 - **The brain contract is Express.** The hub targets `open-brain-express` main.
   Check that repo before assuming anything about the brain's schema or
