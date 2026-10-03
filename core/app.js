@@ -551,7 +551,7 @@ async function renderTool(id) {
       formError.hidden = false
       return
     }
-    st.result = null; st.answer = ''; st.noWebSearch = false; st.checkAnswer = null; st.checkResult = null
+    st.result = null; st.answer = ''; st.noWebSearch = false; st.checkAnswer = null; st.checkResult = null; st.checkOpen = false
     resultBox.replaceChildren()
     const mode = effectiveMode()
     const s = settings()
@@ -672,7 +672,7 @@ async function renderTool(id) {
           h('button', { class: 'primary', tid: 'use-answer', onclick: () => {
             const text = answer.value.trim()
             if (!text) { pasteHelp.hidden = false; answer.focus(); return }
-            st.answer = text; st.checkAnswer = null; st.checkResult = null; persist()
+            st.answer = text; st.checkAnswer = null; st.checkResult = null; st.checkOpen = false; persist()
             showResult(text)
           } }, 'Use this answer')),
         pasteHelp),
@@ -739,11 +739,13 @@ async function renderTool(id) {
           const f = downloadFile({ recipe, inputs: st.inputs, report: text })
           saveFile(f.fileName, f.text)
         } }, 'Download'),
-        h('button', { tid: 'check-btn', onclick: () => { checkerBox.hidden = false; showChecker(text, checkerBox) } }, 'Check this answer')),
+        h('button', { tid: 'check-btn', onclick: () => { st.checkOpen = true; persist(); checkerBox.hidden = false; showChecker(text, checkerBox) } }, 'Check this answer')),
       savePanel,
       checkerBox,
       b ? null : noBrainNudge()))
-    if (st.checkAnswer != null) { checkerBox.hidden = false; showChecker(text, checkerBox) }
+    // Reopen the check after the student comes back from their AI app, even if
+    // the phone reloaded the hub meanwhile (found in the Phase 7 guide run).
+    if (st.checkOpen || st.checkAnswer != null) { checkerBox.hidden = false; showChecker(text, checkerBox) }
     resultBox.scrollIntoView?.({ block: 'start' })
   }
 
