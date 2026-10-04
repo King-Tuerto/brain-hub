@@ -1,29 +1,44 @@
 ## Study Plan
 
-Since no exam date was provided, the study plan follows the syllabus week by week:
+Because no exam date was provided, this study plan uses week numbers to cover all four weeks from your syllabus:
 
-- **Week 1:** Supply and Demand
-- **Week 2:** Elasticity
-- **Week 3:** Consumer Choice
-- **Week 4:** Costs of Production
-- **Week 5:** Perfect Competition
+| Week | Topics |
+|------|--------|
+| Week 1 | Cell structure and organelles |
+| Week 2 | Cell membranes and transport |
+| Week 3 | Enzymes |
+| Week 4 | Cellular respiration |
 
-This plan covers all topics from your syllabus in the order they appear.
+You should spend roughly equal time on each week's material, dedicating time to reading, practice problems, and active recall of key concepts before moving to the next topic.
 
-## Week 1 Practice Questions
+## Practice Questions
 
-Note: The following questions cover supply and demand topics exclusive to Week 1. Elasticity (Week 2), consumer choice analysis (Week 3), production costs (Week 4), and market structures (Week 5) are reserved for their respective weeks.
+**Question 1:** Which of the following is a characteristic of eukaryotic cells but NOT prokaryotic cells?
+- (a) Cell membrane
+- (b) Ribosomes
+- (c) Nucleus
+- (d) Cytoplasm
 
-**Question 1:** Suppose a technological advance allows wheat farmers to produce more wheat with the same amount of land and labor. Draw or describe how this affects the market for wheat. Which curve shifts, in which direction, and what happens to equilibrium price and quantity?
+**Question 2:** The mitochondria is an organelle found in eukaryotic cells. Which of the following best describes its location within the cell?
+- (a) Within the nucleus
+- (b) Attached to the cell membrane
+- (c) Floating freely in the cytoplasm
+- (d) Part of the cell wall
 
-**Question 2:** The price of coffee rises sharply. Explain what might cause this price increase using supply and demand analysis. What would cause a shift in the demand curve for coffee versus a movement along the demand curve?
+**Question 3:** What is the primary function of ribosomes in a cell?
+- (a) Storing genetic material
+- (b) Synthesizing proteins
+- (c) Breaking down waste
+- (d) Controlling cell division
 
-**Question 3:** A government announces it will ban the import of a particular good. Using supply and demand, explain how this policy affects the equilibrium price and quantity of that good in the domestic market.
+**Question 4:** Name three organelles found in eukaryotic cells and briefly describe the primary role or location of each one.
 
-**Question 4:** At a farmers' market, apples are selling for $2 per pound and 50 pounds are sold. An economist observes that at $3 per pound, vendors would be willing to supply 80 pounds, but consumers would only want 30 pounds. Identify whether this represents a shortage or surplus, and explain what pressure this puts on price.
+**Question 5:** How do prokaryotic cells differ from eukaryotic cells in terms of internal organization? Name at least two key structural differences.
 
-**Question 5:** Two goods are complements (they are often consumed together, like peanut butter and jelly). If the price of peanut butter falls, what happens to the demand for jelly, and how does this affect the equilibrium in the jelly market?
+---
+
+**Verification Check:** Each of the five questions above has been reviewed against Week 1's topics (Cell structure and organelles). All five questions are answerable using only Week 1 material and do not require or preview concepts from Week 2 (Cell membranes and transport), Week 3 (Enzymes), or Week 4 (Cellular respiration).
 
 ## Summary
 
-Since your exam date was not provided, this study plan covers all five weeks of your syllabus sequentially: Supply and Demand, Elasticity, Consumer Choice, Costs of Production, and Perfect Competition. The five practice questions for Week 1 focus exclusively on foundational supply and demand concepts—equilibrium, shifts versus movements along curves, market pressures, and how one market's changes affect related markets—without overlapping into elasticity or later topics.
+These five practice questions focus on fundamental concepts from Week 1: distinguishing prokaryotic and eukaryotic cell types, identifying key organelles, understanding their basic roles, and describing cell structures. They are designed to build your foundational understanding before advancing to more complex topics like membrane structure and cellular processes in later weeks.

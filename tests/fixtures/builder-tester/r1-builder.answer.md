@@ -1,42 +1,43 @@
 ## Steps
 
-1. Takes in the pasted class syllabus and, if the student knows it yet, the exam date.
-2. If no exam date is given, works out the plan from the syllabus alone instead of from a countdown to an exam.
-3. Breaks the syllabus into a week-by-week study plan, one week's topics at a time, up to the exam date (or through the whole syllabus if there is no exam date).
-4. Looks at only the first week's topics in that plan.
-5. Writes exactly five practice questions drawn only from those first-week topics.
-6. Returns the plan, the questions, and a short summary.
+1. The student pastes their class syllabus and, if they already know it, their exam date.
+2. The tool reads the syllabus to find each week's topics, in the order they appear.
+3. If an exam date was given, it lays out one entry per week from today through the week of the exam; if no exam date was given, it numbers the weeks instead (Week 1, Week 2, …) and says why.
+4. It writes 5 practice questions drawn only from the first week's topics.
+5. It returns the Study Plan, the Practice Questions, and a closing Summary.
+
+Spec changed: no
 
 ## Spec
 
-**Tool name:** Study Plan Builder — turns a pasted class syllabus into a week-by-week study plan with five practice questions on the first week's topics.
+**Tool name:** Exam Study Planner — turns a pasted syllabus into a week-by-week study plan up to the exam date, ending with 5 practice questions on the first week's topics.
 
 **Inputs:**
-- Paste your class syllabus (required). Example: "Week 1: Intro to Macroeconomics. Week 2: Supply and Demand. Week 3: Market Structures. Week 4: National Income Accounting..."
-- Exam date (optional). Example: "2026-12-15"
+- **Paste your class syllabus** (required) — example: "Week 1: Supply and demand; Week 2: Market structures; Week 3: Elasticity; …"
+- **Exam date** (optional) — example: "2026-12-10"
 
-**Output:** the answer must have these section headings, in this order:
-1. **Study Plan** — a week-by-week breakdown, one entry per week, each naming the topics to study that week, drawn from the syllabus.
-2. **Week 1 Practice Questions** — exactly five questions based only on the first week's topics.
-3. **Summary** — 2–3 sentences wrapping up the plan.
+**Output** — the answer must have these sections, in order:
+1. **Study Plan** — one entry per week, each naming that week's topics taken from the syllabus. If an exam date was given, weeks are dated from today through the exam week. If not, weeks are numbered instead.
+2. **Practice Questions** — exactly 5 questions, all based only on the first week's topics.
+3. **Summary** — added automatically by the hub; 2–3 sentences.
 
 **Acceptance criteria:**
-- A1: The Study Plan section has one entry for every week between now and the exam date, when an exam date was given.
-- A2: When no exam date was given, the Study Plan section still covers every topic in the syllabus, organized week by week, and says it planned this way because no exam date was given.
-- A3: Every week's entry in the Study Plan names only topics that actually appear in the pasted syllabus — nothing from outside it.
-- A4: The Week 1 Practice Questions section contains exactly five questions, and every one is based only on the topics listed for the first week.
+- A1: The Study Plan has one entry for every week from today through the week containing the exam date, when an exam date was given.
+- A2: When the exam date is left blank, the Study Plan is organized by week number instead of calendar dates, and the answer says it did this because no exam date was given.
+- A3: Every topic named in the Study Plan comes from the pasted syllabus, in the order the syllabus presents them.
+- A4: The Practice Questions section contains exactly 5 questions, all about topics from the first week of the plan.
 - A5: The answer ends with a Summary section.
 
-**Blank inputs:** If the exam date is left blank, the tool does not guess a date. It builds the study plan from the syllabus alone (see A2) and says in the Study Plan section that it did so because no exam date was given yet.
+**Blank inputs:** If the exam date is left blank, the tool does not invent or guess one. It builds the plan using week numbers instead of dates and tells the student it did so because no exam date was given.
 
 ## Recipe
 
 ```recipe
 ---
 recipe_format: 1
-id: study-plan-builder
-name: Study Plan Builder
-description: Turns your pasted class syllabus into a week-by-week study plan plus 5 practice questions on week 1.
+id: exam-study-planner
+name: Exam Study Planner
+description: Turn your syllabus into a week-by-week study plan until your exam, plus 5 practice questions on week one.
 version: 1.0.0
 author: Brain Hub student
 permissions: [run_ai]
@@ -47,17 +48,16 @@ inputs:
     label: Paste your class syllabus
     type: long_text
     required: true
-    help: Paste the whole syllabus, including the week-by-week topic list if it has one.
+    help: Include the topics or schedule listed for each week or unit.
   - id: exam_date
     label: Exam date
     type: text
     required: false
-    placeholder: "2026-12-15"
-    help: Leave blank if you don't know it yet.
+    placeholder: 2026-12-10
 output:
-  sections: [Study Plan, Week 1 Practice Questions]
+  sections: [Study Plan, Practice Questions]
 ---
-I'm a university student at the start of a semester, using my syllabus to build a study plan.
+I'm a university student using this tool at the start of the semester.
 
 Today's date: {{today}}
 
@@ -66,21 +66,22 @@ My syllabus:
 
 My exam date: {{exam_date}}
 
-If my exam date is (not provided), don't guess one. Instead, build the study plan
-from the syllabus alone: cover every topic in it, organized week by week, and say
-that this is what you did because no exam date was given yet.
+If my exam date is (not provided), do not invent one. Build the plan using week
+numbers instead (Week 1, Week 2, and so on) covering every week my syllabus
+lists, and say in the Study Plan that you used week numbers because no exam
+date was given.
 
-Break the syllabus into a week-by-week study plan, one week at a time, from now
-until the exam date (or through the whole syllabus if there is no exam date),
-naming the topics to study each week. Use only topics that appear in the
-syllabus I pasted.
+If my exam date is provided, build the plan with one entry for every week from
+today up to and including the week of my exam date, using the topics from my
+syllabus for each week in the order the syllabus presents them. If the
+syllabus has more or fewer weeks than fit before the exam date, say so.
 
-Then look at only the first week's topics in that plan and write exactly five
-practice questions based on them.
+Give me 5 practice questions based only on the first week's topics from my
+syllabus.
 ```
 
-study-plan-builder.recipe.md
+exam-study-planner.recipe.md
 
 ## Summary
 
-Study Plan Builder is a Brain Hub recipe that turns a pasted syllabus (and an optional exam date) into a week-by-week study plan and five first-week practice questions. When no exam date is given, it plans across the whole syllabus instead of guessing a deadline. The spec defines three required output sections (Study Plan, Week 1 Practice Questions, Summary) and five acceptance criteria a Tester can check directly against the answer.
+Built a Brain Hub recipe called Exam Study Planner that turns a pasted syllabus into a week-by-week plan up to a given exam date, falling back to numbered weeks when the date is unknown, and closes with 5 practice questions on week one's topics. The spec sets 5 acceptance criteria (A1–A5) covering week coverage, the blank-exam-date fallback, syllabus-sourced topics, exactly 5 practice questions, and the final Summary.

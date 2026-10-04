@@ -1,29 +1,34 @@
 ## Study Plan
 
-Since your exam date was not provided, I've built this study plan to cover every topic in your syllabus, organized week by week:
+Since your exam date is not provided, this plan uses week numbers from your syllabus to ensure comprehensive coverage of all topics.
 
-- **Week 1** (starting 2026-10-04): Cell Structure and Function
-- **Week 2**: Cell Membranes and Transport
-- **Week 3**: Cellular Respiration
-- **Week 4**: Photosynthesis
-- **Week 5**: DNA Replication
+| Week | Topic | Focus Areas |
+|------|-------|------------|
+| **Week 1** | Cell structure and organelles | Prokaryotic vs. eukaryotic cells; major organelles (nucleus, mitochondria, endoplasmic reticulum, Golgi apparatus, lysosomes, chloroplasts); cell wall vs. cell membrane; cytoplasm |
+| **Week 2** | Cell membranes and transport | Phospholipid bilayer structure; selectively permeable membranes; passive transport (diffusion, osmosis); active transport; cell membrane proteins |
+| **Week 3** | Enzymes | Enzyme structure and function; catalysts; factors affecting enzyme activity (temperature, pH, substrate concentration); enzyme inhibition |
+| **Week 4** | Cellular respiration | Glycolysis; Krebs cycle; electron transport chain; ATP production; aerobic vs. anaerobic respiration |
 
-Note: I organized the plan sequentially through all five weeks because no exam date was specified. If an exam date is set later, you can adjust the pacing accordingly.
+**Study strategy:** Dedicate [X] hours per week. Review lecture notes and textbook sections on each topic, then complete the practice questions provided. Create flashcards for organelle functions and enzyme types.
 
-## Week 1 Practice Questions
+---
 
-Based on the "Cell Structure and Function" topic for Week 1, here are five practice questions:
+## Practice Questions
 
-1. What are the main differences between prokaryotic and eukaryotic cells, and what organelles are found only in eukaryotic cells? [unverified]
+**Based on Week 1: Cell structure and organelles**
 
-2. Describe the structure and function of the cell membrane and explain why it is often called a "selectively permeable barrier." [unverified]
+1. A cell biologist observes a cell under a microscope and notes the presence of a membrane-bound nucleus, multiple mitochondria, and rough endoplasmic reticulum with attached ribosomes. Which type of cell is this most likely to be, and why would rough endoplasmic reticulum be abundant in this cell?
 
-3. What is the role of the nucleus in a eukaryotic cell, and what major structures does it contain? [unverified]
+2. Describe the key structural differences between a prokaryotic cell and a eukaryotic cell. What advantages might the compartmentalization of organelles provide to a eukaryotic cell?
 
-4. Compare and contrast the structure and functions of mitochondria and chloroplasts, including their roles in cellular energy processes. [unverified]
+3. The Golgi apparatus is often described as the "packaging and shipping center" of the cell. Explain what structures it receives from other organelles and what role it plays in modifying and transporting materials.
 
-5. Explain how the ribosome's structure relates to its function in synthesizing proteins within the cell. [unverified]
+4. A plant cell and an animal cell are placed in solutions with different salt concentrations. Explain how the presence of a cell wall in the plant cell would affect its response to a hypertonic solution compared to an animal cell's response.
+
+5. Mitochondria are sometimes called the "powerhouses" of the cell. What is the relationship between mitochondrial structure (cristae, inner and outer membranes) and its function in ATP production?
+
+---
 
 ## Summary
 
-This study plan covers all five weeks of your syllabus sequentially because no exam date was provided. Week 1 focuses on foundational cell structure and function concepts, supported by five practice questions designed to test your understanding of prokaryotic versus eukaryotic cells, membrane properties, the nucleus, organelles, and ribosomes.
+This study plan covers all four weeks of your syllabus using week-based milestones since no exam date was provided, with specific focus areas for each topic to guide your preparation. The practice questions for Week 1 emphasize the structural and functional relationships between organelles and cellular processes. Plan to revisit these questions throughout the semester as you progress through later topics, since many cellular functions depend on the foundational organelle knowledge from Week 1.

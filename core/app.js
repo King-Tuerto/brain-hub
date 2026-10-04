@@ -851,7 +851,7 @@ async function renderTool(id) {
         recipe.sourcing === 'none' ? null : h('button', { tid: 'check-btn', onclick: () => { st.checkOpen = true; persist(); checkerBox.hidden = false; showChecker(text, checkerBox) } }, 'Check this answer'),
         copyStatus),
       recipeProblems.length ? note('warn', 'recipe-problems',
-        h('p', { text: 'This answer contains a recipe the hub cannot install yet. Paste these problems back to the Builder (in "Tester\u2019s fixes and your current recipe") and run it again:' }),
+        h('p', { text: 'This answer contains a recipe the hub cannot install yet. Paste these problems back to the Builder (in "Tester\u2019s fixes, your Spec and your recipe") and run it again:' }),
         h('ul', { class: 'errors' }, recipeProblems.flat().map((e) => h('li', { text: e })))) : null,
       savePanel,
       checkerBox,

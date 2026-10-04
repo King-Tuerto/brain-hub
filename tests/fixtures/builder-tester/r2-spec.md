@@ -1,21 +1,19 @@
-**Study Plan Builder** — turns a pasted class syllabus into a week-by-week study plan plus five practice questions on the first week's topics.
+**Tool name:** Exam Study Planner — turns a pasted syllabus into a week-by-week study plan up to the exam date, ending with 5 practice questions on the first week's topics.
 
-**Inputs**
-- Paste your class syllabus (required). Example: "Week 1: Cell structure. Week 2: Membrane permeability. Week 3–4: Respiration and photosynthesis..."
-- Exam date (optional). Example: "2026-12-15"
+**Inputs:**
+- **Paste your class syllabus** (required) — example: "Week 1: Supply and demand; Week 2: Market structures; Week 3: Elasticity; …"
+- **Exam date** (optional) — example: "2026-12-10"
 
-**Output** (sections, in order):
-1. **Study Plan** — one entry per week, each naming the topics to study that week, built only from topics that appear in the pasted syllabus.
-2. **Week 1 Practice Questions** — exactly five questions, based only on the first week's topics as listed in the Study Plan.
-3. **Summary** (added automatically by the hub) — 2–3 sentences.
+**Output** — the answer must have these sections, in order:
+1. **Study Plan** — one entry per week, each naming that week's topics taken from the syllabus. If an exam date was given, weeks are dated from today through the exam week. If not, weeks are numbered instead.
+2. **Practice Questions** — exactly 5 questions, all about topics from the first week only. No question may mention, preview, or require understanding of any topic from week 2 or later — not even as an "introduction to" a later topic or as background needed to answer.
+3. **Summary** — added automatically by the hub; 2–3 sentences.
 
-**Acceptance criteria**
-- A1: When an exam date is given, the Study Plan has exactly one entry for every whole week counted from the run date to the exam date (whole days between the two dates, divided by 7, rounded down) — for example, a run on 2026-10-04 with an exam on 2027-02-26 gives 20 entries, not 19.
-- A2: Every topic named anywhere in the Study Plan appears in the pasted syllabus; no outside topics are introduced.
-- A3: When the exam date is left blank, the Study Plan instead covers every topic in the syllabus, organized week by week, and the answer states that no exam date was given yet.
-- A4: Every one of the five Week 1 Practice Questions tests only a topic assigned to Week 1 in the Study Plan; none tests a topic assigned to a later week, even when that later topic overlaps with a Week 1 topic (e.g. a Week 1 question must not stray into membrane permeability if that's a Week 2 topic, or into respiration/photosynthesis if those are Weeks 3–4 topics).
-- A5: The Week 1 Practice Questions section contains exactly five questions, no more and no fewer.
-- A6: The Study Plan presents weeks in order, starting from the current week.
+**Acceptance criteria:**
+- A1: The Study Plan has one entry for every week from today through the week containing the exam date, when an exam date was given.
+- A2: When the exam date is left blank, the Study Plan is organized by week number instead of calendar dates, and the answer says it did this because no exam date was given.
+- A3: Every topic named in the Study Plan comes from the pasted syllabus, in the order the syllabus presents them.
+- A4: The Practice Questions section contains exactly 5 questions, all about topics from the first week of the plan only, with no question mentioning or depending on any topic from week 2 or later.
+- A5: The answer ends with a Summary section.
 
-**Blank inputs**
-- Exam date left blank: build the Study Plan from the syllabus alone, covering every syllabus topic organized week by week, and state in the answer that this was done because no exam date was given.
+**Blank inputs:** If the exam date is left blank, the tool does not invent or guess one. It builds the plan using week numbers instead of dates and tells the student it did so because no exam date was given.

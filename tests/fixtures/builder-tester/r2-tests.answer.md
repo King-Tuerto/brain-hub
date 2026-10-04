@@ -1,71 +1,80 @@
 ## Test plan
 
-| Criterion | What it checks | Covered by |
-|---|---|---|
-| A1 | With an exam date, exactly one Study Plan entry per whole week from run date to exam date (days ÷ 7, rounded down) | Test 1, Test 3 |
-| A2 | Every Study Plan topic comes from the pasted syllabus | Test 1, Test 2, Test 3 |
-| A3 | With no exam date, every syllabus topic is covered week by week, and the answer says no exam date was given | Test 2 |
-| A4 | Each Week 1 question tests only Week 1 topics, never an overlapping later-week topic | Test 1, Test 2, Test 3 |
-| A5 | Exactly five Week 1 Practice Questions | Test 1, Test 2, Test 3 |
-| A6 | Weeks in order, starting from the current week | Test 1, Test 2, Test 3 |
+**Changes from last time:**
+- **A4 practice-question check, in Tests 1, 2 and 3 (one line each).** The Spec now says no practice question may *mention*, *preview* or *depend on* a week-2-or-later topic. That includes using it as an "introduction to" a later topic or as background needed to answer. The old check only asked whether a question was *about* a later topic. A question can be about week 1 and still name or rely on a later topic, so the old check would have let that through. Each of those lines now checks for that too. The other wording of that line stays the same.
+- No other changes. A1, A2, A3 and A5 and the section order read the same as before, so every other check is copied word for word. No new criterion was added, so no new check was added.
 
-**Before you start:** A1 depends on the day you run the tool. The expected counts below assume you run every test on **2026-10-04**. If you run on another day, recount: whole days from [your run date] to the exam date, divide by 7, round down. Write that number in place of the one given.
+**Coverage:**
+
+| Criterion | Covered by |
+|---|---|
+| A1: one entry per week from today through the exam week | Test 1, Test 3 |
+| A2: week numbers and an explanation when the exam date is blank | Test 2 |
+| A3: topics come only from the syllabus, in syllabus order | Test 1, Test 2, Test 3 |
+| A4: exactly 5 questions, first-week topics only, no mention of or dependence on later topics | Test 1, Test 2, Test 3 |
+| A5: the answer ends with a Summary section | Test 1, Test 2, Test 3 |
+| Blank inputs: no invented exam date | Test 2 |
 
 ## Test cases
 
-### Test 1 — normal use
+### Test 1: normal use
 
 **Inputs to type**
-- Paste your class syllabus: `Week 1: Cell structure and organelles. Week 2: Membrane permeability and transport. Week 3: Cellular respiration. Week 4: Photosynthesis. Week 5: DNA replication. Week 6: Protein synthesis.`
-- Exam date: `2026-11-15`
+- **Paste your class syllabus:** `Week 1: Supply and demand; Week 2: Market structures; Week 3: Elasticity; Week 4: Consumer choice; Week 5: Costs of production; Week 6: Perfect competition`
+- **Exam date:** `2026-11-12`
 
 **Expected**
-- [ ] [A1] The Study Plan has exactly **6** entries (42 days ÷ 7 = 6, if run on 2026-10-04) — not 5, not 7.
-- [ ] [A2] Every topic in the Study Plan is one of: cell structure/organelles, membrane permeability/transport, cellular respiration, photosynthesis, DNA replication, protein synthesis. Nothing else (e.g. no mitosis, genetics, ecology).
-- [ ] [A6] Weeks are listed in order (Week 1, Week 2, …), and the first entry is the current week.
-- [ ] [A5] The Week 1 Practice Questions section has exactly 5 questions — count them.
-- [ ] [A4] All 5 questions are about cell structure/organelles (or whatever the Study Plan put in Week 1). None asks about membrane transport, respiration or photosynthesis — even a question on mitochondria must be about the organelle, not about how respiration works.
-- [ ] Sections appear in order: Study Plan, Week 1 Practice Questions, Summary.
+- [ ] [A1] The Study Plan shows calendar dates, not just week numbers.
+- [ ] [A1] The first entry covers today (2026-10-04) or the week that contains it.
+- [ ] [A1] The last entry is the week that contains 2026-11-12. No entry comes after that week.
+- [ ] [A1] There are no missing weeks between the first and last entry. That means 6 entries if weeks start on Sunday 2026-10-04, or 7 if the plan uses Monday-to-Sunday weeks and counts this partial week.
+- [ ] [A3] Every topic named in the plan is one of the six syllabus topics. No outside topics are added, such as "Monopoly", "GDP" or "Game theory".
+- [ ] [A3] The topics appear in syllabus order: Supply and demand, Market structures, Elasticity, Consumer choice, Costs of production, Perfect competition.
+- [ ] [A4] The Practice Questions section has exactly 5 questions. Count them.
+- [ ] [A4] All 5 questions are about supply and demand. None of them is about elasticity, market structures or any later topic. No question mentions or previews a later topic, including as an "introduction to" it, and no question needs knowledge of a later topic to answer. For example, no question asks how "elastic" demand is.
+- [ ] [A5] The very last section of the answer is titled Summary. Nothing else comes after it.
+- [ ] [Order] The sections come in this order: Study Plan, Practice Questions, Summary.
 
-### Test 2 — edge case: every optional input blank
+### Test 2: edge case, optional input left blank
 
 **Inputs to type**
-- Paste your class syllabus: `Week 1: Supply and demand. Week 2: Elasticity. Week 3: Consumer choice. Week 4: Costs of production. Week 5: Perfect competition.`
-- Exam date: leave blank
+- **Paste your class syllabus:** `Week 1: Cell structure and organelles; Week 2: Cell membranes and transport; Week 3: Enzymes; Week 4: Cellular respiration`
+- **Exam date:** leave blank
 
 **Expected**
-- [ ] [A3] The answer clearly says no exam date was given (any wording), and that the plan was built from the syllabus alone.
-- [ ] [A3] All 5 syllabus topics appear somewhere in the Study Plan — none dropped. Tick each: supply and demand, elasticity, consumer choice, costs of production, perfect competition.
-- [ ] [A2] No topic appears that is not in the syllabus (e.g. no monopoly, game theory, macroeconomics).
-- [ ] [A6] Weeks are in order, starting with the current week / Week 1.
-- [ ] [A5] Exactly 5 Week 1 Practice Questions.
-- [ ] [A4] All 5 questions are about supply and demand only. None asks about elasticity (a close neighbour — watch for words like "elastic", "percentage change in quantity" or "price sensitivity").
-- [ ] The tool does not stop to ask for an exam date; it still produces a full answer.
+- [ ] [A2] The Study Plan entries are labelled by week number, such as Week 1 to Week 4. They have no calendar dates.
+- [ ] [A2] The answer says clearly that it used week numbers because no exam date was given.
+- [ ] [A2 / Blank inputs] The answer never states or guesses an exam date anywhere. That includes "assuming your exam is on …" and "probably in December".
+- [ ] [A3] All four topics appear in this order: Cell structure and organelles, Cell membranes and transport, Enzymes, Cellular respiration. No topic is added that is not in the syllabus, such as photosynthesis or DNA replication.
+- [ ] [A4] The Practice Questions section has exactly 5 questions.
+- [ ] [A4] All 5 questions are about cell structure and organelles. None is about membranes, enzymes or respiration. No question mentions or previews those later topics, including as an "introduction to" them, and none needs knowledge of them to answer. For example, no question asks what the mitochondria do in cellular respiration, or how things cross the cell membrane.
+- [ ] [A5] The answer ends with a Summary section.
 
-### Test 3 — tricky: messy, out-of-order syllabus and a very close exam
+### Test 3: tricky case, a long syllabus and an exam that is only a few weeks away
 
 **Inputs to type**
-- Paste your class syllabus: `BIO 101 — Fall. Office hours Tues. Grading: 40% exams, 60% labs. Week 3–4: Respiration and photosynthesis. Week 1: Cell structure. Week 5: Review. Week 2: Membrane permeability. Lab safety quiz due before Week 1 lab. Late work policy: see Canvas.`
-- Exam date: `2026-10-20`
+- **Paste your class syllabus:** `Week 1: Business model canvas, Value proposition; Week 2: Customer discovery; Week 3: Lean startup and MVPs; Week 4: Competitive analysis; Week 5: Pricing strategy; Week 6: Go-to-market; Week 7: Unit economics; Week 8: Fundraising basics; Week 9: Pitch decks; Week 10: Scaling and growth`
+- **Exam date:** `2026-10-21`
 
 **Expected**
-- [ ] [A1] The Study Plan has exactly **2** entries (16 days ÷ 7 = 2.28, rounded down = 2, if run on 2026-10-04) — not 3, and not one entry per syllabus week.
-- [ ] [A2] The Study Plan only uses topics from the syllabus (cell structure, membrane permeability, respiration, photosynthesis, review). Admin text is not treated as a study topic: no "grading", "office hours", "late work policy" or "lab safety" as a week's topic.
-- [ ] [A6] The 2 entries are in time order and start with the current week, even though the syllabus listed Week 3–4 first.
-- [ ] [A6] Cell structure is in the first entry (the syllabus's Week 1), not respiration/photosynthesis just because they were pasted first.
-- [ ] [A5] Exactly 5 Week 1 Practice Questions.
-- [ ] [A4] All 5 questions test only the topics the Study Plan put in its first week. None strays into a topic the plan put in a later week (e.g. if membrane permeability is in week 2, no question on the cell membrane letting things through; no questions on respiration or photosynthesis unless the plan put them in week 1).
+- [ ] [A1] The plan shows calendar dates and ends with the week that contains 2026-10-21. It has 3 entries, or 4 if it uses Monday-to-Sunday weeks and counts this partial week. It does not run on to 10 weeks just because the syllabus has 10.
+- [ ] [A1] The first entry covers today (2026-10-04) or the week that contains it, and no week is skipped.
+- [ ] [A3] Every topic named comes from the syllabus. No topic is invented.
+- [ ] [A3] Topics appear in syllabus order. "Business model canvas" comes before "Value proposition", which comes before "Customer discovery", and so on. A later topic never appears in an earlier week than one that comes before it in the syllabus.
+- [ ] [A4] The Practice Questions section has exactly 5 questions, even though the syllabus is long.
+- [ ] [A4] All 5 questions are about the business model canvas or the value proposition, the first week's two topics. None is about customer discovery or anything later. No question mentions or previews a later topic, including as an "introduction to" it, and none needs knowledge of one to answer. For example, no question asks you to test a value proposition with customer interviews, build an MVP or set a price.
+- [ ] [A5] The answer ends with a Summary section.
 
 ## How to run them
 
-1. Open the Study Plan Builder tool in Brain Hub.
-2. Run it once for **Test 1**: type exactly the inputs listed above (copy-paste them). Copy the whole answer it gives you.
-3. Start the tool fresh and run it once for **Test 2** with exactly those inputs (leave Exam date empty). Copy the whole answer.
-4. Start the tool fresh and run it once for **Test 3** with exactly those inputs. Copy the whole answer.
-5. If you did not run on 2026-10-04, recount the A1 numbers for Tests 1 and 3 (days to the exam ÷ 7, rounded down) and fix them in the test cases before grading.
-6. Open a **new chat** — not the chat that built the tool.
-7. Paste "Tester 2 — grade" into it, then paste this Spec, these test cases, and the three answers, labelled **Test 1**, **Test 2** and **Test 3**.
+1. Open the Exam Study Planner tool.
+2. Run it once for **Test 1**. Type exactly the inputs listed under Test 1, nothing more and nothing less. Copy the whole answer.
+3. Start the tool fresh and run it once for **Test 2**. Paste the syllabus and leave the Exam date box empty. Copy the whole answer.
+4. Start the tool fresh and run it once for **Test 3** with exactly the Test 3 inputs. Copy the whole answer.
+5. Open a **new chat**. Do not use the chat that built the tool.
+6. Open "Tester 2 — grade" there. Paste in this Spec, these three test cases, and the three answers, labelled **Test 1**, **Test 2** and **Test 3**.
+7. Let it grade each checklist item.
 
 ## Summary
 
-Three tests for the Study Plan Builder: a normal 6-week biology syllabus with an exam date, a blank-exam-date economics syllabus, and a messy out-of-order syllabus with an exam only 2 weeks away. Together they cover all six acceptance criteria, especially the whole-week count (A1), no outside topics (A2), and Week 1 questions that never drift into later-week topics (A4).
+These are the retest cases for the Exam Study Planner, kept the same as last time except for the A4 practice-question check. That check now also fails any question that mentions, previews or depends on a week-2-or-later topic. The tests cover the dated plan through the exam week, the week-numbered plan when no exam date is given, topics kept in syllabus order, exactly 5 first-week questions, and the closing Summary.

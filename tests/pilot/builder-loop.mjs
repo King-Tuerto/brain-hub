@@ -1,7 +1,7 @@
 // Builds each prompt in the Builder → Tester loop with the hub's own code, the
 // way a student's taps would, so a real AI can answer it. Not part of npm test.
 //
-//   node tests/pilot/builder-loop.mjs <dir> builder <round> [--from-grade <file> --recipe <file>]
+//   node tests/pilot/builder-loop.mjs <dir> builder <round> [--from-grade <file> --spec <file> --recipe <file>]
 //   node tests/pilot/builder-loop.mjs <dir> extract <round>          (recipe + Spec from Builder answer)
 //   node tests/pilot/builder-loop.mjs <dir> tests <round> <spec-file>  (Tester 1 prompt)
 //   node tests/pilot/builder-loop.mjs <dir> runs <round> <recipe-file> <inputs.json>  (one prompt per test)
@@ -37,7 +37,7 @@ const { sectionText, recipesIn } = new Function('parseRecipe', `${grab('fenceMap
 if (cmd === 'builder') {
   const inputs = JSON.parse(await read('0-request.json'))
   if (opt('from-grade')) {
-    inputs.fixes = `Fixes from the Tester:\n${sectionText(await read(opt('from-grade')), 'Fixes')}\n\nMy current recipe:\n${(await read(opt('recipe'))).trim()}`
+    inputs.fixes = `Fixes from the Tester:\n${sectionText(await read(opt('from-grade')), 'Fixes')}\n\nMy current Spec:\n${(await read(opt('spec'))).trim()}\n\nMy current recipe:\n${(await read(opt('recipe'))).trim()}`
   }
   const guide = await readFile(resolve(ROOT, 'WIDGET-GUIDE.md'), 'utf8')
   await writeFile(resolve(dir, `${round}-builder.prompt.md`), buildPrompt(await core('tool-builder'), inputs, { today: TODAY, widgetGuide: guide }))
@@ -58,7 +58,9 @@ if (cmd === 'extract') {
 
 if (cmd === 'tests') {
   const spec = (await read(rest[0])).trim()
-  await writeFile(resolve(dir, `${round}-tests.prompt.md`), buildPrompt(await core('tool-tester-write'), { spec }, { today: TODAY }))
+  // Retest: the previous round's Test cases section, so the bar stays fixed.
+  const previous_tests = opt('previous') ? sectionText(await read(opt('previous')), 'Test cases') : ''
+  await writeFile(resolve(dir, `${round}-tests.prompt.md`), buildPrompt(await core('tool-tester-write'), { spec, previous_tests }, { today: TODAY }))
   console.log(`${round}-tests.prompt.md`)
 }
 

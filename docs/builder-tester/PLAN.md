@@ -20,7 +20,7 @@ El Código → Nitpick discipline themselves.
 
 | Tool | Inputs | Sections | Role |
 |---|---|---|---|
-| `tool-builder` "Builder — make a tool" | `idea` (required), `users`, `fixes` (the Tester's fixes plus the current recipe, used when revising) | Steps, Spec, Recipe | **El Código.** It plans the steps, then writes a Spec meant for a tester who'll never see the recipe: inputs, output sections, acceptance criteria A1…A6, and blank-input behaviour. Then it writes the recipe in a fenced block, following the guide. On a revision it applies every fix, keeps the id and bumps the version. |
+| `tool-builder` "Builder — make a tool" | `idea` (required), `users`, `fixes` (the Tester's fixes plus the current Spec and recipe, used when revising) | Steps, Spec, Recipe | **El Código.** It plans the steps, then writes a Spec meant for a tester who'll never see the recipe: inputs, output sections, acceptance criteria A1…A6, and blank-input behaviour. Then it writes the recipe in a fenced block, following the guide. On a revision it applies every fix, keeps the id and bumps the version. |
 | `tool-tester-write` "Tester 1 — write the tests" | `spec` only | Test plan, Test cases, How to run them | **Nitpick, tests first.** It **refuses if the pasted text contains a recipe**, then writes 3 tests (normal, blank optional inputs, tricky). Each gives the exact inputs and visible checks tied to the criteria. |
 | `tool-tester-grade` "Tester 2 — grade the results" | `spec`, `test_cases`, `results` | Results, Fixes, Verdict | **Nitpick grades.** It grades only the given answers against the unchanged tests: PASS/FAIL per check with evidence, one fix per FAIL addressed to the Builder, and a verdict of "PASS — install it" or "FIX AND RETEST". It ignores any recipe pasted in. |
 
@@ -97,3 +97,40 @@ from these fixtures:
 - **Fix:** Builder with the fixes, then install v1.0.1 (it replaces the local
   copy), then the reruns, then Tester 2 showing PASS.
 - **Keep:** the recipe is downloaded for `plugins/`.
+
+## What the real runs taught us
+
+Three full attempts came before the final run. Each is kept under
+`tests/fixtures/builder-tester/attempt-N/`, and each one found a real
+weakness that was fixed before the next.
+
+- **Attempt 1 — the Summary clash.** The Spec forbade any section after
+  Practice Questions, but the hub always adds a Summary. Every run "failed"
+  through no fault of the tool. *Fix:* the Builder lists Summary last and
+  never forbids it.
+- **Attempt 2 — an uninstallable recipe.** The Builder wrote
+  `author: [your name]`, which YAML reads as a list, so the hub found no
+  recipe and the student would have seen no Install button and no reason.
+  *Fixes:* the Builder sets a plain author and never puts square brackets in
+  front matter; the hub now shows a "recipe-problems" note listing what is
+  wrong, ready to paste back to the Builder.
+- **Attempt 3 — a moving target.** Tester 1 wrote fresh tests every round
+  and the Builder renumbered criteria while claiming "Spec changed: no", so
+  rounds never converged. *Fixes:* the Builder must keep every criterion's
+  number and wording unless a fix requires a change; Tester 1 takes the
+  previous test cases and copies them word for word unless a criterion they
+  check changed. The bar stays fixed, the way El Código → Nitpick works.
+
+Nitpick's first review added hub fixes the runs then relied on: no false
+"no sources" warning on sourcing `none`; fence-aware section and recipe
+reading (nested code blocks); an unfenced recipe under `## Recipe` still
+installs; the hub refuses to give a Tester anything containing a recipe;
+`{{widget_guide}}` only in the prompt body; the phone clipboard flow in the
+guides.
+- **Final run, round 2 — the Spec was never sent back.** Even with the
+  revision rule, the Builder rewrote and renumbered every criterion. The
+  cause was structural: on a fix it received the Tester's fixes and the
+  recipe, but the criteria live only in the Spec, which it never saw. *Fix:*
+  the fixes box now takes the fixes, the current Spec and the recipe, and
+  the Builder starts the new Spec from a word-for-word copy. The drifted
+  round is kept as `attempt-4/`.

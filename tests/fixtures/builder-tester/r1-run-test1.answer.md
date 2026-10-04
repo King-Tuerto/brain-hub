@@ -1,30 +1,32 @@
 ## Study Plan
 
-Based on the exam date of 2026-12-15, here is your week-by-week study plan from today (2026-10-04) through exam day:
+You have six weeks from today until your exam on November 12, which aligns perfectly with your six-week syllabus. Here's your week-by-week study schedule:
 
-- **Study Week 1 (Oct 4–10):** Intro to Macroeconomics, scarcity and opportunity cost
-- **Study Week 2 (Oct 11–17):** Supply and Demand
-- **Study Week 3 (Oct 18–24):** Elasticity
-- **Study Week 4 (Oct 25–31):** Market Structures
-- **Study Week 5 (Nov 1–7):** National Income Accounting and GDP
-- **Study Week 6 (Nov 8–14):** Inflation and Unemployment
-- **Study Week 7 (Nov 15–21):** Fiscal Policy
-- **Study Week 8 (Nov 22–28):** Monetary Policy and the Federal Reserve
-- **Review Week 1 (Nov 29–Dec 5):** Comprehensive review of all topics
-- **Review Week 2 (Dec 6–14):** Practice exams and final preparation
+| Week | Dates | Topic |
+|------|-------|-------|
+| Week 1 | Oct 4–10 | Supply and Demand |
+| Week 2 | Oct 11–17 | Market Structures |
+| Week 3 | Oct 18–24 | Elasticity |
+| Week 4 | Oct 25–31 | Consumer Choice |
+| Week 5 | Nov 1–7 | Costs of Production |
+| Week 6 | Nov 8–12 | Perfect Competition |
 
-## Week 1 Practice Questions
+**Study approach:** Dedicate each week to learning and practicing that week's topic. By the end of each week, review the previous week's material to build cumulative knowledge. During Week 6, focus on practice exams and synthesis across all topics.
 
-1. Define scarcity in economic terms and explain why economists consider it a fundamental problem that all societies must address.
+## Practice Questions
 
-2. Suppose you have [X] hours to study this week. You are deciding between spending time on macroeconomics or on your other courses. What economic term describes the value of what you give up by choosing to study macroeconomics instead?
+Based on Week 1 (Supply and Demand), here are five practice questions:
 
-3. Explain the difference in focus between microeconomics and macroeconomics. Which field is concerned with the overall performance of the national economy?
+1. **Demand shift scenario:** If consumer income increases, how would this affect the demand curve for a normal good? Explain what happens to equilibrium price and quantity.
 
-4. A country has limited natural resources and must choose between investing in agricultural production or technology development. What principle does this choice illustrate, and why can't the country do both at full capacity?
+2. **Supply and demand equilibrium:** Define market equilibrium and explain why markets tend to move toward equilibrium price. What role do shortages and surpluses play in this process?
 
-5. Explain how the concept of opportunity cost applies to a student's decision about whether to attend college or enter the workforce immediately after high school.
+3. **Price ceiling/floor effects:** A government imposes a price ceiling on a good below the equilibrium price. What unintended consequences could result, and which groups are helped or hurt by this policy?
+
+4. **Determinants of supply:** Name three factors that could shift the supply curve for agricultural products and explain the direction of each shift.
+
+5. **Elasticity introduction:** If the price of a good increases and total revenue decreases, what does this tell you about the price elasticity of demand for that good? Explain why.
 
 ## Summary
 
-This study plan divides your syllabus across eight weeks of topical study plus two weeks of review before your December 15 exam. The five Week 1 practice questions focus on foundational concepts—the definition of scarcity, opportunity cost, and the scope of macroeconomics—that form the conceptual foundation for understanding all subsequent topics in the course.
+This study plan spans six weeks leading up to your November 12 exam, covering one topic per week from your syllabus in sequence. The practice questions above focus on supply and demand fundamentals, testing your understanding of equilibrium, curves, and basic policy applications. Success requires active practice: work through these questions, apply concepts to real-world examples, and review each topic before moving to the next.

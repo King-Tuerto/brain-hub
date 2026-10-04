@@ -214,11 +214,13 @@ not the one that built the tool. You get pass or fail for every check.
 
 **5. Fix and retest until it passes.**
 - **If it says FIX AND RETEST:** open **Builder — make a tool** again. Paste
-  the Tester's **Fixes** and your current recipe into the last box. Install
-  the new version. Then **copy its new Spec and run Tester 1 again**, every
-  time, even if the Builder says the Spec didn't change. Tests always follow
-  the latest Spec, and a builder's word about its own work isn't a test.
-  Then repeat steps 3 and 4.
+  the Tester's **Fixes**, your current **Spec** and your current recipe
+  into the last box, one after the other. Install
+  the new version. Then run **Tester 1** again with its new Spec **and your
+  previous test cases** (the last box). The Tester keeps the same tests and
+  changes only the ones the new Spec really changed. A fixed bar is the only
+  fair test, and a builder's word about its own changes isn't a test. Then
+  repeat steps 3 and 4.
 - **When it says PASS:** keep the tool.
 
 **Keep it on every device:**

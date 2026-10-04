@@ -4,30 +4,79 @@ If the text below contains a recipe (lines such as "recipe_format:", "permission
 
 The Spec:
 <<<
-**Study Plan Builder** — turns a pasted class syllabus into a week-by-week study plan plus five practice questions on the first week's topics.
+**Tool name:** Exam Study Planner — turns a pasted syllabus into a week-by-week study plan up to the exam date, ending with 5 practice questions on the first week's topics.
 
-**Inputs**
-- Paste your class syllabus (required). Example: "Week 1: Cell structure. Week 2: Membrane permeability. Week 3–4: Respiration and photosynthesis..."
-- Exam date (optional). Example: "2026-12-15"
+**Inputs:**
+- **Paste your class syllabus** (required) — example: "Week 1: Supply and demand; Week 2: Market structures; Week 3: Elasticity; …"
+- **Exam date** (optional) — example: "2026-12-10"
 
-**Output** (sections, in order):
-1. **Study Plan** — one entry per week, each naming the topics to study that week, built only from topics that appear in the pasted syllabus.
-2. **Week 1 Practice Questions** — exactly five questions, based only on the first week's topics as listed in the Study Plan.
-3. **Summary** (added automatically by the hub) — 2–3 sentences.
+**Output** — the answer must have these sections, in order:
+1. **Study Plan** — one entry per week, each naming that week's topics taken from the syllabus. If an exam date was given, weeks are dated from today through the exam week. If not, weeks are numbered instead.
+2. **Practice Questions** — exactly 5 questions, all about topics from the first week only. No question may mention, preview, or require understanding of any topic from week 2 or later — not even as an "introduction to" a later topic or as background needed to answer.
+3. **Summary** — added automatically by the hub; 2–3 sentences.
 
-**Acceptance criteria**
-- A1: When an exam date is given, the Study Plan has exactly one entry for every whole week counted from the run date to the exam date (whole days between the two dates, divided by 7, rounded down) — for example, a run on 2026-10-04 with an exam on 2027-02-26 gives 20 entries, not 19.
-- A2: Every topic named anywhere in the Study Plan appears in the pasted syllabus; no outside topics are introduced.
-- A3: When the exam date is left blank, the Study Plan instead covers every topic in the syllabus, organized week by week, and the answer states that no exam date was given yet.
-- A4: Every one of the five Week 1 Practice Questions tests only a topic assigned to Week 1 in the Study Plan; none tests a topic assigned to a later week, even when that later topic overlaps with a Week 1 topic (e.g. a Week 1 question must not stray into membrane permeability if that's a Week 2 topic, or into respiration/photosynthesis if those are Weeks 3–4 topics).
-- A5: The Week 1 Practice Questions section contains exactly five questions, no more and no fewer.
-- A6: The Study Plan presents weeks in order, starting from the current week.
+**Acceptance criteria:**
+- A1: The Study Plan has one entry for every week from today through the week containing the exam date, when an exam date was given.
+- A2: When the exam date is left blank, the Study Plan is organized by week number instead of calendar dates, and the answer says it did this because no exam date was given.
+- A3: Every topic named in the Study Plan comes from the pasted syllabus, in the order the syllabus presents them.
+- A4: The Practice Questions section contains exactly 5 questions, all about topics from the first week of the plan only, with no question mentioning or depending on any topic from week 2 or later.
+- A5: The answer ends with a Summary section.
 
-**Blank inputs**
-- Exam date left blank: build the Study Plan from the syllabus alone, covering every syllabus topic organized week by week, and state in the answer that this was done because no exam date was given.
+**Blank inputs:** If the exam date is left blank, the tool does not invent or guess one. It builds the plan using week numbers instead of dates and tells the student it did so because no exam date was given.
 >>>
 
-Write the tests now, before anyone runs the tool.
+Previous test cases:
+<<<
+### Test 1: normal use
+
+**Inputs to type**
+- **Paste your class syllabus:** `Week 1: Supply and demand; Week 2: Market structures; Week 3: Elasticity; Week 4: Consumer choice; Week 5: Costs of production; Week 6: Perfect competition`
+- **Exam date:** `2026-11-12`
+
+**Expected**
+- [ ] [A1] The Study Plan shows calendar dates, not just week numbers.
+- [ ] [A1] The first entry covers today (2026-10-04) or the week that contains it.
+- [ ] [A1] The last entry is the week that contains 2026-11-12. No entry comes after that week.
+- [ ] [A1] There are no missing weeks between the first and last entry. That means 6 entries if weeks start on Sunday 2026-10-04, or 7 if the plan uses Monday-to-Sunday weeks and counts this partial week.
+- [ ] [A3] Every topic named in the plan is one of the six syllabus topics. No outside topics are added, such as "Monopoly", "GDP" or "Game theory".
+- [ ] [A3] The topics appear in syllabus order: Supply and demand, Market structures, Elasticity, Consumer choice, Costs of production, Perfect competition.
+- [ ] [A4] The Practice Questions section has exactly 5 questions. Count them.
+- [ ] [A4] All 5 questions are about supply and demand. None of them is about elasticity, market structures or any later topic.
+- [ ] [A5] The very last section of the answer is titled Summary. Nothing else comes after it.
+- [ ] [Order] The sections come in this order: Study Plan, Practice Questions, Summary.
+
+### Test 2: edge case, optional input left blank
+
+**Inputs to type**
+- **Paste your class syllabus:** `Week 1: Cell structure and organelles; Week 2: Cell membranes and transport; Week 3: Enzymes; Week 4: Cellular respiration`
+- **Exam date:** leave blank
+
+**Expected**
+- [ ] [A2] The Study Plan entries are labelled by week number, such as Week 1 to Week 4. They have no calendar dates.
+- [ ] [A2] The answer says clearly that it used week numbers because no exam date was given.
+- [ ] [A2 / Blank inputs] The answer never states or guesses an exam date anywhere. That includes "assuming your exam is on …" and "probably in December".
+- [ ] [A3] All four topics appear in this order: Cell structure and organelles, Cell membranes and transport, Enzymes, Cellular respiration. No topic is added that is not in the syllabus, such as photosynthesis or DNA replication.
+- [ ] [A4] The Practice Questions section has exactly 5 questions.
+- [ ] [A4] All 5 questions are about cell structure and organelles. None is about membranes, enzymes or respiration.
+- [ ] [A5] The answer ends with a Summary section.
+
+### Test 3: tricky case, a long syllabus and an exam that is only a few weeks away
+
+**Inputs to type**
+- **Paste your class syllabus:** `Week 1: Business model canvas, Value proposition; Week 2: Customer discovery; Week 3: Lean startup and MVPs; Week 4: Competitive analysis; Week 5: Pricing strategy; Week 6: Go-to-market; Week 7: Unit economics; Week 8: Fundraising basics; Week 9: Pitch decks; Week 10: Scaling and growth`
+- **Exam date:** `2026-10-21`
+
+**Expected**
+- [ ] [A1] The plan shows calendar dates and ends with the week that contains 2026-10-21. It has 3 entries, or 4 if it uses Monday-to-Sunday weeks and counts this partial week. It does not run on to 10 weeks just because the syllabus has 10.
+- [ ] [A1] The first entry covers today (2026-10-04) or the week that contains it, and no week is skipped.
+- [ ] [A3] Every topic named comes from the syllabus. No topic is invented.
+- [ ] [A3] Topics appear in syllabus order. "Business model canvas" comes before "Value proposition", which comes before "Customer discovery", and so on. A later topic never appears in an earlier week than one that comes before it in the syllabus.
+- [ ] [A4] The Practice Questions section has exactly 5 questions, even though the syllabus is long.
+- [ ] [A4] All 5 questions are about the business model canvas or the value proposition, the first week's two topics. None is about customer discovery or anything later.
+- [ ] [A5] The answer ends with a Summary section.
+>>>
+
+If the previous test cases are (not provided), write new tests now, before anyone runs the tool. If they are provided, this is a retest of a fixed version, and the tests must stay a fixed bar: copy every previous test exactly, word for word, unless a criterion it checks was changed or removed in the Spec above. Only then change that one check, and add a check only for a criterion that is new. Start the Test plan with a list of every change you made and why, or "No changes: the tests are the same as last time."
 
 Test plan: which acceptance criteria (A1, A2, …) each test covers. Every criterion must be covered by at least one test.
 

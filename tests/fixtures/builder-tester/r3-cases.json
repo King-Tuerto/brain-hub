@@ -1,5 +1,3 @@
-{
-  "1": { "syllabus": "BIO 101 Syllabus. Week 1: Cell structure & organelles (nucleus, mitochondria, chloroplasts, ribosomes). Lab safety quiz due Week 1. Week 2: Membrane permeability and transport. Week 3: Cellular respiration. Week 4: Photosynthesis. Grading: 40% exams, 30% labs, 30% homework. Office hours Tuesdays 2-3pm. Late work policy: -10%/day.", "exam_date": "2026-11-01" },
-  "2": { "syllabus": "Intro Biology. Week 1: Cell structure & organelles. Lab safety quiz due Week 1. Week 2: Membrane permeability. Week 3: Cellular respiration. Week 4: Photosynthesis. Week 5: Cell division (mitosis). Office hours Thursdays 10-11am. Late work policy: -10%/day.", "exam_date": "" },
-  "3": { "syllabus": "week 1 - welcome + syllabus review; grading breakdown (exams 50%, labs 50%); lab safety quiz due fri; cell structure & organelles (cell wall, nucleus, mitochondria, chloroplasts); week 2 - membrane permeability; office hrs moved to wed 1-2pm; week 3 - cellular respiration; late work: -10%/day no exceptions; week 4 - photosynthesis", "exam_date": "2026-10-18" }
-}
+{"1":{"syllabus":"Week 1: Supply and demand; Week 2: Market structures; Week 3: Elasticity; Week 4: Consumer choice; Week 5: Costs of production; Week 6: Perfect competition","exam_date":"2026-11-12"},
+"2":{"syllabus":"Week 1: Cell structure and organelles; Week 2: Cell membranes and transport; Week 3: Enzymes; Week 4: Cellular respiration","exam_date":""},
+"3":{"syllabus":"Week 1: Business model canvas, Value proposition; Week 2: Customer discovery; Week 3: Lean startup and MVPs; Week 4: Competitive analysis; Week 5: Pricing strategy; Week 6: Go-to-market; Week 7: Unit economics; Week 8: Fundraising basics; Week 9: Pitch decks; Week 10: Scaling and growth","exam_date":"2026-10-21"}}

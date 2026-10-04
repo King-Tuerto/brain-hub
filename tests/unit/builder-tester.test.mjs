@@ -206,7 +206,7 @@ describe('the three core recipes', () => {
     })
     test('on a revision: criteria keep their numbers and wording; Steps end with "Spec changed: yes/no"', () => {
       const b = r().body
-      assert.match(b, /Change only what a fix requires/)
+      assert.match(b, /change only what a fix requires/i)
       assert.match(b, /Keep every other acceptance criterion, its number \(A1, A2, …\) and its wording exactly as before/)
       assert.match(b, /a new criterion gets the next free number/)
       assert.match(b, /End Steps with one line: "Spec changed: yes" or "Spec changed: no"/)
@@ -275,7 +275,7 @@ describe('the three core recipes', () => {
       assert.match(b, /one numbered fix for each FAIL, written as an instruction to the Builder/)
       assert.match(b, /Name the criterion and the test/)
       assert.match(b, /"PASS — install it" only if every check passed/)
-      assert.match(b, /"FIX AND RETEST — send the Fixes and your current recipe to the Builder/)
+      assert.match(b, /"FIX AND RETEST — send the Fixes, the Spec and your current recipe to the Builder/)
     })
   })
 })

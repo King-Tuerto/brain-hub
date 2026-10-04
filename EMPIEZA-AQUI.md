@@ -236,11 +236,13 @@ Recibes aprobado o reprobado para cada revisión.
 
 **5. Corrige y vuelve a probar hasta que pase.**
 - **Si dice FIX AND RETEST** (corregir y volver a probar): abre otra vez
-  **Builder — make a tool**. Pega los **Fixes** (correcciones) del Tester y
-  tu receta actual en el último recuadro. Instala la nueva versión. Luego **copia su Spec nuevo y corre otra vez
-  Tester 1**, siempre, aunque el Builder diga que el Spec no cambió. Las
-  pruebas siempre siguen al Spec más reciente, y la palabra de quien
-  construyó algo no es una prueba. Luego repite los pasos 3 y 4.
+  **Builder — make a tool**. Pega los **Fixes** (correcciones) del Tester,
+  tu **Spec** actual y tu receta actual en el último recuadro, uno tras otro. Instala la nueva versión. Luego corre otra vez **Tester 1** con el Spec
+  nuevo **y tus casos de prueba anteriores** (el último recuadro). El Tester
+  conserva las mismas pruebas y solo cambia las que el Spec nuevo realmente
+  cambió. Una vara fija es la única prueba justa, y la palabra de quien
+  construyó algo sobre sus propios cambios no es una prueba. Luego repite los
+  pasos 3 y 4.
 - **Cuando diga PASS** (aprobado): quédate con la herramienta.
 
 **Tenla en todos tus dispositivos:**

@@ -21,7 +21,7 @@ inputs:
     required: false
     placeholder: e.g. me, the week before each exam
   - id: fixes
-    label: Tester's fixes and your current recipe
+    label: Tester's fixes, your Spec and your recipe
     type: long_text
     required: false
     help: Only when fixing a tool. Paste the Tester's Fixes, then the recipe you are fixing.
@@ -40,7 +40,7 @@ Who uses it, and when: {{users}}
 
 Fixes to apply: {{fixes}}
 
-If the fixes are (not provided), build the tool from the idea. If they are provided, they contain the Tester's fixes and the current recipe: apply every fix, keep the same id, raise the version (1.0.0 becomes 1.0.1), and say under Steps exactly which fix you applied and how. Change only what a fix requires. Keep every other acceptance criterion, its number (A1, A2, …) and its wording exactly as before, so the Tester's existing tests still apply; a new criterion gets the next free number. End Steps with one line: "Spec changed: yes" or "Spec changed: no".
+If the fixes are (not provided), build the tool from the idea. If they are provided, they contain the Tester's fixes, the current Spec and the current recipe: apply every fix, keep the same id, raise the version (1.0.0 becomes 1.0.1), and say under Steps exactly which fix you applied and how. Write the new Spec by copying the current Spec word for word, then change only what a fix requires. Keep every other acceptance criterion, its number (A1, A2, …) and its wording exactly as before, so the Tester's existing tests still apply; a new criterion gets the next free number. End Steps with one line: "Spec changed: yes" or "Spec changed: no".
 
 Steps: break the work into 3 to 6 short numbered steps, from what the tool asks for to what it gives back. Plain words, no code.
 

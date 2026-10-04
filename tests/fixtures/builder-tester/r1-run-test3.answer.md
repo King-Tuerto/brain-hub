@@ -1,35 +1,31 @@
 ## Study Plan
 
-Your exam is on 2027-02-26, which is approximately 19 weeks away from today (2026-10-04).
+**Note:** Your exam date of 2026-10-21 falls just 17 days from today (2026-10-04), which covers approximately 3 weeks. Your syllabus provides 10 weeks of material, so you have significantly more content than time available before the exam. This plan prioritizes the first three weeks of your syllabus in the order presented. You may need to review additional material after the exam or focus on high-impact topics for your specific exam format.
 
-Since your syllabus covers two core topics, I've distributed them across the available time with cycles of review and reinforcement:
+| Week | Topic | Study Focus |
+|------|-------|------------|
+| Week of Oct 4–10 | Business Model Canvas, Value Proposition | Understand the nine building blocks of the Business Model Canvas; practice articulating clear, compelling value propositions; review case studies of successful value propositions |
+| Week of Oct 11–17 | Customer Discovery | Conduct at least one mock customer interview; document customer pain points and needs; practice active listening techniques and open-ended questioning |
+| Week of Oct 18–21 (Exam Week) | Lean Startup and MVPs | Review the Build-Measure-Learn feedback loop; understand MVP scope and purpose; practice case studies of lean startups; final review and exam preparation |
 
-| Week | Topics |
-|------|--------|
-| 1 | Ancient Greece |
-| 2 | Roman Republic |
-| 3–5 | Ancient Greece (review & depth) |
-| 6–8 | Roman Republic (review & depth) |
-| 9–12 | Comparison: Ancient Greece vs. Roman Republic |
-| 13–17 | Cumulative review (both topics) |
-| 18–19 | Final exam preparation & practice testing |
+---
 
-This structure ensures you spend focused time on each topic first, then build comparative understanding before your exam.
+## Practice Questions
 
-## Week 1 Practice Questions
+**Week 1: Business Model Canvas & Value Proposition**
 
-Based on Ancient Greece, answer the following:
+1. **Define a value proposition and explain why it is critical for a startup. What are the three key elements that make a value proposition compelling, and can you provide an example of each?**
 
-1. **Political Systems**: What were the main differences between oligarchy and democracy in ancient Greek city-states, and which form of government emerged in [city name of your choice]? [unverified]
+2. **Using the Business Model Canvas framework, identify and explain the nine building blocks. Which three blocks do you think are most critical to validate first when testing a new business idea, and why?**
 
-2. **Philosophy**: Name one major philosophical school that emerged in ancient Greece and identify one key idea associated with it. [unverified]
+3. **You are launching a new service targeting [your target customer segment]. Articulate your value proposition in one sentence, then explain how each component directly addresses a specific pain point or gain for your customer.**
 
-3. **Culture & Arts**: Ancient Greek civilization is known for contributions in drama, architecture, and sculpture. Describe one specific form of Greek drama (tragedy, comedy, or satyr play) and explain its cultural purpose. [unverified]
+4. **Compare two companies in the same industry (e.g., Uber vs. traditional taxis, or Netflix vs. Blockbuster). How does each company's value proposition differ? What does the Business Model Canvas reveal about why one may have succeeded more than the other?**
 
-4. **Timeline & Events**: Place the following periods of ancient Greece in chronological order: Hellenistic Period, Classical Period, Archaic Period. What major event marked the transition between the Classical and Hellenistic periods? [unverified]
+5. **A startup has identified a potential customer problem but hasn't yet validated that customers care. How would you use the Business Model Canvas to systematically test whether there is a real market need before building a product?**
 
-5. **Daily Life**: What role did the agora play in ancient Greek cities, and how did it reflect democratic values in the Classical period? [unverified]
+---
 
 ## Summary
 
-This study plan allocates your 19 weeks before the exam (2027-02-26) by introducing each syllabus topic individually over the first two weeks, deepening understanding through weeks 3–8, then comparing and synthesizing both topics before final review. The practice questions for Week 1 target key areas: political systems, philosophy, cultural achievements, historical chronology, and social institutions unique to ancient Greece.
+This study plan condenses your 10-week entrepreneurship course into the three weeks before your 2026-10-21 exam, focusing on Business Model Canvas, value propositions, and customer discovery—the foundational concepts for startup strategy. The five practice questions test your ability to define, apply, and compare these core frameworks, preparing you for conceptual and analytical exam questions. You'll benefit from working through real company examples and conducting mock customer interviews to reinforce hands-on application.

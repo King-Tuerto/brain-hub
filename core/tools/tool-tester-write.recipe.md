@@ -14,6 +14,11 @@ inputs:
     type: long_text
     required: true
     help: From the Builder's answer, tap Copy on the Spec section. Not the recipe.
+  - id: previous_tests
+    label: Your previous test cases
+    type: long_text
+    required: false
+    help: Only when retesting a fixed version. Paste the Test cases from last time, so the tests stay the same.
 output:
   sections: [Test plan, Test cases, How to run them]
 ---
@@ -26,7 +31,12 @@ The Spec:
 {{spec}}
 >>>
 
-Write the tests now, before anyone runs the tool.
+Previous test cases:
+<<<
+{{previous_tests}}
+>>>
+
+If the previous test cases are (not provided), write new tests now, before anyone runs the tool. If they are provided, this is a retest of a fixed version, and the tests must stay a fixed bar: copy every previous test exactly, word for word, unless a criterion it checks was changed or removed in the Spec above. Only then change that one check, and add a check only for a criterion that is new. Start the Test plan with a list of every change you made and why, or "No changes: the tests are the same as last time."
 
 Test plan: which acceptance criteria (A1, A2, …) each test covers. Every criterion must be covered by at least one test.
 

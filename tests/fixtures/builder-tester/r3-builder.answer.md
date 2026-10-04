@@ -1,46 +1,43 @@
 ## Steps
 
-1. You paste your syllabus and, if you know it, your exam date.
-2. If no exam date is given, the plan covers every syllabus topic week by week instead of counting toward an exam.
-3. With an exam date, the tool counts the whole weeks from today to the exam and builds one Study Plan entry per week, study topics only — never admin items such as a lab safety quiz, grading, office hours, or the late-work policy.
-4. It takes Week 1's topics, drops anything a later week already owns (including related processes and admin items), and writes 5 practice questions on only what's left, with organelle questions limited to structure and no leftover tags.
-5. Fix applied — [A4, Test 1]: added a rule that Week 1 organelle questions test structure only (never a process like ATP production or photosynthesis), banned "do not discuss X" notes inside a question, and required removing leftover tags such as [unverified] from questions.
-6. Fix applied — [A2, Test 3] and [A4, Test 3]: added a rule excluding admin items from the Study Plan entirely, and an explicit rule that a Week 1 question must not ask about the membrane's protective/barrier role when a later week owns it, or about an admin item such as a lab safety quiz.
+1. The student pastes their syllabus and, if they know it, their exam date.
+2. The tool reads the syllabus week by week and, if an exam date was given, lines up each week against today's date; if no exam date was given, it numbers the weeks instead and says so.
+3. It writes one Study Plan entry per week, using only topics the syllabus actually lists, in the syllabus's own order.
+4. It writes exactly 5 practice questions on the first week's topics only, then re-checks each question — its stem, its answer options, and the scenario it's framed around — against the first week's topic list, rewriting anything that touches a later week. Applied Fix 1 ([A4, Test 2]) by extending that check to explicitly cover multiple-choice answer options, not just the question stem, so a later-week term can't hide in a distractor. Applied Fix 2 ([A4, Test 3]) by extending that check to explicitly cover the framing a question is built around — a comparison, a scenario, a situation — so a question can't lean on later-week material without naming it outright.
+5. The hub adds the Summary section automatically.
 
 Spec changed: yes
 
 ## Spec
 
-**Study Plan Builder** — turns your pasted class syllabus, and an exam date if you have one, into a week-by-week study plan plus 5 practice questions on Week 1's topics.
+**Tool name:** Exam Study Planner — turns a pasted syllabus into a week-by-week study plan up to the exam date, ending with 5 practice questions on the first week's topics.
 
-**Inputs**
-- Paste your class syllabus — required. Example: "Week 1: Cell structure & organelles. Lab safety quiz due Week 1. Week 2: Membrane permeability. Week 3: Cellular respiration. Week 4: Photosynthesis. Office hours Tuesdays 2-3pm. Late work policy: -10%/day."
-- Exam date — not required. Example: "2026-12-15"
+**Inputs:**
+- **Paste your class syllabus** (required) — example: "Week 1: Supply and demand; Week 2: Market structures; Week 3: Elasticity; …"
+- **Exam date** (optional) — example: "2026-12-10"
 
-**Output** — sections in this order:
-1. **Study Plan** — one entry per week, each naming only study topics from the syllabus.
-2. **Week 1 Practice Questions** — exactly 5 questions built from Week 1's topics.
-3. **Summary** — the hub's standard closing section.
+**Output** — the answer must have these sections, in order:
+1. **Study Plan** — one entry per week, each naming that week's topics taken from the syllabus. If an exam date was given, weeks are dated from today through the exam week. If not, weeks are numbered instead.
+2. **Practice Questions** — exactly 5 questions, all about topics from the first week only. No question, including its answer options, may mention, preview, or require understanding of any topic from week 2 or later — not even as an "introduction to" a later topic, as background needed to answer, or as the scenario or framing the question is built around (for example, a comparison to a later topic, or a situation that assumes it).
+3. **Summary** — added automatically by the hub; 2–3 sentences.
 
-**Acceptance criteria**
-- A1: when an exam date is given, the Study Plan has exactly one entry per whole week from today until the exam date, in order, starting with this week.
-- A2: every Study Plan entry names only topics that appear in the pasted syllabus, and never an administrative item such as a lab safety quiz, grading, office hours, or the late-work policy, even if the syllabus schedules that item for a particular week.
-- A3: Week 1 Practice Questions contains exactly 5 questions, each built only from Week 1 topics that are not already owned by a later week in the plan.
-- A4: organelle questions in Week 1 Practice Questions test structure only (shape, parts, location) — never a process a later week owns, such as respiration (how mitochondria make ATP), photosynthesis (why chloroplasts matter), or the membrane's protective/barrier role when membrane permeability is a later week's topic — and no question contains a "do not discuss X" note or a leftover tag such as [unverified].
-- A5: no question in Week 1 Practice Questions is about an administrative item, such as a lab safety quiz.
-- A6: when no exam date is given, the Study Plan covers every topic in the syllabus, organized week by week, and says that's what it did because no exam date was given yet.
+**Acceptance criteria:**
+- A1: The Study Plan has one entry for every week from today through the week containing the exam date, when an exam date was given.
+- A2: When the exam date is left blank, the Study Plan is organized by week number instead of calendar dates, and the answer says it did this because no exam date was given.
+- A3: Every topic named in the Study Plan comes from the pasted syllabus, in the order the syllabus presents them.
+- A4: The Practice Questions section contains exactly 5 questions, all about topics from the first week of the plan only, with no question — including any multiple-choice answer options — mentioning, framing, or depending on any topic from week 2 or later.
+- A5: The answer ends with a Summary section.
 
-**Blank inputs**
-- Exam date left blank: build the Study Plan from the syllabus alone, covering every topic in it organized week by week, and say that this is what was done because no exam date was given yet (see A6).
+**Blank inputs:** If the exam date is left blank, the tool does not invent or guess one. It builds the plan using week numbers instead of dates and tells the student it did so because no exam date was given.
 
 ## Recipe
 
 ```recipe
 ---
 recipe_format: 1
-id: study-plan-builder
-name: Study Plan Builder
-description: Turns your pasted class syllabus into a week-by-week study plan plus 5 practice questions on week 1.
+id: exam-study-planner
+name: Exam Study Planner
+description: Turn your syllabus into a week-by-week study plan until your exam, plus 5 practice questions on week one.
 version: 1.0.2
 author: Brain Hub student
 permissions: [run_ai]
@@ -51,17 +48,16 @@ inputs:
     label: Paste your class syllabus
     type: long_text
     required: true
-    help: Paste the whole syllabus, including the week-by-week topic list if it has one.
+    help: Include the topics or schedule listed for each week or unit.
   - id: exam_date
     label: Exam date
     type: text
     required: false
-    placeholder: "2026-12-15"
-    help: Leave blank if you don't know it yet.
+    placeholder: 2026-12-10
 output:
-  sections: [Study Plan, Week 1 Practice Questions]
+  sections: [Study Plan, Practice Questions]
 ---
-I'm a university student at the start of a semester, using my syllabus to build a study plan.
+I'm a university student using this tool at the start of the semester.
 
 Today's date: {{today}}
 
@@ -70,44 +66,31 @@ My syllabus:
 
 My exam date: {{exam_date}}
 
-If my exam date is (not provided), don't guess one. Instead, build the study plan
-from the syllabus alone: cover every topic in it, organized week by week, and say
-that this is what you did because no exam date was given yet.
+If my exam date is (not provided), do not invent one. Build the plan using week
+numbers instead (Week 1, Week 2, and so on) covering every week my syllabus
+lists, and say in the Study Plan that you used week numbers because no exam
+date was given.
 
-If my exam date is provided, first count the whole weeks from today's date to the
-exam date: take the whole number of days between the two dates and divide by 7,
-rounding down. Build exactly that many Study Plan entries, one per week, in order,
-starting from this week and continuing up to the exam. For example, a run on
-2026-10-04 with an exam on 2027-02-26 is 20 weeks, not 19.
+If my exam date is provided, build the plan with one entry for every week from
+today up to and including the week of my exam date, using the topics from my
+syllabus for each week in the order the syllabus presents them. If the
+syllabus has more or fewer weeks than fit before the exam date, say so.
 
-Break the syllabus into that week-by-week study plan, naming the topics to study
-each week. Use only topics that appear in the syllabus I pasted. A Study Plan
-entry is a study topic only: never put an administrative item such as a lab
-safety quiz, grading, office hours, or the late-work policy into a Study Plan
-entry, even if the syllabus schedules it for a particular week.
+Give me exactly 5 practice questions based only on the first week's topics
+from my syllabus. Do not write a question — including any multiple-choice
+answer options — that mentions, previews, or acts as an "introduction to" any
+topic from week 2 or later, and do not write a question that can only be
+answered using, or is framed around (such as a comparison to, or a scenario
+built on), a concept from week 2 or later — every question, and every answer
+option, must be fully self-contained within the first week's topics.
 
-Then look at only the first week's topics in that plan. Before writing any
-questions, check each candidate topic against every later week's topics in the
-plan, and drop anything a later week already owns — even if it overlaps with a
-Week 1 topic (for example, don't let a Week 1 question drift into membrane
-permeability if that's a Week 2 topic, or into respiration or photosynthesis if
-those are Weeks 3-4 topics). Write exactly five practice questions using only
-what is left of the first week's topics after that check.
-
-When a Week 1 topic is a cell organelle (such as a mitochondrion or a
-chloroplast), write questions about its structure only — shape, parts, where it
-sits in the cell — never about the process it performs, such as how
-mitochondria make ATP through respiration or why chloroplasts matter for
-photosynthesis. Never put a note inside a question saying what not to discuss;
-instead write a question that doesn't raise that process in the first place.
-The same goes for the cell membrane: if a later week covers the membrane or
-membrane permeability, don't ask a Week 1 question about the membrane's
-protective or barrier role. Never write a practice question about an
-administrative item such as a lab safety quiz. Don't leave any bracket tag
-such as [unverified] inside a question.
+Before giving me the final answer, re-check each of the 5 questions one by
+one — the stem and every answer option — against the first week's topic
+list, and rewrite any question that touches a week 2 or later topic in any
+way, including through its framing or scenario, until none do.
 ```
-study-plan-builder.recipe.md
+exam-study-planner.recipe.md
 
 ## Summary
 
-Applied the Tester's three fixes to Study Plan Builder: Study Plan entries now exclude admin items like a lab safety quiz, and Week 1 Practice Questions test organelle structure only (not respiration/photosynthesis) without leftover "do not discuss" notes or tags like [unverified], and never touch the membrane's barrier role once a later week owns it. Version bumped from 1.0.1 to 1.0.2, same id, same two inputs and two output sections, with Spec criteria A2, A4, and A5 now spelling out these exclusions for the Tester.
+Applied the Tester's two Practice Questions fixes to Exam Study Planner (v1.0.1 → v1.0.2): the no-later-week rule in A4 and the recipe body now explicitly covers multiple-choice answer options as well as question stems, and explicitly covers scenario or comparison framing that leans on later-week material. All other inputs, outputs, and acceptance criteria (A1, A2, A3, A5) are unchanged.

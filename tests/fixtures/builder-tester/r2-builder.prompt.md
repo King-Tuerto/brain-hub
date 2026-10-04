@@ -6,15 +6,37 @@ I paste my class syllabus and the date of my exam, and it gives me a study plan 
 Who uses it, and when: Me, at the start of each semester
 
 Fixes to apply: Fixes from the Tester:
-1. [A4, Test 2] Week 1 practice questions must test only the Week 1 topic. Do not write questions on topics the syllabus gives to later weeks, such as membrane permeability (Week 2) or energy processes like respiration and photosynthesis (Weeks 3–4), even when they overlap with the Week 1 topic. Before writing the questions, check each one against the later weeks' topics.
-2. [A1, Test 3] Count the weeks from the run date to the exam date on a calendar (whole days divided by 7) instead of estimating "approximately". Make one Study Plan entry for every one of those weeks, up to the exam. For a run on 2026-10-04 with an exam on 2027-02-26, that is 20 weeks, not 19.
+1. [A4, Test 1] Every practice question must stay strictly inside the first week's topic. Do not add "introduction to" questions on later topics. Here Q5 asked about elasticity, which is the Week 3 topic.
+2. [A4, Test 2] Every practice question must be about the first week's topic only. Do not write questions that need a later week's concept to answer. Q4 (hypertonic solution / osmosis) depends on Week 2, membranes and transport. Q5 also leans toward Week 4 (ATP production).
+3. [A4, Test 3] Every practice question must be about the first week's topics only, here the business model canvas and the value proposition. Q5 is about validating market need before building, which belongs to customer discovery and lean startup (Weeks 2–3). Add a self-check: before output, confirm that no question touches a topic from week 2 or later.
+
+My current Spec:
+**Tool name:** Exam Study Planner — turns a pasted syllabus into a week-by-week study plan up to the exam date, ending with 5 practice questions on the first week's topics.
+
+**Inputs:**
+- **Paste your class syllabus** (required) — example: "Week 1: Supply and demand; Week 2: Market structures; Week 3: Elasticity; …"
+- **Exam date** (optional) — example: "2026-12-10"
+
+**Output** — the answer must have these sections, in order:
+1. **Study Plan** — one entry per week, each naming that week's topics taken from the syllabus. If an exam date was given, weeks are dated from today through the exam week. If not, weeks are numbered instead.
+2. **Practice Questions** — exactly 5 questions, all based only on the first week's topics.
+3. **Summary** — added automatically by the hub; 2–3 sentences.
+
+**Acceptance criteria:**
+- A1: The Study Plan has one entry for every week from today through the week containing the exam date, when an exam date was given.
+- A2: When the exam date is left blank, the Study Plan is organized by week number instead of calendar dates, and the answer says it did this because no exam date was given.
+- A3: Every topic named in the Study Plan comes from the pasted syllabus, in the order the syllabus presents them.
+- A4: The Practice Questions section contains exactly 5 questions, all about topics from the first week of the plan.
+- A5: The answer ends with a Summary section.
+
+**Blank inputs:** If the exam date is left blank, the tool does not invent or guess one. It builds the plan using week numbers instead of dates and tells the student it did so because no exam date was given.
 
 My current recipe:
 ---
 recipe_format: 1
-id: study-plan-builder
-name: Study Plan Builder
-description: Turns your pasted class syllabus into a week-by-week study plan plus 5 practice questions on week 1.
+id: exam-study-planner
+name: Exam Study Planner
+description: Turn your syllabus into a week-by-week study plan until your exam, plus 5 practice questions on week one.
 version: 1.0.0
 author: Brain Hub student
 permissions: [run_ai]
@@ -25,17 +47,16 @@ inputs:
     label: Paste your class syllabus
     type: long_text
     required: true
-    help: Paste the whole syllabus, including the week-by-week topic list if it has one.
+    help: Include the topics or schedule listed for each week or unit.
   - id: exam_date
     label: Exam date
     type: text
     required: false
-    placeholder: "2026-12-15"
-    help: Leave blank if you don't know it yet.
+    placeholder: 2026-12-10
 output:
-  sections: [Study Plan, Week 1 Practice Questions]
+  sections: [Study Plan, Practice Questions]
 ---
-I'm a university student at the start of a semester, using my syllabus to build a study plan.
+I'm a university student using this tool at the start of the semester.
 
 Today's date: {{today}}
 
@@ -44,19 +65,20 @@ My syllabus:
 
 My exam date: {{exam_date}}
 
-If my exam date is (not provided), don't guess one. Instead, build the study plan
-from the syllabus alone: cover every topic in it, organized week by week, and say
-that this is what you did because no exam date was given yet.
+If my exam date is (not provided), do not invent one. Build the plan using week
+numbers instead (Week 1, Week 2, and so on) covering every week my syllabus
+lists, and say in the Study Plan that you used week numbers because no exam
+date was given.
 
-Break the syllabus into a week-by-week study plan, one week at a time, from now
-until the exam date (or through the whole syllabus if there is no exam date),
-naming the topics to study each week. Use only topics that appear in the
-syllabus I pasted.
+If my exam date is provided, build the plan with one entry for every week from
+today up to and including the week of my exam date, using the topics from my
+syllabus for each week in the order the syllabus presents them. If the
+syllabus has more or fewer weeks than fit before the exam date, say so.
 
-Then look at only the first week's topics in that plan and write exactly five
-practice questions based on them.
+Give me 5 practice questions based only on the first week's topics from my
+syllabus.
 
-If the fixes are (not provided), build the tool from the idea. If they are provided, they contain the Tester's fixes and the current recipe: apply every fix, keep the same id, raise the version (1.0.0 becomes 1.0.1), and say under Steps exactly which fix you applied and how. Change only what a fix requires. Keep every other acceptance criterion, its number (A1, A2, …) and its wording exactly as before, so the Tester's existing tests still apply; a new criterion gets the next free number. End Steps with one line: "Spec changed: yes" or "Spec changed: no".
+If the fixes are (not provided), build the tool from the idea. If they are provided, they contain the Tester's fixes, the current Spec and the current recipe: apply every fix, keep the same id, raise the version (1.0.0 becomes 1.0.1), and say under Steps exactly which fix you applied and how. Write the new Spec by copying the current Spec word for word, then change only what a fix requires. Keep every other acceptance criterion, its number (A1, A2, …) and its wording exactly as before, so the Tester's existing tests still apply; a new criterion gets the next free number. End Steps with one line: "Spec changed: yes" or "Spec changed: no".
 
 Steps: break the work into 3 to 6 short numbered steps, from what the tool asks for to what it gives back. Plain words, no code.
 

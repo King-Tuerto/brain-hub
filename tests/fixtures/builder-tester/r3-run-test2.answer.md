@@ -1,27 +1,46 @@
 ## Study Plan
 
-Note: No exam date was provided, so this study plan follows the syllabus directly, organized week by week:
+| Week | Topics | Status |
+|------|--------|--------|
+| Week 1 | Cell structure and organelles | Current |
+| Week 2 | Cell membranes and transport | Upcoming |
+| Week 3 | Enzymes | Upcoming |
+| Week 4 | Cellular respiration | Upcoming |
 
-- **Week 1:** Cell structure & organelles
-- **Week 2:** Membrane permeability
-- **Week 3:** Cellular respiration
-- **Week 4:** Photosynthesis
-- **Week 5:** Cell division (mitosis)
+**Note:** Week numbers are used instead of a specific exam date because no exam date was provided. This plan covers all four weeks listed in your syllabus in order.
 
-Note: Administrative items from the syllabus (Lab safety quiz, office hours, late work policy) are not included in the study plan, as it focuses on course content topics.
+## Practice Questions
 
-## Week 1 Practice Questions
+**Question 1:** Which organelle is the primary site of protein synthesis in eukaryotic cells?
+- A) Mitochondrion
+- B) Ribosome
+- C) Golgi apparatus
+- D) Nucleus
 
-1. What are the main structural differences between a prokaryotic cell and a eukaryotic cell?
+**Question 2:** A cell biologist observes two types of cells under a microscope. One cell contains a nucleus enclosed within a nuclear membrane, while the other cell has no such membrane-bound nucleus. The cell lacking a nucleus membrane is most likely:
+- A) A eukaryotic cell
+- B) A prokaryotic cell
+- C) A plant cell
+- D) A fungal cell
 
-2. Describe the structure of the nucleus in a eukaryotic cell, including what the nuclear envelope is and what it contains.
+**Question 3:** Which of the following is a double-membrane organelle found in eukaryotic cells?
+- A) Ribosome
+- B) Centriole
+- C) Mitochondrion
+- D) Nucleolus
 
-3. A mitochondrion has a distinctive double-membrane structure. Describe the outer membrane, inner membrane, and the compartments they create.
+**Question 4:** Rough endoplasmic reticulum (Rough ER) differs structurally from smooth endoplasmic reticulum (Smooth ER) because:
+- A) Rough ER contains attached ribosomes
+- B) Rough ER is only found in plant cells
+- C) Smooth ER contains DNA
+- D) Rough ER is surrounded by a double membrane
 
-4. Describe the structure of a chloroplast, including how many membranes it has and its general internal organization.
-
-5. Explain the structural difference between rough endoplasmic reticulum and smooth endoplasmic reticulum, and what causes the "rough" appearance.
+**Question 5:** Which organelle would you expect to find in a typical plant cell but not in a typical animal cell?
+- A) Mitochondrion
+- B) Nucleus
+- C) Chloroplast
+- D) Ribosome
 
 ## Summary
 
-This study plan covers all topics from the syllabus organized by week. Since no exam date was provided, the plan follows the syllabus structure directly. The five Week 1 practice questions focus on cell and organelle structure, avoiding overlap with topics covered in later weeks.
+This study plan covers four weeks of cell biology, starting with cell structure and organelles (Week 1), and the practice questions focus solely on Week 1 concepts including organelle identification, prokaryotic versus eukaryotic cell structures, and the structural characteristics that distinguish different cell types. All five questions have been verified to remain within Week 1 topics without referencing cell membranes, transport, enzymes, or respiration.

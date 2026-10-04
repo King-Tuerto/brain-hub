@@ -1,28 +1,29 @@
-I'm a university student at the start of a semester, using my syllabus to build a study plan.
+I'm a university student using this tool at the start of the semester.
 
 Today's date: 2026-10-04
 
 My syllabus:
-wk1 - Ancient Greece; wk2 - Roman Republic
+Week 1: Business model canvas, Value proposition; Week 2: Customer discovery; Week 3: Lean startup and MVPs; Week 4: Competitive analysis; Week 5: Pricing strategy; Week 6: Go-to-market; Week 7: Unit economics; Week 8: Fundraising basics; Week 9: Pitch decks; Week 10: Scaling and growth
 
-My exam date: 2027-02-26
+My exam date: 2026-10-21
 
-If my exam date is (not provided), don't guess one. Instead, build the study plan
-from the syllabus alone: cover every topic in it, organized week by week, and say
-that this is what you did because no exam date was given yet.
+If my exam date is (not provided), do not invent one. Build the plan using week
+numbers instead (Week 1, Week 2, and so on) covering every week my syllabus
+lists, and say in the Study Plan that you used week numbers because no exam
+date was given.
 
-Break the syllabus into a week-by-week study plan, one week at a time, from now
-until the exam date (or through the whole syllabus if there is no exam date),
-naming the topics to study each week. Use only topics that appear in the
-syllabus I pasted.
+If my exam date is provided, build the plan with one entry for every week from
+today up to and including the week of my exam date, using the topics from my
+syllabus for each week in the order the syllabus presents them. If the
+syllabus has more or fewer weeks than fit before the exam date, say so.
 
-Then look at only the first week's topics in that plan and write exactly five
-practice questions based on them.
+Give me 5 practice questions based only on the first week's topics from my
+syllabus.
 
 ---
 Format your answer in Markdown with these sections, in this order, each as a "## " heading:
 - Study Plan
-- Week 1 Practice Questions
+- Practice Questions
 - Summary
 Every factual statement (figures, dates, names, statistics, quotations, claims about real organisations) must include a source link in Markdown form [title](https://…), or be marked [unverified]. Advice and recommendations do not need sources.
 Statements about your own method or about what you could not verify are not factual claims: start them with "Note:".
