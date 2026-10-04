@@ -28,8 +28,8 @@ export function STANDARD_BLOCK(recipe) {
     'Format your answer in Markdown with these sections, in this order, each as a "## " heading:',
     ...sections.map((s) => `- ${s}`),
     '- Summary',
-    recipe?.sourcing === 'advice' ? SOURCE_RULE_ADVICE : SOURCE_RULE_FACTS,
-    NOTE_RULE,
+    // sourcing: none — tools that work on the student's own text (Builder, Tester): no source rule.
+    ...(recipe?.sourcing === 'none' ? [] : [recipe?.sourcing === 'advice' ? SOURCE_RULE_ADVICE : SOURCE_RULE_FACTS, NOTE_RULE]),
     NO_INVENTION_RULE,
     'End with "## Summary": 2–3 sentences someone could search for later.',
   ].join('\n')
@@ -44,11 +44,14 @@ export function inputValues(recipe, inputs = {}) {
   return values
 }
 
-export function buildPrompt(recipe, inputs, { brainContext = null, today, webSearchLine = null } = {}) {
+export const NO_GUIDE_TEXT = '(The Brain Hub widget guide could not be loaded. Ask the student to paste WIDGET-GUIDE.md.)'
+
+export function buildPrompt(recipe, inputs, { brainContext = null, today, webSearchLine = null, widgetGuide = null } = {}) {
   const values = {
     ...inputValues(recipe, inputs),
     brain_context: brainContext == null || brainContext === '' ? NO_BRAIN_TEXT : brainContext,
     today: today ?? new Date().toISOString().slice(0, 10),
+    widget_guide: widgetGuide || NO_GUIDE_TEXT,
   }
   const body = fillTemplate(recipe.body, values)
   return body + '\n\n' + (webSearchLine ? webSearchLine + '\n\n' : '') + STANDARD_BLOCK(recipe)

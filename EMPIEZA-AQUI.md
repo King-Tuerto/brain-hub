@@ -191,26 +191,61 @@ actualizaciones sin conflictos.
 
 ---
 
-## Crea tus propias herramientas
+## Construye tu propia herramienta
 
 ¿Quieres una herramienta para otra cosa, como un plan de estudio,
-preparación para networking o comentarios sobre un ensayo?
+preparación para networking o comentarios sobre un ensayo? Constrúyela como
+lo hacen los equipos de software: un especialista **construye**, otro
+distinto **prueba**, y nada se queda hasta que pasa. Quien construye algo es
+la peor persona para revisarlo.
 
-1. Abre tu app de IA y pega
-   **[WIDGET-GUIDE.md](WIDGET-GUIDE.md)** de tu copia.
-2. Pide la herramienta que quieres; puedes pedirla en español. Te da un
-   archivo cuyo nombre termina en `.recipe.md`.
-3. En Brain Hub, toca **Add a tool** (agregar herramienta), pega el texto
-   del archivo y toca **Check recipe** (revisar receta). El hub te muestra
-   exactamente qué puede hacer la herramienta. Si estás de acuerdo, toca
-   **Install** (instalar).
-4. **Para tenerla en todos tus dispositivos:**
-   1. Abre tu copia en GitHub y luego la carpeta `plugins/`.
-   2. Toca **Add file** (agregar archivo) y luego **Create new file** (crear
-      archivo nuevo).
-   3. Ponle el nombre exacto que te dio tu IA (que termina en `.recipe.md`),
-      pega el texto y toca **Commit changes** (guardar cambios).
-   4. En Brain Hub, toca **Refresh tools** (actualizar herramientas).
+**1. Constrúyela (Builder).**
+1. En la pantalla de inicio, toca **Builder — make a tool** (constructor —
+   crea una herramienta). Di en palabras sencillas qué debe hacer la
+   herramienta y toca **Run**. Pega el prompt en tu app de IA como siempre y
+   trae la respuesta con **Use this answer**.
+2. Recibes **Steps** (pasos), un **Spec** (especificación: lo que la
+   herramienta debe hacer, con revisiones numeradas) y la **Recipe** (receta).
+   Toca el botón **Install** debajo de la respuesta, luego **Check recipe** y
+   **Install**. Así queda en este teléfono para que la pruebes.
+
+**2. Escribe las pruebas (Tester 1)**, antes de usar la herramienta.
+1. Bajo el título **Spec** del Builder, toca **Copy** (copiar). Copia solo el
+   Spec, nunca la receta; el Tester no debe ver cómo se construyó la
+   herramienta.
+2. Abre **Tester 1 — write the tests** (escribir las pruebas), pega el Spec y
+   ejecútalo. Recibes tres casos de prueba con los datos exactos que debes
+   escribir.
+
+**3. Corre las pruebas.** Usa tu nueva herramienta tres veces, una por prueba,
+con exactamente esos datos. Después de cada una toca **Copy answer** (copiar
+respuesta) y guarda las tres respuestas, marcadas Test 1, Test 2 y Test 3.
+
+**4. Califica (Tester 2).** Abre **Tester 2 — grade the results** (calificar
+los resultados) y pega el Spec, los casos de prueba y las tres respuestas.
+**Usa un chat nuevo en tu app de IA**, no el que construyó la herramienta.
+Recibes aprobado o reprobado para cada revisión.
+
+**5. Corrige y vuelve a probar hasta que pase.**
+- **Si dice FIX AND RETEST** (corregir y volver a probar): abre otra vez
+  **Builder — make a tool**. Pega los **Fixes** (correcciones) del Tester y
+  tu receta actual en el último recuadro. Instala la nueva versión y repite
+  los pasos 3 y 4.
+- **Cuando diga PASS** (aprobado): quédate con la herramienta.
+
+**Tenla en todos tus dispositivos:**
+1. Abre tu copia en GitHub y luego la carpeta `plugins/`.
+2. Toca **Add file** (agregar archivo) y luego **Create new file** (crear
+   archivo nuevo).
+3. Ponle el nombre exacto que te dio el Builder (que termina en
+   `.recipe.md`), pega la receta y toca **Commit changes** (guardar
+   cambios).
+4. En Brain Hub, toca **Refresh tools** (actualizar herramientas).
+
+> ¿Prefieres usar cualquier IA por su cuenta? Pégale
+> **[WIDGET-GUIDE.md](WIDGET-GUIDE.md)**, pídele la herramienta y luego usa
+> **Add a tool** (agregar herramienta). Aun así, haz los pasos del Tester de
+> arriba.
 
 ---
 

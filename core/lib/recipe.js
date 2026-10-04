@@ -12,7 +12,7 @@ export const INPUT_TYPES = ['text', 'long_text', 'choose_one', 'number']
 export const SAVE_TYPES = ['work_product', 'personal_note', 'job_history', 'profile']
 export const PROFILE_PARTS = ['skills', 'experience', 'job-history', 'education', 'goals']
 
-export const SOURCING = ['facts', 'advice']
+export const SOURCING = ['facts', 'advice', 'none']
 const TOP_FIELDS = ['recipe_format', 'id', 'name', 'description', 'version', 'author',
   'permissions', 'web_search', 'sourcing', 'inputs', 'brain_context', 'output', 'save']
 const REQUIRED = ['recipe_format', 'id', 'name', 'description', 'version', 'author',
@@ -149,9 +149,10 @@ export function parseRecipe(text, { fileName } = {}) {
     }
   }
 
-  const valid = new Set([...inputIds, 'brain_context', 'today'])
+  // widget_guide: the hub's own WIDGET-GUIDE.md, for tools that build tools (Builder).
+  const valid = new Set([...inputIds, 'brain_context', 'today', 'widget_guide'])
   const checkNames = (names, where) => {
-    for (const n of names) if (!valid.has(n)) errors.push(`${where} uses {{${n}}}, which is not an input id, brain_context or today`)
+    for (const n of names) if (!valid.has(n)) errors.push(`${where} uses {{${n}}}, which is not an input id, brain_context, today or widget_guide`)
   }
 
   // brain_context

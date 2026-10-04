@@ -101,6 +101,61 @@ function noBrainNudge() {
     h('a', { href: EXPRESS_URL, target: '_blank', rel: 'noopener' }, 'Build one in an hour.'))
 }
 
+// ---------------------------------------------------------------- answers: copy, sections, recipes
+
+let guideCache = null
+// The Builder's prompt carries the hub's own widget guide ({{widget_guide}}), so a
+// student never has to paste it by hand.
+async function widgetGuideFor(recipe) {
+  if (!/\{\{\s*widget_guide\s*\}\}/.test(recipe.body)) return null
+  if (guideCache) return guideCache
+  try {
+    const res = await fetch('WIDGET-GUIDE.md', { cache: 'no-cache' })
+    if (res.ok) guideCache = await res.text()
+  } catch { /* the prompt then says the guide is missing */ }
+  return guideCache
+}
+
+async function copyText(text, statusEl) {
+  try { await navigator.clipboard.writeText(text); statusEl.textContent = 'Copied.' }
+  catch { statusEl.textContent = 'Could not copy — long-press the text and choose Copy.' }
+}
+
+// The Markdown of one ## section (heading excluded), from the raw answer.
+export function sectionText(md, name) {
+  const lines = String(md).split(/\r?\n/)
+  const norm = (t) => t.replace(/[*_`]/g, '').trim().toLowerCase()
+  const start = lines.findIndex((l) => /^##\s+/.test(l) && norm(l.replace(/^##\s+/, '')) === norm(name))
+  if (start < 0) return ''
+  let end = lines.findIndex((l, i) => i > start && /^##\s+/.test(l))
+  if (end < 0) end = lines.length
+  return lines.slice(start + 1, end).join('\n').trim()
+}
+
+// A small Copy button after every ## heading, so a student can copy one section
+// (the Builder's Spec, for the Tester) without the rest.
+function addSectionCopyButtons(body, md) {
+  body.querySelectorAll('h2').forEach((h2) => {
+    const name = h2.textContent.trim()
+    const status = h('span', { class: 'small muted', role: 'status' })
+    h2.after(h('div', { class: 'row' },
+      h('button', { class: 'ghost', tid: 'copy-section', 'data-section': name, onclick: () => copyText(sectionText(md, name), status) }, `Copy “${name}”`),
+      status))
+  })
+}
+
+// Valid recipes inside fenced code blocks in an answer (the Builder's output).
+export function recipesIn(md) {
+  const out = []
+  for (const m of String(md).matchAll(/(^|\n)(`{3,}|~{3,})[^\n]*\n([\s\S]*?)\n\2[ \t]*(?=\n|$)/g)) {
+    const text = m[3].replace(/^\s+/, '') + '\n'
+    if (!text.startsWith('---')) continue
+    const r = parseRecipe(text)
+    if (r.ok && !out.some((x) => x.id === r.recipe.id)) out.push({ id: r.recipe.id, name: r.recipe.name, text })
+  }
+  return out
+}
+
 // ---------------------------------------------------------------- tools
 
 let toolsState = null
@@ -577,7 +632,7 @@ async function renderTool(id) {
       runBtn.disabled = true
       try {
         const ctx = await gatherBrainContext()
-        const prompt = buildPrompt(recipe, st.inputs, { brainContext: ctx.text, today: today() })
+        const prompt = buildPrompt(recipe, st.inputs, { brainContext: ctx.text, today: today(), widgetGuide: await widgetGuideFor(recipe) })
         st.prompt = prompt; persist()
         stage.replaceChildren(note('', 'run-status', `Running on ${s.models[0]}… this can take a minute.`))
         const res = await createAI({ key }).run(prompt, { models: s.models, webSearch })
@@ -597,6 +652,7 @@ async function renderTool(id) {
     const ctx = await gatherBrainContext()
     st.prompt = buildPrompt(recipe, st.inputs, {
       brainContext: ctx.text, today: today(), webSearchLine: ws === 'none' ? null : WEB_SEARCH_LINE,
+      widgetGuide: await widgetGuideFor(recipe),
     })
     persist()
     bumpStat('runs')
@@ -691,6 +747,9 @@ async function renderTool(id) {
     const body = h('div', { class: 'result', tid: 'result' })
     body.innerHTML = renderAnswer(text)
     body.querySelectorAll('a').forEach((a) => { a.target = '_blank'; a.rel = 'noopener noreferrer' })
+    addSectionCopyButtons(body, text)
+    const builtRecipes = recipesIn(text)
+    const copyStatus = h('span', { class: 'small muted', role: 'status', tid: 'copy-answer-status' })
 
     const saveStatus = h('div', { tid: 'save-status', role: 'status' })
     const canSave = b && perms.includes('save_to_brain')
@@ -739,7 +798,13 @@ async function renderTool(id) {
           const f = downloadFile({ recipe, inputs: st.inputs, report: text })
           saveFile(f.fileName, f.text)
         } }, 'Download'),
-        h('button', { tid: 'check-btn', onclick: () => { st.checkOpen = true; persist(); checkerBox.hidden = false; showChecker(text, checkerBox) } }, 'Check this answer')),
+        h('button', { tid: 'copy-answer', onclick: () => copyText(text, copyStatus) }, 'Copy answer'),
+        builtRecipes.map((r) => h('button', { class: 'primary', tid: 'install-from-answer', 'data-tool-id': r.id, onclick: () => {
+          S.set('hub.addDraft', r.text)
+          location.hash = '#/add'
+        } }, `Install ${r.name}`)),
+        recipe.sourcing === 'none' ? null : h('button', { tid: 'check-btn', onclick: () => { st.checkOpen = true; persist(); checkerBox.hidden = false; showChecker(text, checkerBox) } }, 'Check this answer'),
+        copyStatus),
       savePanel,
       checkerBox,
       b ? null : noBrainNudge()))
@@ -855,6 +920,9 @@ async function renderTool(id) {
 
 function renderAdd() {
   const paste = h('textarea', { tid: 'recipe-paste', id: 'recipe-paste', rows: 12, class: 'mono', placeholder: '---\nrecipe_format: 1\nid: my-tool\n…' })
+  // Arriving from "Install …" on a Builder answer: the recipe is already filled in.
+  const draft = S.get('hub.addDraft', null)
+  if (typeof draft === 'string') { paste.value = draft; S.remove('hub.addDraft') }
   const out = h('div', { 'aria-live': 'polite' })
 
   const check = h('button', { class: 'primary', tid: 'recipe-check', onclick: async () => {

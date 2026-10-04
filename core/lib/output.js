@@ -73,6 +73,7 @@ const forFactTest = (t) => t.replace(/\[[^\]]*\]/g, ' ').replace(/\(\d+\)/g, ' '
 const isQuestion = (t) => /\?["”'’)\]]*$/.test(t.replace(/\s*\[[^\]]*\]\s*$/, '').trim())
 
 export function checkSources(markdown, { sourcing = 'facts', returnItems = false } = {}) {
+  if (sourcing === 'none') return returnItems ? [] : { claims: 0, sourced: 0, unverified: 0, unsourced: [] }
   const lines = String(markdown ?? '').split(/\r?\n/)
   const claims = []
   let section = null
