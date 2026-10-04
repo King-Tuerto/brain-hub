@@ -364,6 +364,21 @@ directly. The hub calls them on the recipe's behalf.
       real-answer runs to keep the fixtures honest. Better done once, with
       what the pilot teaches.
 
+22. **Builder and Tester ship as three recipes, with small hub changes**
+    (El Código, 2026-10-04). DECIDED.
+    - **Three recipes, not two:** Builder, "Tester 1 — write the tests" and
+      "Tester 2 — grade the results". Splitting the Tester makes "tests
+      before results" and "never grades its own work" structural: Tester 1
+      writes the bar before any run, and Tester 2 is a new chat that only
+      sees the Spec, the tests and the answers.
+    - **Hub changes, all small:** a `none` sourcing mode; `{{widget_guide}}`;
+      Install buttons on recipes found in an answer, plus a note when a
+      recipe there is invalid; Copy buttons per section and for the whole
+      answer; and a guard that refuses to send a recipe to a Tester.
+    - **Retests keep the same tests** (`previous_tests`) unless a criterion
+      changed. Fresh tests every round never converged (attempt 3).
+    - **Why:** see `docs/builder-tester/PLAN.md`.
+
 ---
 
 **Phase 1 closed October 3, 2026.** Paul approved these decisions and

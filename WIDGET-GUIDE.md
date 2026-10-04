@@ -59,7 +59,7 @@ don't wrap it in a code fence.
 | `author` | yes | The student's name or handle. This is the only place a personal name belongs. |
 | `permissions` | yes | A list drawn **only** from: `search_brain`, `save_to_brain`, `run_ai`. See §6. |
 | `web_search` | yes | `required`, `helpful` or `none`. See §6a. |
-| `sourcing` | no | `facts` (the default) or `advice`. See §6b. |
+| `sourcing` | no | `facts` (the default), `advice` or `none`. See §6b. |
 | `inputs` | yes | 1–8 fields. See §4. |
 | `brain_context` | no | What to search the brain for. See §5. Requires `search_brain`. |
 | `output` | yes | `sections:` a list of 2–10 heading names the answer must contain, in order. |
@@ -156,6 +156,7 @@ How to choose:
 | Value | Use when | What the hub asks of the AI and checks |
 |---|---|---|
 | `facts` (default) | Research and analysis tools, where the answer is mostly claims about the world. | Every factual claim needs a source link or `[unverified]`. The hub counts every list item, table row and paragraph. |
+| `none` | Tools that only work on the student's own text or on other tools: rewriting, formatting, building or testing a tool. | No source rule, and no source count. The no-invention rule still applies. |
 | `advice` | Coaching tools, where the answer is mostly recommendations: interview prep, study plans, writing feedback. | Only factual statements need sources: figures, dates, names, statistics, claims about real organisations. The hub counts only lines containing a figure, a percentage or an amount (ignoring `[placeholders]`), so an invented statistic is still caught, and suggested wording in quotation marks is not counted. |
 
 ## 7. Save rules (optional)
@@ -184,6 +185,7 @@ tool" (see §1). You may use:
 | `{{<input id>}}` | What the student typed. An empty optional input becomes `(not provided)` (see §4). |
 | `{{brain_context}}` | The brain search results, or the no-notes text from §5. |
 | `{{today}}` | Today's date, `YYYY-MM-DD`. |
+| `{{widget_guide}}` | This whole guide, so that a tool can build other tools (the core **Builder** uses it). Rarely needed. |
 
 **Don't** write rules about sources, section order, the summary or invented
 facts. The hub appends a standard block to every prompt that:
@@ -217,14 +219,14 @@ Any `{{...}}` that isn't listed above is an error.
 1. Front matter parses as YAML, and every required field is present.
 2. `recipe_format` is `1`. `id` matches the file name and the pattern in §3.
 3. Every `{{placeholder}}` in the body and in `brain_context.query` or
-   `save.tags` is either an input `id`, `brain_context`, or `today`.
+   `save.tags` is either an input `id`, `brain_context`, `today` or `widget_guide`.
 4. `brain_context` is present only if `search_brain` is in `permissions`.
    The same goes for `save` and `save_to_brain`.
 5. No `<script`, `<iframe`, `javascript:` or other HTML tags anywhere.
 6. Limits are respected: 1–8 inputs, 2–10 sections, 1–5 tags, file under
    20 KB.
 7. `web_search` is one of `required`, `helpful`, `none`. `sourcing`, if
-   present, is `facts` or `advice`.
+   present, is `facts`, `advice` or `none`.
 
 The hub **can't** check the rules in §1, §4 and §5 about names, optional
 inputs and narrow queries. Check those yourself; §11 lists them.

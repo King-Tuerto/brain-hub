@@ -8,7 +8,7 @@ import { checkSources } from '../../core/lib/output.js'
 import { StandinBrain, STANDIN_URL, STANDIN_KEY, STANDIN_USER } from '../standin/brain-standin.mjs'
 import { TOOL_ID, SECTIONS, inputsOf, promptOf, answerOf } from '../helpers/jobprep.mjs'
 
-const CORE = ['hello-hub', 'company-analysis', 'job-interview-prep']
+const CORE = ['hello-hub', 'company-analysis', 'job-interview-prep', 'tool-builder', 'tool-tester-write', 'tool-tester-grade']
 const tile = (page) => tid(page, 'tool-tile').and(page.locator(`[data-tool-id="${TOOL_ID}"]`))
 
 const test = base.extend({
@@ -50,7 +50,7 @@ async function useAnswer(page, text) {
   await expect(tid(page, 'result')).toBeVisible()
 }
 
-test('home: three core tiles, Job & Interview Prep among them, with no plugins and no brain', async ({ page }) => {
+test('home: six core tiles, Job & Interview Prep among them, with no plugins and no brain', async ({ page }) => {
   await setup(page)
   await expect(tile(page)).toBeVisible()
   await expect(tile(page)).toContainText('Job & Interview Prep')
@@ -59,7 +59,7 @@ test('home: three core tiles, Job & Interview Prep among them, with no plugins a
   expect(ids).toEqual(CORE)
   await expect(tid(page, 'tool-broken')).toHaveCount(0)
   await expect(tid(page, 'tool-conflict')).toHaveCount(0)
-  await expect(tid(page, 'stats').locator('[data-k=tools] b')).toHaveText('3')
+  await expect(tid(page, 'stats').locator('[data-k=tools] b')).toHaveText('6')
 })
 
 test('the tool screen shows the four fields; the two optional ones say "(optional)" once each', async ({ page }) => {
@@ -97,10 +97,11 @@ test('case B answer: every section, no missing-sections; the advice-mode source-
   await expect(tid(page, 'source-check')).toBeVisible()
   await expect(tid(page, 'source-check')).toContainText(`${sc.unsourced.length} of ${sc.claims} claims have no source`)
   // Pinned independently of checkSources: advice mode counts only figure-bearing
-  // statements, so B has 2 (both are her own 22 → 41 figures), not the 16 a
-  // facts-mode count would give.
-  await expect(tid(page, 'source-check')).toContainText('2 of 2 claims have no source')
-  await expect(tid(page, 'unsourced-list').locator('li')).toHaveCount(2)
+  // statements. The v3-rule answer has 5: one marked [unverified], and 4 with no
+  // source (her own 22 → 41 figures twice, "Summer 2026", and the [X%] placeholder
+  // line), not the dozen-plus a facts-mode count would give. (The v2 answer had 2 of 2.)
+  await expect(tid(page, 'source-check')).toContainText('4 of 5 claims have no source')
+  await expect(tid(page, 'unsourced-list').locator('li')).toHaveCount(4)
 })
 
 test('Save writes one row with metadata.hub.tool = job-interview-prep, tagged job-prep and the company', async ({ page, standin }) => {

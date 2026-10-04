@@ -23,7 +23,8 @@ import {
 // (example sentences get placeholders for every number). Both are written out
 // here, not imported, so a silent change to prompt.js fails these tests.
 const NO_INVENTION_RULE_V1 = 'Never invent facts about me (numbers, achievements, dates, names). Where a real detail of mine is needed and you do not have it, write a placeholder like [your number].'
-const NO_INVENTION_RULE = NO_INVENTION_RULE_V1 + ' This includes example sentences I might copy, such as sample resume bullets or answers: put a placeholder like [X%] in place of every number in them.'
+// v3 (builder-tester): narrowed so practice questions and worked examples get concrete made-up numbers.
+const NO_INVENTION_RULE = 'Never invent facts about me (numbers, achievements, dates, names), and never present made-up facts as real. Where a real detail of mine is needed and you do not have it, write a placeholder like [your number]. This includes example sentences I might copy as my own, such as sample resume bullets or answers: put a placeholder like [X%] in place of every number in them. Practice questions, worked examples and exercises are different: they are hypothetical, so give them concrete made-up numbers, not placeholders, even when they are written to "you"; say they are hypothetical if that is not obvious.'
 const SOURCE_RULE_ADVICE = 'Every factual statement (figures, dates, names, statistics, quotations, claims about real organisations) must include a source link in Markdown form [title](https://…), or be marked [unverified]. Advice and recommendations do not need sources.'
 const FIX_ORDER = ['missing-section', 'unsourced', 'not-supported', 'partly', 'unreachable', 'not-checked', 'skipped']
 

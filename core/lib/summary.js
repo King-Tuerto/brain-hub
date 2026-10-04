@@ -30,7 +30,8 @@ export function installSummary(recipe) {
     permissions,
     query,
     webSearch: WEB_TEXT[recipe.web_search] ?? recipe.web_search,
-    sourcing: recipe.sourcing === 'advice' ? 'Statements with figures, percentages or amounts need sources; advice does not' : 'Every factual claim needs a source',
+    sourcing: recipe.sourcing === 'advice' ? 'Statements with figures, percentages or amounts need sources; advice does not'
+      : recipe.sourcing === 'none' ? 'No sources needed (it works on your own text)' : 'Every factual claim needs a source',
     warnings,
   }
 }

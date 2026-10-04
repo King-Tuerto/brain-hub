@@ -101,6 +101,109 @@ function noBrainNudge() {
     h('a', { href: EXPRESS_URL, target: '_blank', rel: 'noopener' }, 'Build one in an hour.'))
 }
 
+// ---------------------------------------------------------------- answers: copy, sections, recipes
+
+let guideCache = null
+// The Builder's prompt carries the hub's own widget guide ({{widget_guide}}), so a
+// student never has to paste it by hand.
+async function widgetGuideFor(recipe) {
+  if (!/\{\{\s*widget_guide\s*\}\}/.test(recipe.body)) return null
+  if (guideCache) return guideCache
+  try {
+    const res = await fetch('WIDGET-GUIDE.md', { cache: 'no-cache' })
+    if (res.ok) guideCache = await res.text()
+  } catch { /* the prompt then says the guide is missing */ }
+  return guideCache
+}
+
+async function copyText(text, statusEl) {
+  try { await navigator.clipboard.writeText(text); statusEl.textContent = 'Copied.' }
+  catch { statusEl.textContent = 'Could not copy — long-press the text and choose Copy.' }
+}
+
+// Lines of an answer, each marked as inside a fenced code block or not. A fence
+// closes only on the same character, at least as long, with nothing after it
+// (CommonMark), so a ``` block inside a ~~~~ or ```` fence stays inside it.
+export function fenceMap(md) {
+  const lines = String(md).split(/\r?\n/)
+  const out = []
+  let open = null
+  for (const line of lines) {
+    const m = /^ {0,3}(`{3,}|~{3,})(.*)$/.exec(line)
+    if (!open && m) { open = { ch: m[1][0], len: m[1].length, info: m[2].trim() }; out.push({ line, fence: 'open', info: open.info }); continue }
+    if (open && m && m[1][0] === open.ch && m[1].length >= open.len && !m[2].trim()) { open = null; out.push({ line, fence: 'close' }); continue }
+    out.push({ line, inside: !!open })
+  }
+  return out
+}
+export function isHeading(l, name) {
+  const m = /^##\s+(.+?)\s*#*\s*$/.exec(l.line)
+  if (!m || l.inside || l.fence) return false
+  const norm = (t) => t.replace(/[*_`]/g, '').trim().toLowerCase()
+  return name == null || norm(m[1]) === norm(name)
+}
+
+// The Markdown of one ## section (heading excluded), from the raw answer.
+// "## " lines inside a code block are not headings (Nitpick #3).
+export function sectionText(md, name) {
+  const map = fenceMap(md)
+  const start = map.findIndex((l) => isHeading(l, name))
+  if (start < 0) return ''
+  let end = map.findIndex((l, i) => i > start && isHeading(l))
+  if (end < 0) end = map.length
+  return map.slice(start + 1, end).map((l) => l.line).join('\n').trim()
+}
+
+// A small Copy button after every ## heading, so a student can copy one section
+// (the Builder's Spec, for the Tester) without the rest.
+// What a section's Copy button copies. A section holding a recipe copies just the
+// recipe file, ready to paste into plugins/ (Nitpick S1); anything else, the section.
+export function sectionCopy(md, name) {
+  const text = sectionText(md, name)
+  const [recipe] = recipesIn(text)
+  return recipe ? recipe.text : text
+}
+
+function addSectionCopyButtons(body, md) {
+  body.querySelectorAll('h2').forEach((h2) => {
+    const name = h2.textContent.trim()
+    const status = h('span', { class: 'small muted', role: 'status' })
+    h2.after(h('div', { class: 'row' },
+      h('button', { class: 'ghost', tid: 'copy-section', 'data-section': name, onclick: () => copyText(sectionCopy(md, name), status) }, `Copy “${name}”`),
+      status))
+  })
+}
+
+// Recipes in an answer (the Builder's output): every fenced block whose text is a
+// recipe, plus — if the AI followed the guide's "no fence" rule instead — an
+// unfenced recipe under a "## Recipe" heading (Nitpick #4). Valid ones get an
+// Install button; invalid ones are reported with their problems.
+export function recipesIn(md, { withProblems = false } = {}) {
+  const map = fenceMap(md)
+  const blocks = []
+  for (let i = 0; i < map.length; i++) {
+    if (map[i].fence !== 'open') continue
+    const body = []
+    let j = i + 1
+    for (; j < map.length && map[j].fence !== 'close'; j++) body.push(map[j].line)
+    if (j < map.length) blocks.push(body.join('\n'))
+    i = j
+  }
+  const recipeSection = sectionText(md, 'Recipe')
+  if (/^---\s*$/m.test(recipeSection.split('\n')[0] ?? '')) blocks.push(recipeSection)
+
+  const out = []
+  const problems = []
+  for (const raw of blocks) {
+    const text = raw.replace(/^\s+/, '') + '\n'
+    if (!text.startsWith('---')) continue
+    const r = parseRecipe(text)
+    if (r.ok) { if (!out.some((x) => x.id === r.recipe.id)) out.push({ id: r.recipe.id, name: r.recipe.name, text }) }
+    else if (/^\s*recipe_format\s*:/m.test(text) && !problems.some((p) => p.join() === r.errors.join())) problems.push(r.errors)
+  }
+  return withProblems ? { recipes: out, problems } : out
+}
+
 // ---------------------------------------------------------------- tools
 
 let toolsState = null
@@ -551,6 +654,11 @@ async function renderTool(id) {
       formError.hidden = false
       return
     }
+    if (/^tool-tester-/.test(recipe.id) && Object.values(st.inputs).some((v) => /^\s*recipe_format\s*:/m.test(String(v ?? '')))) {
+      formError.textContent = 'This contains the tool\u2019s recipe. The Tester must never see it: paste only the Spec (tap Copy under the Spec heading), the test cases and the answers.'
+      formError.hidden = false
+      return
+    }
     st.result = null; st.answer = ''; st.noWebSearch = false; st.checkAnswer = null; st.checkResult = null; st.checkOpen = false
     resultBox.replaceChildren()
     const mode = effectiveMode()
@@ -577,7 +685,7 @@ async function renderTool(id) {
       runBtn.disabled = true
       try {
         const ctx = await gatherBrainContext()
-        const prompt = buildPrompt(recipe, st.inputs, { brainContext: ctx.text, today: today() })
+        const prompt = buildPrompt(recipe, st.inputs, { brainContext: ctx.text, today: today(), widgetGuide: await widgetGuideFor(recipe) })
         st.prompt = prompt; persist()
         stage.replaceChildren(note('', 'run-status', `Running on ${s.models[0]}… this can take a minute.`))
         const res = await createAI({ key }).run(prompt, { models: s.models, webSearch })
@@ -597,6 +705,7 @@ async function renderTool(id) {
     const ctx = await gatherBrainContext()
     st.prompt = buildPrompt(recipe, st.inputs, {
       brainContext: ctx.text, today: today(), webSearchLine: ws === 'none' ? null : WEB_SEARCH_LINE,
+      widgetGuide: await widgetGuideFor(recipe),
     })
     persist()
     bumpStat('runs')
@@ -691,6 +800,9 @@ async function renderTool(id) {
     const body = h('div', { class: 'result', tid: 'result' })
     body.innerHTML = renderAnswer(text)
     body.querySelectorAll('a').forEach((a) => { a.target = '_blank'; a.rel = 'noopener noreferrer' })
+    addSectionCopyButtons(body, text)
+    const { recipes: builtRecipes, problems: recipeProblems } = recipesIn(text, { withProblems: true })
+    const copyStatus = h('span', { class: 'small muted', role: 'status', tid: 'copy-answer-status' })
 
     const saveStatus = h('div', { tid: 'save-status', role: 'status' })
     const canSave = b && perms.includes('save_to_brain')
@@ -730,7 +842,7 @@ async function renderTool(id) {
       h('h2', { text: 'Result' }),
       st.noWebSearch ? h('p', { tid: 'no-websearch-label', class: 'badge', text: 'No web search' }) : null,
       parsed.missingSections.length ? note('warn', 'missing-sections', `Missing sections: ${parsed.missingSections.join(', ')}`) : null,
-      parsed.sources.length ? null : note('warn', 'no-sources-warning', 'This answer has no source links, so none of its facts can be checked. Treat it with care.'),
+      parsed.sources.length || recipe.sourcing === 'none' ? null : note('warn', 'no-sources-warning', 'This answer has no source links, so none of its facts can be checked. Treat it with care.'),
       sourceCheckNote(sc),
       body,
       h('div', { class: 'row mt' },
@@ -739,7 +851,16 @@ async function renderTool(id) {
           const f = downloadFile({ recipe, inputs: st.inputs, report: text })
           saveFile(f.fileName, f.text)
         } }, 'Download'),
-        h('button', { tid: 'check-btn', onclick: () => { st.checkOpen = true; persist(); checkerBox.hidden = false; showChecker(text, checkerBox) } }, 'Check this answer')),
+        h('button', { tid: 'copy-answer', onclick: () => copyText(text, copyStatus) }, 'Copy answer'),
+        builtRecipes.map((r) => h('button', { class: 'primary', tid: 'install-from-answer', 'data-tool-id': r.id, onclick: () => {
+          S.set('hub.addDraft', r.text)
+          location.hash = '#/add'
+        } }, `Install ${r.name}`)),
+        recipe.sourcing === 'none' ? null : h('button', { tid: 'check-btn', onclick: () => { st.checkOpen = true; persist(); checkerBox.hidden = false; showChecker(text, checkerBox) } }, 'Check this answer'),
+        copyStatus),
+      recipeProblems.length ? note('warn', 'recipe-problems',
+        h('p', { text: 'This answer contains a recipe the hub cannot install yet. Paste these problems back to the Builder (in "Tester\u2019s fixes, your Spec and your recipe") and run it again:' }),
+        h('ul', { class: 'errors' }, recipeProblems.flat().map((e) => h('li', { text: e })))) : null,
       savePanel,
       checkerBox,
       b ? null : noBrainNudge()))
@@ -855,6 +976,9 @@ async function renderTool(id) {
 
 function renderAdd() {
   const paste = h('textarea', { tid: 'recipe-paste', id: 'recipe-paste', rows: 12, class: 'mono', placeholder: '---\nrecipe_format: 1\nid: my-tool\n…' })
+  // Arriving from "Install …" on a Builder answer: the recipe is already filled in.
+  const draft = S.get('hub.addDraft', null)
+  if (typeof draft === 'string') { paste.value = draft; S.remove('hub.addDraft') }
   const out = h('div', { 'aria-live': 'polite' })
 
   const check = h('button', { class: 'primary', tid: 'recipe-check', onclick: async () => {

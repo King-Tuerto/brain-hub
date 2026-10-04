@@ -175,24 +175,65 @@ close it and open it again.
 
 ---
 
-## Make your own tools
+## Build your own tool
 
 Want a tool for something else, like a study planner, networking prep or
-essay feedback?
+essay feedback? Build it the way software teams do: one specialist **builds**,
+a different one **tests**, and nothing is kept until it passes. Whoever
+builds something is the worst person to check it.
 
-1. Open your AI app and paste in
-   **[WIDGET-GUIDE.md](WIDGET-GUIDE.md)** from your copy.
-2. Ask for the tool you want. It gives you a file whose name ends in
-   `.recipe.md`.
-3. In Brain Hub, tap **Add a tool**, paste the file's text, and tap **Check
-   recipe**. The hub shows exactly what the tool can do. If you're happy,
-   tap **Install**.
-4. **To keep it on every device:**
-   1. Open your copy on GitHub, then the `plugins/` folder.
-   2. Tap **Add file**, then **Create new file**.
-   3. Name it exactly as your AI said (ending in `.recipe.md`), paste the
-      text, and tap **Commit changes**.
-   4. In Brain Hub, tap **Refresh tools**.
+**1. Build it (Builder).**
+1. On Home, tap **Builder — make a tool**. Say in plain words what the tool
+   should do, then **Run**. Paste the prompt into your AI app as usual, and
+   bring the answer back with **Use this answer**.
+2. You get **Steps**, a **Spec** (what the tool must do, with numbered
+   checks) and the **Recipe**. Tap the **Install** button under the answer,
+   then **Check recipe** and **Install**. That puts it on this phone so you
+   can test it.
+
+**2. Write the tests (Tester 1)**, before you use the tool.
+1. Under the Builder's **Spec** heading, tap **Copy**. Copy the Spec only,
+   never the recipe; the Tester must not see how the tool was built.
+2. Open **Tester 1 — write the tests**, paste the Spec, and run it. **Use a
+   new chat in your AI app**, not the one where the Builder wrote the tool,
+   so the Tester can't see the recipe. You get three test cases with the
+   exact inputs to type.
+
+**3. Run the tests.** Run your new tool three times, once per test, with
+exactly those inputs. A phone holds only one copied thing at a time, so after
+each run:
+1. Tap **Copy answer**.
+2. Open **Tester 2 — grade the results**, and in its last box type
+   *Test 1:* (then *Test 2:*, then *Test 3:*) and paste the answer under it.
+
+The hub keeps what you typed in each tool, so you can switch back and forth.
+
+**4. Grade (Tester 2).** In **Tester 2 — grade the results**, also paste the
+Spec and the test cases, then run it. **Use a new chat in your AI app**,
+not the one that built the tool. You get pass or fail for every check.
+
+**5. Fix and retest until it passes.**
+- **If it says FIX AND RETEST:** open **Builder — make a tool** again. Paste
+  the Tester's **Fixes**, your current **Spec** and your current recipe
+  into the last box, one after the other. Install
+  the new version. Then open **Tester 1**: first tap **Copy** under **Test
+  cases** in its last answer and paste them into the last box, then paste
+  the new Spec (copy it from the Builder's new answer) and run it. The Tester keeps the same tests and
+  changes only the ones the new Spec really changed. A fixed bar is the only
+  fair test, and a builder's word about its own changes isn't a test. Then
+  repeat steps 3 and 4.
+- **When it says PASS:** keep the tool.
+
+**Keep it on every device:**
+1. Open your copy on GitHub, then the `plugins/` folder.
+2. Tap **Add file**, then **Create new file**.
+3. Name it exactly as the Builder said (ending in `.recipe.md`), paste the
+   recipe, and tap **Commit changes**.
+4. In Brain Hub, tap **Refresh tools**.
+
+> Prefer any AI on its own? Paste **[WIDGET-GUIDE.md](WIDGET-GUIDE.md)**
+> into it and ask for the tool, then use **Add a tool**. Run the Tester steps
+> above anyway.
 
 ---
 

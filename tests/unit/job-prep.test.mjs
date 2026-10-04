@@ -5,17 +5,19 @@ import { test, describe } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { parseRecipe } from '../../core/lib/recipe.js'
-import { buildPrompt, fillShort } from '../../core/lib/prompt.js'
+import { buildPrompt, fillShort, STANDARD_BLOCK } from '../../core/lib/prompt.js'
 import { parseOutput } from '../../core/lib/output.js'
 import { WEB_SEARCH_LINE, NO_BRAIN_TEXT, EMPTY_INPUT_TEXT, TODAY } from '../helpers/contract.mjs'
-import { inventedStudentFacts, placeholdersIn, sentencesOf, GOAL, V10_ANSWER } from '../helpers/phase5.mjs'
+import { inventedStudentFacts, placeholdersIn, sentencesOf, GOAL, CONDITIONAL_PLAN, V10_ANSWER } from '../helpers/phase5.mjs'
 import {
   RECIPE_TEXT, RECIPE_FILE_NAME, INDEX_FILE, TOOL_ID, SECTIONS,
-  inputsOf, promptOf, answerOf, promptV1Of, answerV1Of, studentText,
+  inputsOf, promptOf, answerOf, promptV1Of, answerV1Of, promptV2Of, answerV2Of, studentText,
 } from '../helpers/jobprep.mjs'
 
 const RULE_V1 = 'Never invent facts about me (numbers, achievements, dates, names). Where a real detail of mine is needed and you do not have it, write a placeholder like [your number].'
-const RULE = RULE_V1 + ' This includes example sentences I might copy, such as sample resume bullets or answers: put a placeholder like [X%] in place of every number in them.'
+const RULE_V2 = RULE_V1 + ' This includes example sentences I might copy, such as sample resume bullets or answers: put a placeholder like [X%] in place of every number in them.'
+// v3 (builder-tester): made-up numbers belong in practice questions, not in anything the student might say as their own.
+const RULE = 'Never invent facts about me (numbers, achievements, dates, names), and never present made-up facts as real. Where a real detail of mine is needed and you do not have it, write a placeholder like [your number]. This includes example sentences I might copy as my own, such as sample resume bullets or answers: put a placeholder like [X%] in place of every number in them. Practice questions, worked examples and exercises are different: they are hypothetical, so give them concrete made-up numbers, not placeholders, even when they are written to "you"; say they are hypothetical if that is not obvious.'
 const ADVICE_RULE = 'Every factual statement (figures, dates, names, statistics, quotations, claims about real organisations) must include a source link in Markdown form [title](https://…), or be marked [unverified]. Advice and recommendations do not need sources.'
 
 function recipe() {
@@ -88,9 +90,10 @@ describe('the recipe (core/tools/job-interview-prep.recipe.md)', () => {
     assert.ok(!/Maria|Lopez|Paul|Waterman|Tuerto|Ana\b/.test(b), 'a personal name is in the body')
     assert.ok(!/\bI'?m [A-Z][a-z]+ [A-Z][a-z]+/.test(b), 'the body introduces the author by name')
   })
-  test('index.json lists it as the third core tool, after hello-hub and company-analysis', () => {
+  test('index.json lists it as the third core tool, after hello-hub and company-analysis (then the Builder and Testers)', () => {
     const idx = JSON.parse(readFileSync(INDEX_FILE, 'utf8'))
-    assert.deepEqual(idx, ['hello-hub.recipe.md', 'company-analysis.recipe.md', 'job-interview-prep.recipe.md'])
+    assert.deepEqual(idx, ['hello-hub.recipe.md', 'company-analysis.recipe.md', 'job-interview-prep.recipe.md',
+      'tool-builder.recipe.md', 'tool-tester-write.recipe.md', 'tool-tester-grade.recipe.md'])
   })
 })
 
@@ -110,6 +113,12 @@ describe('prompt fixtures equal what buildPrompt makes now', () => {
       const v1 = promptV1Of(c)
       assert.ok(!v1.includes(RULE))
       assert.equal(promptOf(c).split('\n').map((l) => (l === RULE ? RULE_V1 : l)).join('\n'), v1)
+    })
+    test(`case ${c}: prompt-v2.md (what the second answer saw) is prompt.md with only the rule line swapped for v2`, () => {
+      const v2 = promptV2Of(c)
+      assert.ok(v2.split('\n').includes(RULE_V2))
+      assert.ok(!v2.includes(RULE))
+      assert.equal(promptOf(c).split('\n').map((l) => (l === RULE ? RULE_V2 : l)).join('\n'), v2)
     })
   }
   test('case A really exercised both blank optional inputs; case B really filled them', () => {
@@ -167,8 +176,59 @@ describe('never invent facts: the invention check on real answers', () => {
   test('the v1 case-B answer also passed (recorded in PLAN), so B was never the problem', () => {
     assert.deepEqual(inventedStudentFacts(answerV1Of('B'), studentText('B')), [])
   })
-  test('case A\'s "first 90 days / 10 customers" line is examined and passes only as a goal; as a past fact it fails', () => {
+  test('resume bullets still use placeholders under the v3 rule: both answers have them in Resume essentials', () => {
+    for (const c of ['A', 'B']) {
+      const resume = answerOf(c).split(/^## /m).find((s) => s.startsWith('Resume essentials'))
+      assert.ok(resume, `case ${c} has no Resume essentials section`)
+      const ph = placeholdersIn(resume)
+      assert.ok(ph.length >= (c === 'A' ? 10 : 3), `case ${c}: only ${ph.length} placeholders in Resume essentials: ${ph.join(' ')}`)
+      assert.ok(ph.some((p) => /^\[X/.test(p)), `case ${c}: no [X…]-style number placeholder in Resume essentials`)
+    }
+  })
+  test('the v2 answers (two-sentence rule) still pass too: the checker change did not move the old bar', () => {
+    for (const c of ['A', 'B']) assert.deepEqual(inventedStudentFacts(answerV2Of(c), studentText(c)), [], c)
+  })
+  test('case A (v3): "In the first 90 days, I\'d talk to customers" passes only as a conditional plan; as a past fact it fails', () => {
     const s = sentencesOf(answerOf('A')).find((x) => /first 90 days/.test(x))
+    assert.ok(s, 'the line is gone; update this test')
+    assert.match(s, /^In the first 90 days, I'd talk to customers/)
+    assert.ok(CONDITIONAL_PLAN.test(s))
+    assert.deepEqual(inventedStudentFacts(s, studentText('A')), [])
+    const asFact = s.replace("I'd talk to customers", 'I talked to 40 customers')
+    assert.notEqual(asFact, s)
+    assert.deepEqual(inventedStudentFacts(asFact, studentText('A')).flatMap((f) => f.figures), ['90', '40'])
+  })
+  test('case B (v3): "+86%" passes only because it is exactly 22 → 41, beside both figures; a wrong percentage is flagged', () => {
+    const s = sentencesOf(answerOf('B')).find((x) => /\+86%/.test(x))
+    assert.ok(s, 'the line is gone; update this test')
+    assert.equal(Math.round(((41 - 22) / 22) * 100), 86)
+    assert.deepEqual(inventedStudentFacts(s, studentText('B')), [])
+    assert.deepEqual(inventedStudentFacts(s.replace('+86%', '+90%'), studentText('B')).flatMap((f) => f.figures), ['90%'])
+  })
+  test('the conditional-plan exemption is narrow: "I\'d" meaning "I had", "I would have", and past accomplishments are still examined', () => {
+    for (const s of ["- In the first 90 days, I'd talk to 10 customers.", '- I would interview 10 customers in my first month.', '- I’d shadow 3 support calls a week.']) {
+      assert.deepEqual(inventedStudentFacts(s, ''), [], s)
+    }
+    for (const s of ["- I'd grown sign-ups 35%.", "- I'd increased attendance 20%.", "- I'd led 4 projects.", '- I would have run 6 events.', "- I'd talk about how I grew sign-ups 35%."]) {
+      assert.equal(inventedStudentFacts(s, '').length, 1, s)
+    }
+  })
+  test('a derived percentage counts as given only when exact and beside both of its figures', () => {
+    const given = 'grew average attendance from 22 to 41 students'
+    assert.deepEqual(inventedStudentFacts('- Grew attendance from 22 to 41 students (+86%).', given), [])
+    assert.deepEqual(inventedStudentFacts('- Attendance went from 41 to 22 students (-46%).', given), [], 'a fall works the same way')
+    for (const s of ['- Grew attendance from 22 to 41 students (+90%).', '- Grew attendance by 86%.', '- Grew attendance from 22 to 50 students (+127%).']) {
+      assert.equal(inventedStudentFacts(s, given).length, 1, s)
+    }
+  })
+  test('the v3 rule is in every prompt the hub builds, whatever the sourcing, and in both prompt.md fixtures', () => {
+    for (const sourcing of [undefined, 'facts', 'advice', 'none']) {
+      assert.ok(STANDARD_BLOCK({ sourcing, output: { sections: ['A'] } }).split('\n').includes(RULE), String(sourcing))
+    }
+    for (const c of ['A', 'B']) assert.ok(promptOf(c).split('\n').includes(RULE), c)
+  })
+  test('case A (v2): the "first 90 days / 10 customers" line is examined and passes only as a goal; as a past fact it fails', () => {
+    const s = sentencesOf(answerV2Of('A')).find((x) => /first 90 days/.test(x))
     assert.ok(s, 'the line is gone; update this test')
     assert.match(s, /^My goal in the first 90 days is to interview at least 10 customers/)
     assert.ok(GOAL.test(s))

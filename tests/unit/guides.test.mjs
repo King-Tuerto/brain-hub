@@ -81,7 +81,7 @@ test('EN and ES quote the same on-screen messages, in the same order', () => {
 const APP_LABELS = new Set([
   'Next', 'Skip — I don’t have a brain yet', 'Connect my brain', 'Manual (copy and paste)', 'Automatic', 'Finish',
   'Run', 'Copy prompt', 'Paste answer', 'Use this answer', 'Check this answer', 'Copy check prompt', 'Score it',
-  'Save to brain', 'Save', 'Download', 'Add a tool', 'Check recipe', 'Install', 'Refresh tools', 'Sign in again', 'Settings',
+  'Save to brain', 'Save', 'Download', 'Add a tool', 'Check recipe', 'Install', 'Copy answer', 'Refresh tools', 'Sign in again', 'Settings',
 ])
 // Built from templates in app.js.
 const APP_TEMPLATED = {
@@ -90,6 +90,10 @@ const APP_TEMPLATED = {
   // `Score so far: ${result.score} / ${result.outOf} — …`. The guide quotes it with
   // "…" for the score, so what must hold is the fixed text around it and that,
   // before the citation check, outOf really is 50 (sections 20 + sources 30).
+  // `Copy “${name}”`, the per-section copy button: the guides say "under the Spec heading, tap **Copy**".
+  'Copy': () => APP.includes('`Copy “${name}”`') && APP.includes("tid: 'copy-section'"),
+  // A heading in Tester 1's answer, under which that Copy button appears.
+  'Test cases': () => /sections: \[Test plan, Test cases, How to run them\]/.test(read('core/tools/tool-tester-write.recipe.md')),
   'Score so far: … / 50': () => APP.includes('`Score so far: ${result.score} / ${result.outOf}') &&
     scoreReport('## Company snapshot\n- A fact. [1](https://example.com)\n', COMPANY, null).outOf === 50,
 }
@@ -105,6 +109,17 @@ const MESSAGES = new Map([
 ])
 // Labels that come from the Company Analysis recipe, not from app.js.
 const RECIPE_LABELS = new Set(['Company Analysis', 'Company', 'Business unit for the environmental scan', 'What is this for?'])
+// "Build your own tool": the names and section headings of the three core
+// Builder/Tester recipes, checked against those recipes below.
+const BUILDER = {
+  'tool-builder': { name: 'Builder — make a tool', sections: ['Steps', 'Spec', 'Recipe'] },
+  'tool-tester-write': { name: 'Tester 1 — write the tests', sections: [] },
+  'tool-tester-grade': { name: 'Tester 2 — grade the results', sections: ['Fixes'] },
+}
+const BUILDER_LABELS = new Set(Object.values(BUILDER).flatMap((b) => [b.name, ...b.sections]))
+// Short names the guides use once the full name has been given: each must be
+// the start of that core tool's real name ("run **Tester 1** again").
+const BUILDER_SHORT = { 'Tester 1': 'tool-tester-write' }
 // GitHub's own wording (checked against docs.github.com, 2026-10-03; not testable here).
 const GITHUB = new Set(['Fork', 'Create fork', 'Settings', 'Pages', 'Build and deployment', 'Source',
   'Deploy from a branch', 'Branch', 'main', '/ (root)', 'Save', 'Sync fork', 'Update branch', 'Your site is live at…', '404',
@@ -126,7 +141,11 @@ const EMPHASIS = new Set([
   'Never paste your secret key', 'How tools should run.', 'Manual is free:', 'Your keys and password stay on your phone.',
   'Company:', 'Business unit for the environmental scan:', 'paste', 'copy the whole answer', 'source check',
   'Want to be sure?', "It isn't your final score yet.", 'Keep it:', "That's it. You've done a sourced company analysis.",
-  'Never edit the `core/` folder.', 'To keep it on every device:', 'pauses after a week without use',
+  'Never edit the `core/` folder.', 'Keep it on every device:', 'pauses after a week without use',
+  'builds', 'tests', '1. Build it (Builder).', '2. Write the tests (Tester 1)', '3. Run the tests.', '4. Grade (Tester 2).',
+  '5. Fix and retest until it passes.', 'Use a new chat in your AI app',
+  // These two quote Tester 2's verdicts; the test below checks the recipe really says them.
+  'If it says FIX AND RETEST:', 'When it says PASS:',
   // ES
   'Tiempo: unos 15 minutos.', 'La app está en inglés.', 'tal como aparecen en pantalla',
   '¿Te atoras? Pregúntale a tu IA, no a la persona que te mandó esto.', 'Una cuenta gratuita de GitHub.',
@@ -135,7 +154,10 @@ const EMPHASIS = new Set([
   'Cómo correr las herramientas.', 'Manual es gratis:', 'Tus claves y tu contraseña se quedan en tu teléfono.',
   'pega', 'copia la respuesta completa', 'revisión de fuentes', '¿Quieres asegurarte?', 'Todavía no es tu calificación final.',
   'Para guardarlo:', 'Listo. Hiciste un análisis de empresa con fuentes.', 'Nunca edites la carpeta `core/`.',
-  'Para tenerla en todos tus dispositivos:', 'se pausa después de una semana sin uso',
+  'Tenla en todos tus dispositivos:', 'se pausa después de una semana sin uso',
+  'construye', 'prueba', '1. Constrúyela (Builder).', '2. Escribe las pruebas (Tester 1)', '3. Corre las pruebas.',
+  '4. Califica (Tester 2).', '5. Corrige y vuelve a probar hasta que pase.', 'Usa un chat nuevo en tu app de IA',
+  'Si dice FIX AND RETEST', 'Cuando diga PASS',
   // Translated example questions / requests to the AI (prose, not UI).
   "I'm on step 2 and I don't see a Pages option. Here's a screenshot.", "What does 'fork' mean? Is it safe?",
   "The hub says 'Could not reach that brain'. What do I do?", 'add a source link to every fact, or mark it [unverified]',
@@ -144,7 +166,7 @@ const EMPHASIS = new Set([
 ])
 const isLinkOrCode = (s) => /^\[.*\]\(.*\)$/.test(s) || /^`[^`]+`$/.test(s)
 const classified = (s) => isLinkOrCode(s) || APP_LABELS.has(s) || s in APP_TEMPLATED || MESSAGES.has(s) ||
-  RECIPE_LABELS.has(s) || GITHUB.has(s) || SUPABASE.has(s) || PHONE.has(s) || EMPHASIS.has(s)
+  RECIPE_LABELS.has(s) || BUILDER_LABELS.has(s) || s in BUILDER_SHORT || GITHUB.has(s) || SUPABASE.has(s) || PHONE.has(s) || EMPHASIS.has(s)
 const quotedAnywhere = () => new Set([...bolds(EN), ...bolds(ES), ...quotes(EN), ...quotes(ES)])
 
 for (const [name, md] of [['START-HERE.md', EN], ['EMPIEZA-AQUI.md', ES]]) {
@@ -156,7 +178,7 @@ for (const [name, md] of [['START-HERE.md', EN], ['EMPIEZA-AQUI.md', ES]]) {
 
 test('the classification lists hold nothing stale (every entry is still quoted by a guide)', () => {
   const q = quotedAnywhere()
-  const all = [...APP_LABELS, ...Object.keys(APP_TEMPLATED), ...MESSAGES.keys(), ...RECIPE_LABELS, ...GITHUB, ...SUPABASE, ...PHONE, ...EMPHASIS]
+  const all = [...APP_LABELS, ...Object.keys(APP_TEMPLATED), ...MESSAGES.keys(), ...RECIPE_LABELS, ...BUILDER_LABELS, ...Object.keys(BUILDER_SHORT), ...GITHUB, ...SUPABASE, ...PHONE, ...EMPHASIS]
   assert.deepEqual(all.filter((s) => !q.has(s)), [])
 })
 
@@ -195,13 +217,71 @@ test('the Spanish guide glosses each app label the first time it uses it', () =>
   // Rule from PLAN.md: English label exactly as on screen, Spanish gloss in brackets the first time.
   // Labels GitHub also uses (Save, Settings) first appear in the GitHub steps, so they are skipped.
   const f = flat(ES)
-  for (const label of [...APP_LABELS, ...Object.keys(APP_TEMPLATED), ...RECIPE_LABELS]) {
+  for (const label of [...APP_LABELS, ...Object.keys(APP_TEMPLATED), ...RECIPE_LABELS, ...BUILDER_LABELS]) {
     if (GITHUB.has(label)) continue
     const at = f.indexOf(`**${label}**`)
     if (at < 0) continue
     const after = f.slice(at + label.length + 4, at + label.length + 8)
     assert.match(after, /^:? ?\(/, `ES first use of **${label}** has no (gloss): "...${f.slice(at, at + label.length + 30)}"`)
   }
+})
+
+test('every Builder/Tester label the guides quote is a real core tool name or output section', () => {
+  for (const [id, { name, sections }] of Object.entries(BUILDER)) {
+    const r = parseRecipe(read(`core/tools/${id}.recipe.md`), { fileName: `${id}.recipe.md` })
+    assert.ok(r.ok, `${id} does not validate: ${r.errors}`)
+    assert.equal(r.recipe.name, name)
+    for (const s of sections) assert.ok(r.recipe.output.sections.includes(s), `${id} has no "${s}" section`)
+  }
+  const grade = read('core/tools/tool-tester-grade.recipe.md')
+  assert.match(grade, /"FIX AND RETEST/, 'the guides quote the FIX AND RETEST verdict')
+  assert.match(grade, /"PASS — install it"/, 'the guides quote the PASS verdict')
+})
+
+test('both guides tell the student to copy the Spec only, and to grade in a new chat', () => {
+  assert.match(flat(EN), /Copy the Spec only, never the recipe/)
+  assert.match(flat(ES), /Copia solo el Spec, nunca la receta/)
+  assert.match(flat(EN), /\*\*Use a new chat in your AI app\*\*, not the one that built the tool/)
+  assert.match(flat(ES), /\*\*Usa un chat nuevo en tu app de IA\*\*, no el que construyó la herramienta/)
+})
+
+test('every short Builder/Tester name the guides use is the start of that tool’s real name', () => {
+  for (const [short, id] of Object.entries(BUILDER_SHORT)) {
+    const r = parseRecipe(read(`core/tools/${id}.recipe.md`), { fileName: `${id}.recipe.md` })
+    assert.ok(r.recipe.name.startsWith(`${short} — `), `${id} is called "${r.recipe.name}", not "${short} — …"`)
+  }
+})
+
+test('step 5 (fix): the Builder gets the Fixes, the current Spec AND the recipe, in its last box', () => {
+  // Final run, round 2: without the Spec the Builder rewrote every criterion (PLAN.md).
+  assert.match(flat(EN), /Paste the Tester's \*\*Fixes\*\*, your current \*\*Spec\*\* and your current recipe into the last box/)
+  assert.match(flat(ES), /Pega los \*\*Fixes\*\* \(correcciones\) del Tester, tu \*\*Spec\*\* actual y tu receta actual en el último recuadro/)
+  const builder = parseRecipe(read('core/tools/tool-builder.recipe.md'), { fileName: 'tool-builder.recipe.md' }).recipe
+  const last = builder.inputs.at(-1)
+  assert.equal(last.id, 'fixes', '"the last box" of the Builder must be its fixes box')
+  assert.match(last.label, /fixes.*Spec.*recipe/i, 'the box’s own label names all three')
+  // …and Tester 2's verdict tells the student the same three things.
+  assert.match(read('core/tools/tool-tester-grade.recipe.md'), /send the Fixes, the Spec and your current recipe to the Builder/)
+})
+
+test('step 5 (retest): Tester 1 is run again with the new Spec and the previous test cases, in its last box', () => {
+  // The previous test cases go in the last box, copied from Tester 1's last answer before it is run again.
+  assert.match(flat(EN), /open \*\*Tester 1\*\*: first tap \*\*Copy\*\* under \*\*Test cases\*\* in its last answer and paste them into the last box, then paste the new Spec \(copy it from the Builder's new answer\) and run it/)
+  assert.match(flat(ES), /abre \*\*Tester 1\*\*: primero toca \*\*Copy\*\* debajo de \*\*Test cases\*\* \(casos de prueba\) en su última respuesta y pégalos en el último recuadro; después pega el Spec nuevo \(cópialo de la nueva respuesta del Builder\) y ejecútalo/)
+  assert.match(flat(EN), /The Tester keeps the same tests and changes only the ones the new Spec really changed/)
+  assert.match(flat(ES), /El Tester conserva las mismas pruebas y solo cambia las que el Spec nuevo realmente cambió/)
+  // The old step 5 (fresh tests from the new Spec every round) never converged: attempt-3.
+  for (const md of [EN, ES]) assert.doesNotMatch(flat(md), /copy its new Spec and run Tester 1 again|copia su Spec nuevo y corre otra vez Tester 1/)
+  const t1 = parseRecipe(read('core/tools/tool-tester-write.recipe.md'), { fileName: 'tool-tester-write.recipe.md' }).recipe
+  assert.equal(t1.inputs.at(-1).id, 'previous_tests', '"the last box" of Tester 1 must be its previous-tests box')
+  assert.equal(t1.inputs.at(-1).required, false)
+})
+
+test('step 3: "its last box" of Tester 2 is where the answers go', () => {
+  assert.match(flat(EN), /Open \*\*Tester 2 — grade the results\*\*, and in its last box type/)
+  assert.match(flat(ES), /Abre \*\*Tester 2 — grade the results\*\* \(calificar los resultados\) y, en su último recuadro, escribe/)
+  const t2 = parseRecipe(read('core/tools/tool-tester-grade.recipe.md'), { fileName: 'tool-tester-grade.recipe.md' }).recipe
+  assert.equal(t2.inputs.at(-1).id, 'results')
 })
 
 // ---- Links and paths --------------------------------------------------------

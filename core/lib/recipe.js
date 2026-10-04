@@ -12,7 +12,7 @@ export const INPUT_TYPES = ['text', 'long_text', 'choose_one', 'number']
 export const SAVE_TYPES = ['work_product', 'personal_note', 'job_history', 'profile']
 export const PROFILE_PARTS = ['skills', 'experience', 'job-history', 'education', 'goals']
 
-export const SOURCING = ['facts', 'advice']
+export const SOURCING = ['facts', 'advice', 'none']
 const TOP_FIELDS = ['recipe_format', 'id', 'name', 'description', 'version', 'author',
   'permissions', 'web_search', 'sourcing', 'inputs', 'brain_context', 'output', 'save']
 const REQUIRED = ['recipe_format', 'id', 'name', 'description', 'version', 'author',
@@ -149,9 +149,12 @@ export function parseRecipe(text, { fileName } = {}) {
     }
   }
 
-  const valid = new Set([...inputIds, 'brain_context', 'today'])
+  // widget_guide: the hub's own WIDGET-GUIDE.md, for tools that build tools (Builder).
+  // {{widget_guide}} only works in the prompt template; queries and tags are filled with input values only.
+  const onlyInBody = (names, where) => names.filter((n) => { if (n !== 'widget_guide') return true; errors.push(`${where} cannot use {{widget_guide}}; it only works in the prompt template`); return false })
+  const valid = new Set([...inputIds, 'brain_context', 'today', 'widget_guide'])
   const checkNames = (names, where) => {
-    for (const n of names) if (!valid.has(n)) errors.push(`${where} uses {{${n}}}, which is not an input id, brain_context or today`)
+    for (const n of names) if (!valid.has(n)) errors.push(`${where} uses {{${n}}}, which is not an input id, brain_context, today or widget_guide`)
   }
 
   // brain_context
@@ -163,7 +166,7 @@ export function parseRecipe(text, { fileName } = {}) {
     } else {
       for (const k of Object.keys(bc)) if (!['query', 'limit'].includes(k)) errors.push(`brain_context.${k} is not allowed`)
       if (!isStr(bc.query)) errors.push('brain_context.query is required')
-      else checkNames(placeholdersIn(bc.query, 'brain_context.query', errors), 'brain_context.query')
+      else checkNames(onlyInBody(placeholdersIn(bc.query, 'brain_context.query', errors), 'brain_context.query'), 'brain_context.query')
       const limit = bc.limit ?? 5
       if (!Number.isInteger(limit) || limit < 1 || limit > 10) errors.push('brain_context.limit must be a whole number from 1 to 10')
       brainContext = { query: bc.query, limit }
@@ -197,7 +200,7 @@ export function parseRecipe(text, { fileName } = {}) {
       if (!Array.isArray(s.tags) || s.tags.length < 1 || s.tags.length > 5 || !s.tags.every(isStr)) {
         errors.push('save.tags must be a list of 1 to 5 tags')
       } else {
-        s.tags.forEach((t) => checkNames(placeholdersIn(t, 'save.tags', errors), 'save.tags'))
+        s.tags.forEach((t) => checkNames(onlyInBody(placeholdersIn(t, 'save.tags', errors), 'save.tags'), 'save.tags'))
       }
     }
     if (!perms.includes('save_to_brain')) errors.push('save needs the save_to_brain permission')
