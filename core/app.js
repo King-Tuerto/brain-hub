@@ -121,15 +121,37 @@ async function copyText(text, statusEl) {
   catch { statusEl.textContent = 'Could not copy — long-press the text and choose Copy.' }
 }
 
-// The Markdown of one ## section (heading excluded), from the raw answer.
-export function sectionText(md, name) {
+// Lines of an answer, each marked as inside a fenced code block or not. A fence
+// closes only on the same character, at least as long, with nothing after it
+// (CommonMark), so a ``` block inside a ~~~~ or ```` fence stays inside it.
+export function fenceMap(md) {
   const lines = String(md).split(/\r?\n/)
+  const out = []
+  let open = null
+  for (const line of lines) {
+    const m = /^ {0,3}(`{3,}|~{3,})(.*)$/.exec(line)
+    if (!open && m) { open = { ch: m[1][0], len: m[1].length, info: m[2].trim() }; out.push({ line, fence: 'open', info: open.info }); continue }
+    if (open && m && m[1][0] === open.ch && m[1].length >= open.len && !m[2].trim()) { open = null; out.push({ line, fence: 'close' }); continue }
+    out.push({ line, inside: !!open })
+  }
+  return out
+}
+export function isHeading(l, name) {
+  const m = /^##\s+(.+?)\s*#*\s*$/.exec(l.line)
+  if (!m || l.inside || l.fence) return false
   const norm = (t) => t.replace(/[*_`]/g, '').trim().toLowerCase()
-  const start = lines.findIndex((l) => /^##\s+/.test(l) && norm(l.replace(/^##\s+/, '')) === norm(name))
+  return name == null || norm(m[1]) === norm(name)
+}
+
+// The Markdown of one ## section (heading excluded), from the raw answer.
+// "## " lines inside a code block are not headings (Nitpick #3).
+export function sectionText(md, name) {
+  const map = fenceMap(md)
+  const start = map.findIndex((l) => isHeading(l, name))
   if (start < 0) return ''
-  let end = lines.findIndex((l, i) => i > start && /^##\s+/.test(l))
-  if (end < 0) end = lines.length
-  return lines.slice(start + 1, end).join('\n').trim()
+  let end = map.findIndex((l, i) => i > start && isHeading(l))
+  if (end < 0) end = map.length
+  return map.slice(start + 1, end).map((l) => l.line).join('\n').trim()
 }
 
 // A small Copy button after every ## heading, so a student can copy one section
@@ -144,16 +166,34 @@ function addSectionCopyButtons(body, md) {
   })
 }
 
-// Valid recipes inside fenced code blocks in an answer (the Builder's output).
-export function recipesIn(md) {
+// Recipes in an answer (the Builder's output): every fenced block whose text is a
+// recipe, plus — if the AI followed the guide's "no fence" rule instead — an
+// unfenced recipe under a "## Recipe" heading (Nitpick #4). Valid ones get an
+// Install button; invalid ones are reported with their problems.
+export function recipesIn(md, { withProblems = false } = {}) {
+  const map = fenceMap(md)
+  const blocks = []
+  for (let i = 0; i < map.length; i++) {
+    if (map[i].fence !== 'open') continue
+    const body = []
+    let j = i + 1
+    for (; j < map.length && map[j].fence !== 'close'; j++) body.push(map[j].line)
+    if (j < map.length) blocks.push(body.join('\n'))
+    i = j
+  }
+  const recipeSection = sectionText(md, 'Recipe')
+  if (/^---\s*$/m.test(recipeSection.split('\n')[0] ?? '')) blocks.push(recipeSection)
+
   const out = []
-  for (const m of String(md).matchAll(/(^|\n)(`{3,}|~{3,})[^\n]*\n([\s\S]*?)\n\2[ \t]*(?=\n|$)/g)) {
-    const text = m[3].replace(/^\s+/, '') + '\n'
+  const problems = []
+  for (const raw of blocks) {
+    const text = raw.replace(/^\s+/, '') + '\n'
     if (!text.startsWith('---')) continue
     const r = parseRecipe(text)
-    if (r.ok && !out.some((x) => x.id === r.recipe.id)) out.push({ id: r.recipe.id, name: r.recipe.name, text })
+    if (r.ok) { if (!out.some((x) => x.id === r.recipe.id)) out.push({ id: r.recipe.id, name: r.recipe.name, text }) }
+    else if (/^\s*recipe_format\s*:/m.test(text) && !problems.some((p) => p.join() === r.errors.join())) problems.push(r.errors)
   }
-  return out
+  return withProblems ? { recipes: out, problems } : out
 }
 
 // ---------------------------------------------------------------- tools
@@ -606,6 +646,11 @@ async function renderTool(id) {
       formError.hidden = false
       return
     }
+    if (/^tool-tester-/.test(recipe.id) && Object.values(st.inputs).some((v) => /^\s*recipe_format\s*:/m.test(String(v ?? '')))) {
+      formError.textContent = 'This contains the tool\u2019s recipe. The Tester must never see it: paste only the Spec (tap Copy under the Spec heading), the test cases and the answers.'
+      formError.hidden = false
+      return
+    }
     st.result = null; st.answer = ''; st.noWebSearch = false; st.checkAnswer = null; st.checkResult = null; st.checkOpen = false
     resultBox.replaceChildren()
     const mode = effectiveMode()
@@ -748,7 +793,7 @@ async function renderTool(id) {
     body.innerHTML = renderAnswer(text)
     body.querySelectorAll('a').forEach((a) => { a.target = '_blank'; a.rel = 'noopener noreferrer' })
     addSectionCopyButtons(body, text)
-    const builtRecipes = recipesIn(text)
+    const { recipes: builtRecipes, problems: recipeProblems } = recipesIn(text, { withProblems: true })
     const copyStatus = h('span', { class: 'small muted', role: 'status', tid: 'copy-answer-status' })
 
     const saveStatus = h('div', { tid: 'save-status', role: 'status' })
@@ -789,7 +834,7 @@ async function renderTool(id) {
       h('h2', { text: 'Result' }),
       st.noWebSearch ? h('p', { tid: 'no-websearch-label', class: 'badge', text: 'No web search' }) : null,
       parsed.missingSections.length ? note('warn', 'missing-sections', `Missing sections: ${parsed.missingSections.join(', ')}`) : null,
-      parsed.sources.length ? null : note('warn', 'no-sources-warning', 'This answer has no source links, so none of its facts can be checked. Treat it with care.'),
+      parsed.sources.length || recipe.sourcing === 'none' ? null : note('warn', 'no-sources-warning', 'This answer has no source links, so none of its facts can be checked. Treat it with care.'),
       sourceCheckNote(sc),
       body,
       h('div', { class: 'row mt' },
@@ -805,6 +850,9 @@ async function renderTool(id) {
         } }, `Install ${r.name}`)),
         recipe.sourcing === 'none' ? null : h('button', { tid: 'check-btn', onclick: () => { st.checkOpen = true; persist(); checkerBox.hidden = false; showChecker(text, checkerBox) } }, 'Check this answer'),
         copyStatus),
+      recipeProblems.length ? note('warn', 'recipe-problems',
+        h('p', { text: 'This answer contains a recipe the hub cannot install yet. Paste these problems back to the Builder (in "Tester\u2019s fixes and your current recipe") and run it again:' }),
+        h('ul', { class: 'errors' }, recipeProblems.flat().map((e) => h('li', { text: e })))) : null,
       savePanel,
       checkerBox,
       b ? null : noBrainNudge()))

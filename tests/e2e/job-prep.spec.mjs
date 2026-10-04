@@ -8,7 +8,7 @@ import { checkSources } from '../../core/lib/output.js'
 import { StandinBrain, STANDIN_URL, STANDIN_KEY, STANDIN_USER } from '../standin/brain-standin.mjs'
 import { TOOL_ID, SECTIONS, inputsOf, promptOf, answerOf } from '../helpers/jobprep.mjs'
 
-const CORE = ['hello-hub', 'company-analysis', 'job-interview-prep']
+const CORE = ['hello-hub', 'company-analysis', 'job-interview-prep', 'tool-builder', 'tool-tester-write', 'tool-tester-grade']
 const tile = (page) => tid(page, 'tool-tile').and(page.locator(`[data-tool-id="${TOOL_ID}"]`))
 
 const test = base.extend({
@@ -50,7 +50,7 @@ async function useAnswer(page, text) {
   await expect(tid(page, 'result')).toBeVisible()
 }
 
-test('home: three core tiles, Job & Interview Prep among them, with no plugins and no brain', async ({ page }) => {
+test('home: six core tiles, Job & Interview Prep among them, with no plugins and no brain', async ({ page }) => {
   await setup(page)
   await expect(tile(page)).toBeVisible()
   await expect(tile(page)).toContainText('Job & Interview Prep')
@@ -59,7 +59,7 @@ test('home: three core tiles, Job & Interview Prep among them, with no plugins a
   expect(ids).toEqual(CORE)
   await expect(tid(page, 'tool-broken')).toHaveCount(0)
   await expect(tid(page, 'tool-conflict')).toHaveCount(0)
-  await expect(tid(page, 'stats').locator('[data-k=tools] b')).toHaveText('3')
+  await expect(tid(page, 'stats').locator('[data-k=tools] b')).toHaveText('6')
 })
 
 test('the tool screen shows the four fields; the two optional ones say "(optional)" once each', async ({ page }) => {

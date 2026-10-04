@@ -88,9 +88,10 @@ describe('the recipe (core/tools/job-interview-prep.recipe.md)', () => {
     assert.ok(!/Maria|Lopez|Paul|Waterman|Tuerto|Ana\b/.test(b), 'a personal name is in the body')
     assert.ok(!/\bI'?m [A-Z][a-z]+ [A-Z][a-z]+/.test(b), 'the body introduces the author by name')
   })
-  test('index.json lists it as the third core tool, after hello-hub and company-analysis', () => {
+  test('index.json lists it as the third core tool, after hello-hub and company-analysis (then the Builder and Testers)', () => {
     const idx = JSON.parse(readFileSync(INDEX_FILE, 'utf8'))
-    assert.deepEqual(idx, ['hello-hub.recipe.md', 'company-analysis.recipe.md', 'job-interview-prep.recipe.md'])
+    assert.deepEqual(idx, ['hello-hub.recipe.md', 'company-analysis.recipe.md', 'job-interview-prep.recipe.md',
+      'tool-builder.recipe.md', 'tool-tester-write.recipe.md', 'tool-tester-grade.recipe.md'])
   })
 })
 

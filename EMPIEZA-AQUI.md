@@ -206,32 +206,41 @@ la peor persona para revisarlo.
    trae la respuesta con **Use this answer**.
 2. Recibes **Steps** (pasos), un **Spec** (especificación: lo que la
    herramienta debe hacer, con revisiones numeradas) y la **Recipe** (receta).
-   Toca el botón **Install** debajo de la respuesta, luego **Check recipe** y
-   **Install**. Así queda en este teléfono para que la pruebes.
+   Toca el botón **Install** (instalar) debajo de la respuesta, luego **Check
+   recipe** (revisar receta) y **Install**. Así queda en este teléfono para que la pruebes.
 
 **2. Escribe las pruebas (Tester 1)**, antes de usar la herramienta.
 1. Bajo el título **Spec** del Builder, toca **Copy** (copiar). Copia solo el
    Spec, nunca la receta; el Tester no debe ver cómo se construyó la
    herramienta.
 2. Abre **Tester 1 — write the tests** (escribir las pruebas), pega el Spec y
-   ejecútalo. Recibes tres casos de prueba con los datos exactos que debes
-   escribir.
+   ejecútalo. **Usa un chat nuevo en tu app de IA**, no el chat donde el
+   Builder creó la herramienta, para que el Tester no vea la receta. Recibes
+   tres casos de prueba con los datos exactos que debes escribir.
 
 **3. Corre las pruebas.** Usa tu nueva herramienta tres veces, una por prueba,
-con exactamente esos datos. Después de cada una toca **Copy answer** (copiar
-respuesta) y guarda las tres respuestas, marcadas Test 1, Test 2 y Test 3.
+con exactamente esos datos. El teléfono solo guarda una cosa copiada a la vez,
+así que después de cada prueba:
+1. Toca **Copy answer** (copiar respuesta).
+2. Abre **Tester 2 — grade the results** (calificar los resultados) y, en su
+   último recuadro, escribe *Test 1:* (luego *Test 2:*, luego *Test 3:*) y
+   pega la respuesta debajo.
 
-**4. Califica (Tester 2).** Abre **Tester 2 — grade the results** (calificar
-los resultados) y pega el Spec, los casos de prueba y las tres respuestas.
+El hub guarda lo que escribiste en cada herramienta, así que puedes ir y
+volver.
+
+**4. Califica (Tester 2).** En **Tester 2 — grade the results**, pega
+también el Spec y los casos de prueba, y ejecútalo.
 **Usa un chat nuevo en tu app de IA**, no el que construyó la herramienta.
 Recibes aprobado o reprobado para cada revisión.
 
 **5. Corrige y vuelve a probar hasta que pase.**
 - **Si dice FIX AND RETEST** (corregir y volver a probar): abre otra vez
   **Builder — make a tool**. Pega los **Fixes** (correcciones) del Tester y
-  tu receta actual en el último recuadro. Instala la nueva versión. Si el Builder cambió el **Spec**, corre
-  otra vez Tester 1 con el Spec nuevo primero, porque las pruebas siempre
-  siguen al Spec. Luego repite los pasos 3 y 4.
+  tu receta actual en el último recuadro. Instala la nueva versión. Luego **copia su Spec nuevo y corre otra vez
+  Tester 1**, siempre, aunque el Builder diga que el Spec no cambió. Las
+  pruebas siempre siguen al Spec más reciente, y la palabra de quien
+  construyó algo no es una prueba. Luego repite los pasos 3 y 4.
 - **Cuando diga PASS** (aprobado): quédate con la herramienta.
 
 **Tenla en todos tus dispositivos:**

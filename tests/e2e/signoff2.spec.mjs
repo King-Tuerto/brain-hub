@@ -285,8 +285,18 @@ test.describe('H1 re-attack', () => {
     await expect(result.locator('a[href="https://example.com/legit"]')).toBeVisible() // legit content survives
     const audit = await result.evaluate((root) => {
       const bad = []
+      // The hub's own "Copy section" button sits in a row right after each h2
+      // (Builder & Tester). Only those exact elements are exempt; any other
+      // button, including one claiming the same data-testid, is still flagged.
+      const hubOwned = new Set()
+      for (const h2 of root.querySelectorAll('h2')) {
+        const row = h2.nextElementSibling
+        if (row?.matches('div.row') && row.children.length === 2 && row.firstElementChild.matches('button.ghost[data-testid="copy-section"]')) {
+          hubOwned.add(row); hubOwned.add(row.firstElementChild); hubOwned.add(row.lastElementChild)
+        }
+      }
       const forbidden = 'img,picture,source,video,audio,svg,math,style,link,meta,base,iframe,frame,object,embed,form,input,button,textarea,select,script,noscript'
-      for (const el of root.querySelectorAll(forbidden)) bad.push(`tag <${el.tagName.toLowerCase()}>`)
+      for (const el of root.querySelectorAll(forbidden)) if (!hubOwned.has(el)) bad.push(`tag <${el.tagName.toLowerCase()}>`)
       for (const el of root.querySelectorAll('*')) {
         for (const a of el.attributes) {
           if (/^on/i.test(a.name)) bad.push(`event attr ${a.name}`)

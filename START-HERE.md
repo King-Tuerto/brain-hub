@@ -194,23 +194,31 @@ builds something is the worst person to check it.
 **2. Write the tests (Tester 1)**, before you use the tool.
 1. Under the Builder's **Spec** heading, tap **Copy**. Copy the Spec only,
    never the recipe; the Tester must not see how the tool was built.
-2. Open **Tester 1 — write the tests**, paste the Spec, and run it. You get
-   three test cases with the exact inputs to type.
+2. Open **Tester 1 — write the tests**, paste the Spec, and run it. **Use a
+   new chat in your AI app**, not the one where the Builder wrote the tool,
+   so the Tester can't see the recipe. You get three test cases with the
+   exact inputs to type.
 
 **3. Run the tests.** Run your new tool three times, once per test, with
-exactly those inputs. After each one, tap **Copy answer** and keep the three
-answers, labelled Test 1, Test 2 and Test 3.
+exactly those inputs. A phone holds only one copied thing at a time, so after
+each run:
+1. Tap **Copy answer**.
+2. Open **Tester 2 — grade the results**, and in its last box type
+   *Test 1:* (then *Test 2:*, then *Test 3:*) and paste the answer under it.
 
-**4. Grade (Tester 2).** Open **Tester 2 — grade the results** and paste the
-Spec, the test cases and the three answers. **Use a new chat in your AI app**,
+The hub keeps what you typed in each tool, so you can switch back and forth.
+
+**4. Grade (Tester 2).** In **Tester 2 — grade the results**, also paste the
+Spec and the test cases, then run it. **Use a new chat in your AI app**,
 not the one that built the tool. You get pass or fail for every check.
 
 **5. Fix and retest until it passes.**
 - **If it says FIX AND RETEST:** open **Builder — make a tool** again. Paste
   the Tester's **Fixes** and your current recipe into the last box. Install
-  the new version. If the Builder changed the **Spec**, run Tester 1 again
-  on the new Spec first, because tests always follow the Spec. Then repeat
-  steps 3 and 4.
+  the new version. Then **copy its new Spec and run Tester 1 again**, every
+  time, even if the Builder says the Spec didn't change. Tests always follow
+  the latest Spec, and a builder's word about its own work isn't a test.
+  Then repeat steps 3 and 4.
 - **When it says PASS:** keep the tool.
 
 **Keep it on every device:**
