@@ -76,7 +76,13 @@ const FIRST_PERSON = /\b(I|I'm|I’m|I've|I’ve|I'd|I’d|[Mm]y|[Mm]e|[Mm]yself
 // past-tense accomplishment too, so "I want to build on how I grew sign-ups
 // 35%" is still examined.
 export const GOAL = /\b(my (goal|plan|aim)s?\b|I (will|plan to|aim to|intend to|hope to|want to)\b|I(?:'|’)d (like|love) to\b)/i
-const PAST_ACCOMPLISHMENT = /\b(ran|led|managed|grew|increased|raised|served|talked|surveyed|organi[sz]ed|achieved|boosted|improved|built|cut|reduced|launched|delivered|won)\b/i
+// NO_INVENTION_RULE v3 rerun (Nitpick): a conditional plan — "In the first 90
+// days, I'd talk to customers" / "I would interview…" — is the same kind of
+// sentence as "I'd like to…": something the student would do, not something
+// they did. Narrow on purpose: "I'd" is also "I had", so a following past
+// participle ("I'd grown", "I'd increased", "I'd led") is NOT a plan.
+export const CONDITIONAL_PLAN = /\b(?:I(?:'|’)d|I would) (?!(?:been|had|done|grown|run|led|built|won|cut|gone|made|taken|seen|written|spent|met|sold|taught|brought|held|got|gotten|have)\b)(?![a-z]+(?:ed|en)\b)[a-z]+\b/i
+const PAST_ACCOMPLISHMENT =/\b(ran|led|managed|grew|increased|raised|served|talked|surveyed|organi[sz]ed|achieved|boosted|improved|built|cut|reduced|launched|delivered|won)\b/i
 const ACCOMPLISHMENT = /\b(ran|led|managed|grew|grow|increased|raised|served|talked|surveyed|organi[sz]ed|achieved|boosted|improved|attendance|satisfaction|members|retention)\b/i
 // A scenario posed to the student ("Imagine our adoption rate is up 20%…") is not a fact about them.
 const HYPOTHETICAL = /^["“]?(imagine|suppose|if|say)\b/i
@@ -92,6 +98,19 @@ export function sentencesOf(markdown) {
   return out
 }
 
+// A percentage change worked out from two figures the student gave, in the same
+// sentence ("from 22 to 41 students (+86%)"), is arithmetic on their own numbers,
+// not invention. Only an exact match, rounded to a whole percent, counts: a
+// wrong percentage, or one without both of its figures beside it, is still flagged.
+const num = (f) => Number(f.replace(/[$,+%]/g, ''))
+function derivedPercents(sentence, given) {
+  const figs = [...sentence.matchAll(FIGURE)].map((m) => m[0].replace(/[.,]+$/, ''))
+    .filter((f) => !f.endsWith('%') && given.has(f)).map(num).filter((n) => Number.isFinite(n) && n > 0)
+  const out = new Set()
+  for (const a of figs) for (const b of figs) if (a !== b) out.add(`${Math.round((Math.abs(b - a) / a) * 100)}%`)
+  return out
+}
+
 const isQuestion = (s) => /\?["”'’)\]]*$/.test(s.replace(/\s*\[[^\]]*\]\s*$/, '').trim())
 
 export function inventedStudentFacts(answer, studentText) {
@@ -99,10 +118,12 @@ export function inventedStudentFacts(answer, studentText) {
   const found = []
   for (const s of sentencesOf(answer)) {
     if (isQuestion(s) || HYPOTHETICAL.test(s)) continue
-    if (GOAL.test(s) && !PAST_ACCOMPLISHMENT.test(s)) continue
+    if ((GOAL.test(s) || CONDITIONAL_PLAN.test(s)) && !PAST_ACCOMPLISHMENT.test(s)) continue
     const bare = s.replace(PLACEHOLDER, ' ').replace(/\(\d+\)/g, ' ')
     if (!FIRST_PERSON.test(bare) && !ACCOMPLISHMENT.test(bare)) continue
-    const figs = [...bare.matchAll(FIGURE)].map((m) => m[0].replace(/[.,]+$/, '')).filter((f) => !given.has(f))
+    const derived = derivedPercents(bare, given)
+    const figs = [...bare.matchAll(FIGURE)].map((m) => m[0].replace(/[.,]+$/, ''))
+      .filter((f) => !given.has(f) && !(f.endsWith('%') && derived.has(f)))
     if (figs.length) found.push({ sentence: s, figures: figs })
   }
   return found

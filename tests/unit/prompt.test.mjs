@@ -42,7 +42,8 @@ const EXPECTED_BLOCK_LINES = [
   'Statements about your own method or about what you could not verify are not factual claims: start them with "Note:".',
   // Phase 5 PLAN Part A 1 / DECISIONS #18: on every prompt, whatever the recipe says.
   // starter-job-prep PLAN: second sentence added after a real answer gave sample resume bullets made-up figures.
-  'Never invent facts about me (numbers, achievements, dates, names). Where a real detail of mine is needed and you do not have it, write a placeholder like [your number]. This includes example sentences I might copy, such as sample resume bullets or answers: put a placeholder like [X%] in place of every number in them.',
+  // builder-tester: narrowed after the study planner put "[X] dollars" in made-up practice questions.
+  'Never invent facts about me (numbers, achievements, dates, names), and never present made-up facts as real. Where a real detail of mine is needed and you do not have it, write a placeholder like [your number]. This includes example sentences I might copy as my own, such as sample resume bullets or answers: put a placeholder like [X%] in place of every number in them. Practice questions, worked examples and exercises are different: they are hypothetical, so give them concrete made-up numbers, not placeholders, even when they are written to "you"; say they are hypothetical if that is not obvious.',
   'End with "## Summary": 2–3 sentences someone could search for later.',
 ]
 // Phase 5 PLAN Part A 1: `sourcing: advice` swaps only the source-rule line.

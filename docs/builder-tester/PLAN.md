@@ -174,3 +174,24 @@ What is still weak, honestly:
   (example sentences get [X] for numbers) made the tool write "[X] dollars"
   in made-up exam questions, which a student can't use. The rule is meant for
   copyable claims about the student. Hub-wide; for Nitpick's review.
+
+## Rounds 6–7: Paul's two additions (2026-10-04)
+
+- **The no-invention rule was narrowed (hub-wide).** It still forbids
+  inventing facts about the student and presenting made-up facts as real,
+  and resume bullets / sample answers still get [X%] placeholders. Practice
+  questions, worked examples and exercises are now told to use concrete
+  made-up numbers, not placeholders, even when written to "you". A first
+  wording only *allowed* made-up numbers and Haiku still wrote "[X] hours";
+  the final wording says to use them (attempt-7 keeps that run).
+- **Testers count word forms.** A banned "genetics" also bans "genetic";
+  "production" bans "produce", "producing".
+
+| Round | Checks | Result |
+|---|---|---|
+| 6 (v1.0.4, new rules) | 24/25 | "produce/producing" in week-1 econ questions — the variant rule caught what round 5 let through |
+| 7 (v1.0.5) | **25/25 — PASS** | practice questions carry real numbers, no placeholders |
+
+Job & Interview Prep re-run under the new rule (A Haiku, B Sonnet; previous
+answers kept as `*-v2.md`): resume bullets still use placeholders ([X],
+[X%], [X number], [outcome]).

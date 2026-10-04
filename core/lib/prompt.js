@@ -19,7 +19,7 @@ export const NOTE_RULE = 'Statements about your own method or about what you cou
 // The second sentence was added after a real answer (job prep, no background)
 // wrote example resume bullets with made-up figures ("reduced tickets by 23%"):
 // examples are exactly what a student copies onto a real resume.
-export const NO_INVENTION_RULE = 'Never invent facts about me (numbers, achievements, dates, names). Where a real detail of mine is needed and you do not have it, write a placeholder like [your number]. This includes example sentences I might copy, such as sample resume bullets or answers: put a placeholder like [X%] in place of every number in them.'
+export const NO_INVENTION_RULE = 'Never invent facts about me (numbers, achievements, dates, names), and never present made-up facts as real. Where a real detail of mine is needed and you do not have it, write a placeholder like [your number]. This includes example sentences I might copy as my own, such as sample resume bullets or answers: put a placeholder like [X%] in place of every number in them. Practice questions, worked examples and exercises are different: they are hypothetical, so give them concrete made-up numbers, not placeholders, even when they are written to "you"; say they are hypothetical if that is not obvious.'
 
 export function STANDARD_BLOCK(recipe) {
   const sections = recipe?.output?.sections ?? []
