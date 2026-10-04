@@ -19,7 +19,11 @@ import {
 } from '../helpers/phase5.mjs'
 
 // Binding strings from PLAN Part A 1 / WIDGET-GUIDE §8 / DECISIONS #18.
-const NO_INVENTION_RULE = 'Never invent facts about me (numbers, achievements, dates, names). Where a real detail of mine is needed and you do not have it, write a placeholder like [your number].'
+// v1 is the Phase 5 wording; the starter-job-prep PLAN added a second sentence
+// (example sentences get placeholders for every number). Both are written out
+// here, not imported, so a silent change to prompt.js fails these tests.
+const NO_INVENTION_RULE_V1 = 'Never invent facts about me (numbers, achievements, dates, names). Where a real detail of mine is needed and you do not have it, write a placeholder like [your number].'
+const NO_INVENTION_RULE = NO_INVENTION_RULE_V1 + ' This includes example sentences I might copy, such as sample resume bullets or answers: put a placeholder like [X%] in place of every number in them.'
 const SOURCE_RULE_ADVICE = 'Every factual statement (figures, dates, names, statistics, quotations, claims about real organisations) must include a source link in Markdown form [title](https://…), or be marked [unverified]. Advice and recommendations do not need sources.'
 const FIX_ORDER = ['missing-section', 'unsourced', 'not-supported', 'partly', 'unreachable', 'not-checked', 'skipped']
 
@@ -604,19 +608,24 @@ describe('answer-prompt.md: every old answer stays tied to the prompt it really 
   for (const name of ['deere', 'phase4']) {
     test(`${name}: answer-prompt.md is prompt.md minus exactly the no-invention line`, () => {
       const { prompt, answerPrompt } = pair(DIRS[name])
-      assert.ok(!answerPrompt.includes(NO_INVENTION_RULE), 'the old answer cannot have seen the new rule')
+      assert.ok(!answerPrompt.includes(NO_INVENTION_RULE_V1), 'the old answer cannot have seen either version of the rule')
       assert.ok(prompt.split('\n').includes(NO_INVENTION_RULE), 'prompt.md was not regenerated')
       assert.equal(prompt.split('\n').filter((l) => l !== NO_INVENTION_RULE).join('\n'), answerPrompt)
     })
   }
-  test('the rerun answered the current prompt: no answer-prompt.md, and prompt.md carries the new rule', () => {
-    assert.equal(hasAnswerPrompt(DIRS.rerun), false)
-    assert.ok(RERUN_PROMPT.includes(NO_INVENTION_RULE))
+  test('the rerun answered the v1 rule: answer-prompt.md is prompt.md with the current rule line swapped for v1, nothing else', () => {
+    assert.equal(hasAnswerPrompt(DIRS.rerun), true)
+    const { prompt, answerPrompt } = pair(DIRS.rerun)
+    assert.equal(prompt, RERUN_PROMPT)
+    assert.ok(prompt.split('\n').includes(NO_INVENTION_RULE), 'prompt.md was not regenerated')
+    assert.ok(answerPrompt.split('\n').includes(NO_INVENTION_RULE_V1))
+    assert.ok(!answerPrompt.includes(NO_INVENTION_RULE), 'the rerun answer cannot have seen the second sentence')
+    assert.equal(prompt.split('\n').map((l) => (l === NO_INVENTION_RULE ? NO_INVENTION_RULE_V1 : l)).join('\n'), answerPrompt)
   })
   test('Deere runs 1 and 2 keep their own prompts (no new rule); they are regression fixtures, not rebuilt', () => {
     for (const p of ['run-1/prompt.md', 'run-2/prompt.md']) {
       assert.ok(existsSync(new URL(p, DIRS.deere)))
-      assert.ok(!readFileSync(new URL(p, DIRS.deere), 'utf8').includes(NO_INVENTION_RULE), p)
+      assert.ok(!readFileSync(new URL(p, DIRS.deere), 'utf8').includes(NO_INVENTION_RULE_V1), p)
     }
   })
 })

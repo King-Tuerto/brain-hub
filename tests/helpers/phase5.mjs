@@ -66,7 +66,17 @@ export const hasAnswerPrompt = (dir) => existsSync(new URL('answer-prompt.md', d
 // removed first; they are not claims about the student.
 const LINK = /\[([^\]]*)\]\((https?:\/\/[^)\s]+)\)/g
 const PLACEHOLDER = /\[[^\]]*\]/g
-const FIRST_PERSON = /\b(I|I'm|I’m|I've|I’ve|I'd|I’d|my|me|myself)\b/
+// "I" stays case-sensitive; My/Me/Myself count at the start of a sentence too.
+// Until starter-job-prep the pattern missed a capital "My", so "My goal in the
+// first 90 days…" was never examined at all (Nitpick, starter-job-prep).
+const FIRST_PERSON = /\b(I|I'm|I’m|I've|I’ve|I'd|I’d|[Mm]y|[Mm]e|[Mm]yself)\b/
+// starter-job-prep PLAN, the clarified bar: a first-person goal or plan the
+// student would choose to say ("My goal in the first 90 days is to…") is not a
+// fact about their past or present. Exempt only when the sentence has no
+// past-tense accomplishment too, so "I want to build on how I grew sign-ups
+// 35%" is still examined.
+export const GOAL = /\b(my (goal|plan|aim)s?\b|I (will|plan to|aim to|intend to|hope to|want to)\b|I(?:'|’)d (like|love) to\b)/i
+const PAST_ACCOMPLISHMENT = /\b(ran|led|managed|grew|increased|raised|served|talked|surveyed|organi[sz]ed|achieved|boosted|improved|built|cut|reduced|launched|delivered|won)\b/i
 const ACCOMPLISHMENT = /\b(ran|led|managed|grew|grow|increased|raised|served|talked|surveyed|organi[sz]ed|achieved|boosted|improved|attendance|satisfaction|members|retention)\b/i
 // A scenario posed to the student ("Imagine our adoption rate is up 20%…") is not a fact about them.
 const HYPOTHETICAL = /^["“]?(imagine|suppose|if|say)\b/i
@@ -89,6 +99,7 @@ export function inventedStudentFacts(answer, studentText) {
   const found = []
   for (const s of sentencesOf(answer)) {
     if (isQuestion(s) || HYPOTHETICAL.test(s)) continue
+    if (GOAL.test(s) && !PAST_ACCOMPLISHMENT.test(s)) continue
     const bare = s.replace(PLACEHOLDER, ' ').replace(/\(\d+\)/g, ' ')
     if (!FIRST_PERSON.test(bare) && !ACCOMPLISHMENT.test(bare)) continue
     const figs = [...bare.matchAll(FIGURE)].map((m) => m[0].replace(/[.,]+$/, '')).filter((f) => !given.has(f))

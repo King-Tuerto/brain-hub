@@ -340,6 +340,30 @@ directly. The hub calls them on the recipe's behalf.
       for reference.
     - **The order changes:** Phase 7 (pilot) now comes before Phase 6.
 
+21. **Job & Interview Prep: deferred until after the pilot** (El Código,
+    2026-10-03, from Nitpick's review of the starter tool). None blocks the
+    pilot.
+    - **Stretching the student's background.** With a background given, the
+      AI joined facts in ways she didn't state: it said her tracker *grew*
+      attendance, said it "filtered and aggregated", and scripted "I'm
+      actively learning SQL now". There's no invented number, employer or
+      date, but it's a softer form of invention.
+      - **Candidate fix:** a line in the tool, or in `NO_INVENTION_RULE`:
+        "Don't add details or causes I didn't state, even plausible ones."
+      - **Also needed:** a re-run with fresh agents.
+    - **F1:** the first prompt line reads as if the interview is today. Change
+      it to "Today is {{today}}. …".
+    - **F2:** the notes heading promises "my experience", but the brain query
+      is the company name only.
+    - **F3:** the body says "my notes are empty", but the hub writes
+      "(No personal notes available.)".
+    - **F6 (hub-wide):** the advice-mode source check lists the student's own
+      figures (22 → 41) as unsourced. Facts the student supplied shouldn't
+      need a web source.
+    - **Why wait:** each of these changes the prompt, which means fresh
+      real-answer runs to keep the fixtures honest. Better done once, with
+      what the pilot teaches.
+
 ---
 
 **Phase 1 closed October 3, 2026.** Paul approved these decisions and

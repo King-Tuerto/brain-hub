@@ -1,4 +1,4 @@
-I'm a university student preparing for a job application and interview on 2026-10-03.
+I'm a university student preparing to apply and interview for this job on 2026-10-03.
 
 Company: Northwind Analytics
 
@@ -33,33 +33,35 @@ Nice to have
 
 Salary range: $68,000–$78,000 plus bonus. Apply by November 15.
 
-My known weaknesses or gaps: (not provided)
+My background, in my own words:
+Business major, graduating May 2027. Events chair of the PM Club for two semesters: ran 5 events and grew average attendance from 22 to 41 students. Built a Google Sheets tracker for club sign-ups. Summer 2026 intern at a family-owned moving company in Phoenix: answered customer calls and logged complaints in a shared spreadsheet.
 
-What I already know from my own notes:
+Gaps I'm worried about:
+No SQL. Never worked in software.
+
+What my own notes say about this company or my experience:
 (No personal notes available.)
 
-If my weaknesses are (not provided), pick the two or three gaps most common for
-this kind of role and say that is what you did.
+Use only the background above and my notes as facts about me. If my background is (not provided) and my notes are empty, give advice that works for any student and use placeholders such as [your project] or [your result] wherever my own details belong. If my gaps are (not provided), cover the two or three gaps most common for this kind of role, and say that is what you did.
 
-Look into the company briefly if it helps. Then tell me what a strong resume
-for this specific job should include — the skills, experience and keywords to
-highlight — using only what you know about me plus placeholders like [your
-project] where you don't. Next, help me defend my weaknesses with honest,
-confident framing I can use in an interview. Then give me the questions I
-should prepare for, from standard ones to questions specific to this role.
-Finally, give me smart, specific questions to ask the interviewer that show I
-understood the posting and did my homework on the company.
+Resume essentials: what a strong resume for this specific job must show, using the posting's own words for skills and keywords to mirror. Where my background already shows something, point to it; where it does not, say what kind of evidence would show it.
+
+Handling your gaps: for each gap, an honest, confident way to address it in an interview, plus one concrete step I could take before the interview.
+
+Questions to prepare for: the questions this interviewer is most likely to ask — common ones and ones specific to this posting — each with a one-line note on what a strong answer shows.
+
+Smart questions to ask: five or six specific questions that show I read the posting closely and researched the company.
 
 Search the web for current information before answering, and cite what you find.
 
 ---
 Format your answer in Markdown with these sections, in this order, each as a "## " heading:
 - Resume essentials
-- Defending your weaknesses
+- Handling your gaps
 - Questions to prepare for
 - Smart questions to ask
 - Summary
 Every factual statement (figures, dates, names, statistics, quotations, claims about real organisations) must include a source link in Markdown form [title](https://…), or be marked [unverified]. Advice and recommendations do not need sources.
 Statements about your own method or about what you could not verify are not factual claims: start them with "Note:".
-Never invent facts about me (numbers, achievements, dates, names). Where a real detail of mine is needed and you do not have it, write a placeholder like [your number]. This includes example sentences I might copy, such as sample resume bullets or answers: put a placeholder like [X%] in place of every number in them.
+Never invent facts about me (numbers, achievements, dates, names). Where a real detail of mine is needed and you do not have it, write a placeholder like [your number].
 End with "## Summary": 2–3 sentences someone could search for later.

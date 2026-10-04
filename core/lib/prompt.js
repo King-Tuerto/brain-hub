@@ -16,7 +16,10 @@ export const SOURCE_RULE_FACTS = 'Every factual claim must include a source link
 export const SOURCE_RULE_ADVICE = 'Every factual statement (figures, dates, names, statistics, quotations, claims about real organisations) must include a source link in Markdown form [title](https://…), or be marked [unverified]. Advice and recommendations do not need sources.'
 export const NOTE_RULE = 'Statements about your own method or about what you could not verify are not factual claims: start them with "Note:".'
 // DECISIONS #18: appended to every prompt, whatever the recipe says.
-export const NO_INVENTION_RULE = 'Never invent facts about me (numbers, achievements, dates, names). Where a real detail of mine is needed and you do not have it, write a placeholder like [your number].'
+// The second sentence was added after a real answer (job prep, no background)
+// wrote example resume bullets with made-up figures ("reduced tickets by 23%"):
+// examples are exactly what a student copies onto a real resume.
+export const NO_INVENTION_RULE = 'Never invent facts about me (numbers, achievements, dates, names). Where a real detail of mine is needed and you do not have it, write a placeholder like [your number]. This includes example sentences I might copy, such as sample resume bullets or answers: put a placeholder like [X%] in place of every number in them.'
 
 export function STANDARD_BLOCK(recipe) {
   const sections = recipe?.output?.sections ?? []

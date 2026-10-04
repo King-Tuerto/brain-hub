@@ -74,7 +74,7 @@ Each input is a list item with these keys:
 | Key | Required | Rules |
 |---|---|---|
 | `id` | yes | Lowercase letters, digits and underscores. Unique in this recipe. Used as `{{id}}` in the template. |
-| `label` | yes | The question shown to the student. Keep it short; phones are narrow. |
+| `label` | yes | The question shown to the student. Keep it short; phones are narrow. Don't write "(optional)": the hub adds it to every input with `required: false`. |
 | `type` | yes | One of `text` (one line), `long_text` (a paragraph or pasted document), `choose_one`, `number`. |
 | `required` | yes | `true` or `false`. |
 | `options` | only for `choose_one` | A list of 2–12 short strings. |
@@ -195,7 +195,9 @@ facts. The hub appends a standard block to every prompt that:
   couldn't verify, with `Note:`. Those don't need a source;
 - **tells the AI never to invent facts about the student** (numbers,
   achievements, dates, names). It must use a placeholder like `[your number]`
-  instead;
+  instead. That includes example sentences the student might copy, such as
+  sample resume bullets: every number in them must be a placeholder like
+  `[X%]`;
 - requires a final `## Summary` of 2–3 sentences.
 
 The hub then checks the answer:

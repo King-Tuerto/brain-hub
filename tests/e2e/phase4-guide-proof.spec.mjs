@@ -12,10 +12,20 @@ import { tid, setup, toBrainStep, openTool, setHash, installRecipe, noHorizontal
 import { PERMISSION_TEXT, PRIVACY_WARNING, WEBSEARCH_TEXT } from '../helpers/contract.mjs'
 import { checkSources } from '../../core/lib/output.js'
 import { StandinBrain, STANDIN_URL, STANDIN_KEY, STANDIN_USER } from '../standin/brain-standin.mjs'
-import { RECIPE, RECIPE_FILE_NAME, TOOL_ID, INPUTS, PROMPT, SECTIONS, readAnswer } from '../helpers/phase4.mjs'
+import { RECIPE as AGENT_RECIPE, RECIPE_FILE_NAME as AGENT_FILE_NAME, TOOL_ID as AGENT_ID, INPUTS, PROMPT, SECTIONS, readAnswer } from '../helpers/phase4.mjs'
 
 const QUERY = 'resume background skills experience' // the agent's brain_context.query
-const tile = (page) => tid(page, 'tool-tile').and(page.locator(`[data-tool-id="${TOOL_ID}"]`))
+
+// Since starter-job-prep, "job-interview-prep" is a built-in tool, so the
+// agent's file (same id) is refused on paste and hidden in plugins/ — the hub
+// working as designed (see the clash tests at the end). The guide proof still
+// runs on the agent's recipe, changed in one line only: its id. The id never
+// reaches the prompt, so prompt.md still has to match byte for byte.
+const TOOL_ID = 'job-interview-prep-v1'
+const RECIPE_FILE_NAME = `${TOOL_ID}.recipe.md`
+const RECIPE = AGENT_RECIPE.replace(/^id: job-interview-prep$/m, `id: ${TOOL_ID}`)
+if (RECIPE === AGENT_RECIPE) throw new Error('phase-4 recipe id line not found')
+const tile = (page, id = TOOL_ID) => tid(page, 'tool-tile').and(page.locator(`[data-tool-id="${id}"]`))
 
 const test = base.extend({
   standin: async ({ context, net }, use) => {
@@ -145,7 +155,7 @@ test('answer.md: renders every section with no missing-sections; source-check wa
   await expect(shown).toHaveCount(32)
 })
 
-test('save with the stand-in brain: one row, metadata.hub.tool = job-interview-prep', async ({ page, standin }) => {
+test('save with the stand-in brain: one row, metadata.hub.tool = the installed id (job-interview-prep-v1)', async ({ page, standin }) => {
   const answer = readAnswer()
   await connectStandin(page)
   await installRecipe(page, RECIPE)
@@ -174,4 +184,30 @@ test('layout: the job-prep prompt, the answer, its source-check list and save pa
   await noHorizontalScroll(page, 'job-prep result')
   await page.setViewportSize({ width: 320, height: 640 })
   await noHorizontalScroll(page, 'job-prep result @320')
+})
+
+// ---------------------------------------------------------------- Clash with the built-in tool
+
+test('the unchanged Phase 4 recipe pasted now: refused, naming the built-in tool with the same id', async ({ page }) => {
+  expect(AGENT_ID).toBe('job-interview-prep')
+  await setup(page, { name: 'Maria' })
+  await tid(page, 'nav-add').click()
+  await tid(page, 'recipe-paste').fill(AGENT_RECIPE)
+  await tid(page, 'recipe-check').click()
+  await expect(tid(page, 'recipe-errors')).toContainText('A built-in tool already uses the id "job-interview-prep"')
+  await expect(tid(page, 'install-summary')).toHaveCount(0)
+})
+
+test('the unchanged Phase 4 recipe in plugins/: hidden with a tool-conflict note; the built-in tile is the one shown', async ({ page, github }) => {
+  github.repo('maria', 'brain-hub', { [AGENT_FILE_NAME]: AGENT_RECIPE })
+  await setup(page, { name: 'Maria' })
+  await tid(page, 'nav-settings').click()
+  await tid(page, 'settings-repo-override').fill('maria/brain-hub')
+  await tid(page, 'settings-repo-override').press('Enter')
+  await tid(page, 'settings-repo-override').blur()
+  await setHash(page, '#/home')
+  await tid(page, 'refresh-tools').click()
+  await expect(tid(page, 'tool-conflict')).toContainText(`${AGENT_FILE_NAME} in plugins/ (id "job-interview-prep") is hidden because a built-in tool uses the same id`)
+  await expect(tile(page, 'job-interview-prep')).toHaveCount(1)
+  await expect(tile(page, 'job-interview-prep')).toContainText('Job & Interview Prep')
 })
