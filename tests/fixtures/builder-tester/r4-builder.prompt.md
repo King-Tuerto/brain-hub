@@ -6,55 +6,60 @@ I paste my class syllabus and the date of my exam, and it gives me a study plan 
 Who uses it, and when: Me, at the start of each semester
 
 Fixes to apply: Fixes from the Tester:
-1. [A4, Test 3] Practice question answer options, including the wrong ones, must not mention later-week topics. In Test 3, Question 2's options named competitors (Week 4: Competitive analysis), product cost (Week 5: Pricing strategy) and marketing channels (Week 6: Go-to-market). Before you output the questions, check every answer option against the list of week 2+ topics and rewrite any option that touches one. Build the wrong options from first-week material only.
+1. [A1, Test 3] When the exam date falls inside a week, give that week exactly one Study Plan entry. Do not add a separate "Exam Day" row and do not break the week into day-by-day blocks (remove the "October 4–5 / October 6 / October 7" study strategy). The week of 2026-10-04 to 2026-10-10 must appear as one entry.
 
 My current Spec:
-**Tool name:** Exam Study Planner — turns a pasted syllabus into a week-by-week study plan up to the exam date, ending with 5 practice questions on the first week's topics.
+**Syllabus Study Planner** — turns a pasted class syllabus into a week-by-week study plan leading up to the exam, plus 5 practice questions on the first week's topics.
 
-**Inputs:**
-- **Paste your class syllabus** (required) — example: "Week 1: Supply and demand; Week 2: Market structures; Week 3: Elasticity; …"
-- **Exam date** (optional) — example: "2026-12-10"
+**Inputs**
+- **Class syllabus** (required) — paste the full syllabus text. Example: "Week 1: Intro & history. Week 2: Supply and demand. Week 3: Market structures. Final exam covers all weeks."
+- **Exam date** (optional) — the date of the exam. Example: "2026-11-18"
 
 **Output** — the answer must have these sections, in order:
-1. **Study Plan** — one entry per week, each naming that week's topics taken from the syllabus. If an exam date was given, weeks are dated from today through the exam week. If not, weeks are numbered instead.
-2. **Practice Questions** — exactly 5 questions, all about topics from the first week only. No question, including its answer options, may mention, preview, or require understanding of any topic from week 2 or later — not even as an "introduction to" a later topic, as background needed to answer, or as the scenario or framing the question is built around (for example, a comparison to a later topic, or a situation that assumes it).
-3. **Summary** — added automatically by the hub; 2–3 sentences.
+1. **Study Plan** — one entry per week, from today until the exam, each naming at least one topic taken from the syllabus. If the exam date falls within a week, that week still gets exactly one entry (never split into day-by-day blocks or a separate Exam Day entry).
+2. **Practice Questions** — exactly 5 questions, with answers, covering only the first week's topics.
+3. **Summary** (added automatically) — 2–3 sentences.
 
-**Acceptance criteria:**
-- A1: The Study Plan has one entry for every week from today through the week containing the exam date, when an exam date was given.
-- A2: When the exam date is left blank, the Study Plan is organized by week number instead of calendar dates, and the answer says it did this because no exam date was given.
-- A3: Every topic named in the Study Plan comes from the pasted syllabus, in the order the syllabus presents them.
-- A4: The Practice Questions section contains exactly 5 questions, all about topics from the first week of the plan only, with no question — including any multiple-choice answer options — mentioning, framing, or depending on any topic from week 2 or later.
-- A5: The answer ends with a Summary section.
+**Acceptance criteria**
+- A1: The Study Plan section has exactly one entry for every week counting from today through the exam date (inclusive of the exam week), with exactly one entry for the week containing the exam date — never split into day-by-day blocks or a separate Exam Day entry.
+- A2: If no exam date was given, the Study Plan section covers exactly 8 weeks, and one line states that 8 weeks was assumed because no exam date was given.
+- A3: The Practice Questions section contains exactly 5 questions.
+- A4: Every practice question and every one of its answer options uses only a topic word that appears under Week 1 in the Study Plan; no question or option uses a topic word that appears only under a later week.
+- A5: Every week listed in the Study Plan names at least one topic taken from the pasted syllabus.
+- A6: The Summary section is 2–3 sentences.
 
-**Blank inputs:** If the exam date is left blank, the tool does not invent or guess one. It builds the plan using week numbers instead of dates and tells the student it did so because no exam date was given.
+**Blank inputs** — if the exam date is left blank, the plan covers 8 weeks instead of counting to an exam date, and the Study Plan section says this was assumed.
 
 My current recipe:
 ---
 recipe_format: 1
-id: exam-study-planner
-name: Exam Study Planner
-description: Turn your syllabus into a week-by-week study plan until your exam, plus 5 practice questions on week one.
+id: syllabus-study-planner
+name: Syllabus Study Planner
+description: Turn your syllabus into a week-by-week study plan and 5 practice questions on Week 1.
 version: 1.0.2
 author: Brain Hub student
-permissions: [run_ai]
+permissions: [run_ai, save_to_brain]
 web_search: none
-sourcing: advice
+sourcing: none
 inputs:
   - id: syllabus
-    label: Paste your class syllabus
+    label: Class syllabus
     type: long_text
     required: true
-    help: Include the topics or schedule listed for each week or unit.
+    help: Paste the full syllabus text, including topics and dates if you have them.
   - id: exam_date
     label: Exam date
     type: text
     required: false
-    placeholder: 2026-12-10
+    placeholder: 2026-11-18
+    help: Leave blank if you don't know it yet.
 output:
   sections: [Study Plan, Practice Questions]
+save:
+  type: work_product
+  tags: [study-plan, exam-prep]
 ---
-I'm a university student using this tool at the start of the semester.
+I'm a university student at the start of a semester, building a week-by-week study plan.
 
 Today's date: {{today}}
 
@@ -63,28 +68,9 @@ My syllabus:
 
 My exam date: {{exam_date}}
 
-If my exam date is (not provided), do not invent one. Build the plan using week
-numbers instead (Week 1, Week 2, and so on) covering every week my syllabus
-lists, and say in the Study Plan that you used week numbers because no exam
-date was given.
+If my exam date is (not provided), assume the plan should cover 8 weeks instead. In the Study Plan section, include one line that uses exactly the words "8 weeks" and "exam date", for example: "No exam date was given, so this plan assumes 8 weeks." Do not write it as "8-week".
 
-If my exam date is provided, build the plan with one entry for every week from
-today up to and including the week of my exam date, using the topics from my
-syllabus for each week in the order the syllabus presents them. If the
-syllabus has more or fewer weeks than fit before the exam date, say so.
-
-Give me exactly 5 practice questions based only on the first week's topics
-from my syllabus. Do not write a question — including any multiple-choice
-answer options — that mentions, previews, or acts as an "introduction to" any
-topic from week 2 or later, and do not write a question that can only be
-answered using, or is framed around (such as a comparison to, or a scenario
-built on), a concept from week 2 or later — every question, and every answer
-option, must be fully self-contained within the first week's topics.
-
-Before giving me the final answer, re-check each of the 5 questions one by
-one — the stem and every answer option — against the first week's topic
-list, and rewrite any question that touches a week 2 or later topic in any
-way, including through its framing or scenario, until none do.
+Build a week-by-week study plan, from today until the exam date (or for 8 weeks if no exam date was given), naming at least one topic from the syllabus for each week. If the exam date falls within one of those weeks, that week still gets exactly one entry — do not split it into day-by-day blocks or a separate "Exam Day" block. Then write exactly 5 practice questions and their answers using only the topics you assigned to the first week — don't use any topic word from a later week in the questions or their answer options. Before finishing, check every question, option, and answer against the later weeks' topic words and reword any that match.
 
 If the fixes are (not provided), build the tool from the idea. If they are provided, they contain the Tester's fixes, the current Spec and the current recipe: apply every fix, keep the same id, raise the version (1.0.0 becomes 1.0.1), and say under Steps exactly which fix you applied and how. Write the new Spec by copying the current Spec word for word, then change only what a fix requires. Keep every other acceptance criterion, its number (A1, A2, …) and its wording exactly as before, so the Tester's existing tests still apply; a new criterion gets the next free number. End Steps with one line: "Spec changed: yes" or "Spec changed: no".
 
@@ -94,7 +80,7 @@ Spec: written for the Tester, with no recipe syntax in it.
 - Tool name and its purpose in one sentence.
 - Inputs: each with its label, whether it is required, and an example value.
 - Output: the section headings the answer must have, in order, and what each must contain. The hub always adds a final "Summary" section to every answer, so list it last and never forbid it.
-- Acceptance criteria: 4 to 6 numbered checks (A1, A2, …), each something a person can see in the tool's answer, e.g. "A2: the plan has one row for every week until the exam date".
+- Acceptance criteria: 4 to 6 numbered checks (A1, A2, …), each something a person can see in the tool's answer and decide without a judgment call: by counting, by comparing dates, or by looking for exact words. E.g. "A2: the plan has one row for every week until the exam date". Every requirement in the student's idea must be covered by at least one criterion; checks of layout alone are not enough. Never write a criterion like "only about topic X" or "nothing related to Y"; say which words must or must not appear instead, e.g. "every question uses a word from the Week 1 topic, and no question or answer option uses a word from a later week's topic".
 - Blank inputs: what the answer must do when each optional input is left blank.
 
 Recipe: one code block, opened with ```recipe on its own line and closed with ``` on its own line. Inside it, only the recipe file, following the Brain Hub widget guide below exactly. After the block, one line with the file name: the tool's id followed by .recipe.md. In the recipe's front matter, set author to: Brain Hub student (the student can change it later), and never put square brackets in any front-matter value, because the hub reads them as a list and rejects the recipe. The recipe must do what the Spec says; if you find a conflict, change the Spec, not the other way round.

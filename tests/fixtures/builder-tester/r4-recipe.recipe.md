@@ -1,28 +1,32 @@
 ---
 recipe_format: 1
-id: exam-study-planner
-name: Exam Study Planner
-description: Turn your syllabus into a week-by-week study plan until your exam, plus 5 practice questions on week one.
+id: syllabus-study-planner
+name: Syllabus Study Planner
+description: Turn your syllabus into a week-by-week study plan and 5 practice questions on Week 1.
 version: 1.0.3
 author: Brain Hub student
-permissions: [run_ai]
+permissions: [run_ai, save_to_brain]
 web_search: none
-sourcing: advice
+sourcing: none
 inputs:
   - id: syllabus
-    label: Paste your class syllabus
+    label: Class syllabus
     type: long_text
     required: true
-    help: Include the topics or schedule listed for each week or unit.
+    help: Paste the full syllabus text, including topics and dates if you have them.
   - id: exam_date
     label: Exam date
     type: text
     required: false
-    placeholder: 2026-12-10
+    placeholder: 2026-11-18
+    help: Leave blank if you don't know it yet.
 output:
   sections: [Study Plan, Practice Questions]
+save:
+  type: work_product
+  tags: [study-plan, exam-prep]
 ---
-I'm a university student using this tool at the start of the semester.
+I'm a university student at the start of a semester, building a week-by-week study plan.
 
 Today's date: {{today}}
 
@@ -31,30 +35,6 @@ My syllabus:
 
 My exam date: {{exam_date}}
 
-If my exam date is (not provided), do not invent one. Build the plan using week
-numbers instead (Week 1, Week 2, and so on) covering every week my syllabus
-lists, and say in the Study Plan that you used week numbers because no exam
-date was given.
+If my exam date is (not provided), assume the plan should cover 8 weeks instead. In the Study Plan section, include one line that uses exactly the words "8 weeks" and "exam date", for example: "No exam date was given, so this plan assumes 8 weeks." Do not write it as "8-week".
 
-If my exam date is provided, build the plan with one entry for every week from
-today up to and including the week of my exam date, using the topics from my
-syllabus for each week in the order the syllabus presents them. If the
-syllabus has more or fewer weeks than fit before the exam date, say so.
-
-Give me exactly 5 practice questions based only on the first week's topics
-from my syllabus. Do not write a question — including any multiple-choice
-answer options — that mentions, previews, or acts as an "introduction to" any
-topic from week 2 or later, and do not write a question that can only be
-answered using, or is framed around (such as a comparison to, or a scenario
-built on), a concept from week 2 or later — every question, and every answer
-option, must be fully self-contained within the first week's topics. Build the
-wrong (incorrect) answer options using only first-week material — never a
-company, cost, channel, or any other detail that belongs to a later week's
-topic.
-
-Before giving me the final answer, check every answer option — not just the
-question stems — against the list of week 2 or later topics, and rewrite any
-option that touches one. Then re-check each of the 5 questions one by one —
-the stem and every answer option — against the first week's topic list, and
-rewrite any question that touches a week 2 or later topic in any way,
-including through its framing or scenario, until none do.
+Build a week-by-week study plan, from today until the exam date (or for 8 weeks if no exam date was given), naming at least one topic from the syllabus for each week. If the exam date falls within one of those weeks, that week still gets exactly one entry — do not split it into day-by-day blocks or a separate "Exam Day" block. For example, if today is 2026-10-04 and the exam falls between 2026-10-04 and 2026-10-10, write one single Study Plan entry such as "Week of 2026-10-04–2026-10-10" naming that week's topic — never write separate lines like "October 4–5", "October 6", "October 7", and never add a separate "Exam Day" line. Then write exactly 5 practice questions and their answers using only the topics you assigned to the first week — don't use any topic word from a later week in the questions or their answer options. Before finishing, check every question, option, and answer against the later weeks' topic words and reword any that match.

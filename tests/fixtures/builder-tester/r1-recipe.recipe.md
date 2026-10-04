@@ -1,28 +1,32 @@
 ---
 recipe_format: 1
-id: exam-study-planner
-name: Exam Study Planner
-description: Turn your syllabus into a week-by-week study plan until your exam, plus 5 practice questions on week one.
+id: syllabus-study-planner
+name: Syllabus Study Planner
+description: Turn your syllabus into a week-by-week study plan and 5 practice questions on Week 1.
 version: 1.0.0
 author: Brain Hub student
-permissions: [run_ai]
+permissions: [run_ai, save_to_brain]
 web_search: none
-sourcing: advice
+sourcing: none
 inputs:
   - id: syllabus
-    label: Paste your class syllabus
+    label: Class syllabus
     type: long_text
     required: true
-    help: Include the topics or schedule listed for each week or unit.
+    help: Paste the full syllabus text, including topics and dates if you have them.
   - id: exam_date
     label: Exam date
     type: text
     required: false
-    placeholder: 2026-12-10
+    placeholder: 2026-11-18
+    help: Leave blank if you don't know it yet.
 output:
   sections: [Study Plan, Practice Questions]
+save:
+  type: work_product
+  tags: [study-plan, exam-prep]
 ---
-I'm a university student using this tool at the start of the semester.
+I'm a university student at the start of a semester, building a week-by-week study plan.
 
 Today's date: {{today}}
 
@@ -31,15 +35,6 @@ My syllabus:
 
 My exam date: {{exam_date}}
 
-If my exam date is (not provided), do not invent one. Build the plan using week
-numbers instead (Week 1, Week 2, and so on) covering every week my syllabus
-lists, and say in the Study Plan that you used week numbers because no exam
-date was given.
+If my exam date is (not provided), assume the plan should cover 8 weeks instead, and say in the Study Plan section that you assumed 8 weeks because no exam date was given.
 
-If my exam date is provided, build the plan with one entry for every week from
-today up to and including the week of my exam date, using the topics from my
-syllabus for each week in the order the syllabus presents them. If the
-syllabus has more or fewer weeks than fit before the exam date, say so.
-
-Give me 5 practice questions based only on the first week's topics from my
-syllabus.
+Build a week-by-week study plan, from today until the exam date (or for 8 weeks if no exam date was given), naming at least one topic from the syllabus for each week. Then write exactly 5 practice questions and their answers using only the topics you assigned to the first week — don't use any topic word from a later week in the questions or their answer options.

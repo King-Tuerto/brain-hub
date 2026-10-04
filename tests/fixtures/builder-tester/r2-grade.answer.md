@@ -2,35 +2,34 @@
 
 | Test | Check | Result | Evidence |
 |------|-------|--------|----------|
-| 1 | [A1] Study Plan shows calendar dates | PASS | "Week 1 \| Oct 4–10, 2026 \| Supply and Demand" |
-| 1 | [A1] First entry covers today (2026-10-04) or its week | PASS | First row "Oct 4–10, 2026" |
-| 1 | [A1] Last entry is the week containing 2026-11-12; nothing after | PASS | Last row "Nov 8–12, 2026 … *Exam: Nov 12*" |
-| 1 | [A1] No missing weeks (6 Sunday-start entries) | PASS | 6 consecutive rows: Oct 4, 11, 18, 25, Nov 1, Nov 8 |
-| 1 | [A3] Every topic is one of the six syllabus topics | PASS | Only the six syllabus topics appear; none added |
-| 1 | [A3] Topics in syllabus order | PASS | Supply and Demand → Market Structures → Elasticity → Consumer Choice → Costs → Perfect Competition |
-| 1 | [A4] Exactly 5 questions | PASS | Question 1 through Question 5 counted |
-| 1 | [A4] All 5 about supply and demand; none mention/need a later topic | PASS | Equilibrium, supply shifts, price floor; no elasticity or market-structure wording in questions |
-| 1 | [A5] Last section is Summary; nothing after | PASS | "## Summary" is final section |
-| 1 | [Order] Study Plan, Practice Questions, Summary | PASS | Headings appear in that order |
-| 2 | [A2] Entries labelled by week number, no dates | PASS | "Week 1 \| Cell structure and organelles" … "Week 4"; no dates |
-| 2 | [A2] Says week numbers used because no exam date given | PASS | "Because no exam date was provided, this study plan uses week numbers" |
-| 2 | [A2 / Blank inputs] Never states or guesses an exam date | PASS | No date or guessed exam date anywhere |
-| 2 | [A3] Four topics in order, none added | PASS | Cell structure → Cell membranes → Enzymes → Cellular respiration |
-| 2 | [A4] Exactly 5 questions | PASS | Question 1 through Question 5 counted |
-| 2 | [A4] All 5 about cell structure; none mention later topics | FAIL | Q1 option "(a) Cell membrane"; Q2 option "(b) Attached to the cell membrane" (Week 2 topic) |
-| 2 | [A5] Ends with Summary | PASS | "## Summary" is final section |
-| 3 | [A1] Calendar dates, ends with week containing 2026-10-21, 3 entries | PASS | 3 rows; last "Week 3 (Oct 18–21)" |
-| 3 | [A1] First entry covers today's week; no week skipped | PASS | "Week 1 (Oct 4–10)", then Oct 11–17, Oct 18–21 |
-| 3 | [A3] Every topic from the syllabus | PASS | Only syllabus topics named, including the excluded-weeks note |
-| 3 | [A3] Topics in syllabus order | PASS | BMC, Value proposition → Customer discovery → Lean startup and MVPs |
-| 3 | [A4] Exactly 5 questions | PASS | Question 1 through Question 5 counted |
-| 3 | [A4] All 5 about BMC/value proposition; none mention/need later topics | FAIL | Q5: "why would customers choose you over the competitor" to "a potential investor" — previews competitive analysis/fundraising |
-| 3 | [A5] Ends with Summary | PASS | "## Summary" is final section |
+| 1 | [Order] Study Plan, Practice Questions, Summary in order | PASS | Headings appear as "## Study Plan", "## Practice Questions", "## Summary" |
+| 1 | [A1] Exactly 7 week entries, last contains 2026-11-18 | PASS | Week 1 (Oct 4–10) through "Week 7 (Nov 15–18)": 7 entries |
+| 1 | [A1] No "8 weeks assumed" line; "no exam date" absent | PASS | Neither phrase appears; plan states "(7 weeks)" |
+| 1 | [A5] Each of 7 entries has a listed syllabus word | PASS | Scarcity…, Supply and demand, Elasticity, Consumer choice, Production costs, Monopoly, Inflation |
+| 1 | [A3] Exactly 5 questions | PASS | Question 1 to Question 5 |
+| 1 | [A3] Each question has an answer shown | PASS | Each has an "*Answer:*" line |
+| 1 | [A4] Later-week words absent from Practice Questions | FAIL | Week 1 has none of the list; Q1 answer: "total wheat production is [Z]"; Q2 answer: "about production and allocation" |
+| 1 | [A6] Summary is 2 or 3 sentences | PASS | 2 sentences, ending "November 18, 2026." and "throughout economics." |
+| 2 | [Order] Study Plan, Practice Questions, Summary in order | PASS | Headings appear in that order |
+| 2 | [A2] Exactly 8 week entries | PASS | Table rows Week 1 (Oct 4) to Week 8 (Nov 22): 8 |
+| 2 | [A2] One line has "8 weeks"/"eight weeks" and "exam date" | FAIL | Line says "no exam date was provided, I'm assuming an 8-week plan"; "8 weeks" never appears |
+| 2 | [A2] No date presented as the exam date | PASS | Only start dates shown; no exam date stated |
+| 2 | [A5] Each of 8 entries has a listed syllabus word | PASS | Cell Structure, Mitosis, Meiosis, Genetics, Evolution, Ecology, Photosynthesis, Enzymes |
+| 2 | [A3] Exactly 5 questions, each with an answer | PASS | Question 1–5, each with "Answer N:" |
+| 2 | [A4] Later-week words absent from Practice Questions | PASS | Week 1 "Cell Structure" has none of the list; none appear in questions/options/answers |
+| 2 | [A6] Summary is 2 or 3 sentences | PASS | 3 sentences |
+| 3 | [Order] Study Plan, Practice Questions, Summary in order | PASS | Headings appear in that order |
+| 3 | [A1] Exactly 1 week entry | PASS | Single row "Week 1 (Oct 4–7) \| Photosynthesis" |
+| 3 | [A1] "8 weeks" and "eight weeks" absent | PASS | Neither phrase appears |
+| 3 | [A5] Entry contains "photosynthesis" or "respiration" | PASS | "Photosynthesis" |
+| 3 | [A3] Exactly 5 questions, each with an answer | PASS | Question 1–5, each followed by "Answer:" |
+| 3 | [A4] "respiration" absent from Practice Questions | PASS | Week entry lacks "respiration"; it appears nowhere in questions or answers |
+| 3 | [A6] Summary is 2 or 3 sentences | PASS | 2 sentences, ending "carbon fixation." and "glucose synthesis." |
 
 ## Fixes
 
-1. [A4, Test 2] Practice Questions must not name any week 2+ topic anywhere, including in multiple-choice answer options. Remove "Cell membrane" and "Attached to the cell membrane" and use only Week 1 structures (e.g., nucleus, ribosomes, Golgi, cell wall) in questions and options.
-2. [A4, Test 3] Practice Questions must not frame or depend on later-week topics. Remove competitor comparisons (Week 4, Competitive analysis) and investor/pitch scenarios (Weeks 8–9, Fundraising and Pitch decks); keep questions strictly on business model canvas blocks and value proposition.
+1. [A4, Test 1] Practice questions, options and answers must not use any topic word that belongs to a later week. "Production" is Week 5's topic, so do not write "production" (e.g. "wheat production", "production and allocation") when the first week is Scarcity and opportunity cost. Before finishing, check every question, option and answer against the later weeks' topic words and reword any that match.
+2. [A2, Test 2] When the exam date is blank, include one line that says, in these words, "8 weeks" and "exam date", e.g. "No exam date was given, so this plan assumes 8 weeks." Do not write it as "8-week".
 
 ## Verdict
 
@@ -38,4 +37,4 @@ FIX AND RETEST — send the Fixes, the Spec and your current recipe to the Build
 
 ## Summary
 
-Exam Study Planner round 2 grade: 22 of 24 checks passed; dated and week-numbered plans, topic order, question counts and Summary placement were all correct. It failed A4 in Test 2 (questions name the cell membrane, a Week 2 topic) and Test 3 (a question about competitors and investors previews later weeks), so the verdict is fix and retest.
+Syllabus Study Planner round 2 grading: 21 of 23 checks passed; it failed A4 in Test 1 (Week 5 topic word "production" used in practice answers) and A2 in Test 2 (wrote "8-week" instead of "8 weeks"). Week counts, section order, summaries and the exam-this-week case all passed, though Test 3 wrongly called October 7, 2026 a Tuesday (it is a Wednesday), which no check covered. Verdict: fix and retest.

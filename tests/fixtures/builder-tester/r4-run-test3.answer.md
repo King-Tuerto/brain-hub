@@ -1,72 +1,57 @@
 ## Study Plan
 
-Based on your exam date of October 21, 2026, you have approximately 17 days to prepare. Your syllabus covers 10 weeks of material, but you have time for only the first 2–3 weeks before your exam.
-
-**Week of October 4–10: Business Model Canvas & Value Proposition**
-- Study the nine components of the Business Model Canvas: customer segments, value propositions, channels, customer relationships, revenue streams, key resources, key activities, key partnerships, and cost structure
-- Understand what constitutes a strong value proposition
-- Practice applying the canvas to example businesses
-
-**Week of October 11–17: Customer Discovery**
-- Learn customer discovery approaches
-- Connect customer segments to value propositions
-
-**Week of October 18–21: Lean Startup & MVPs (partial coverage)**
-- Introduction to lean startup principles
-- Minimum viable product (MVP) fundamentals
-
-**Important note:** Your syllabus contains 10 weeks of content, but the time between now and your exam is only about 2.4 weeks. You will need to prioritize Week 1 (Business Model Canvas and Value Proposition) as your primary exam focus.
+**Week of 2026-10-04–2026-10-10:** Photosynthesis
 
 ## Practice Questions
 
-**Question 1:** The Business Model Canvas consists of nine key components. Which of the following is NOT one of these nine blocks?
-- A) Key Resources
-- B) Revenue Streams
-- C) Brand Identity
-- D) Customer Relationships
+**Question 1:** Which organelle is responsible for carrying out photosynthesis in plant cells?
+- A) Mitochondria
+- B) Ribosome
+- C) Chloroplast
+- D) Nucleus
 
-**Correct answer:** C) Brand Identity
-
----
-
-**Question 2:** Which statement best describes a value proposition?
-- A) A clear description of the benefits and value your product or service provides to customers
-- B) A comprehensive description of all the features included in your product
-- C) The different revenue streams your business will generate
-- D) A comprehensive list of all the strategic partners your company will work with
-
-**Correct answer:** A) A clear description of the benefits and value your product or service provides to customers
+**Answer:** C) Chloroplast
 
 ---
 
-**Question 3:** The Business Model Canvas's "Customer Segments" block refers to:
-- A) The specific groups of people or organizations your business aims to serve
-- B) The revenue streams associated with each type of customer
-- C) The channels through which you will reach different customers
-- D) The customer relationships you will build with each group
+**Question 2:** What is the primary function of photosynthesis?
+- A) To break down glucose for energy
+- B) To convert light energy into chemical energy stored in glucose
+- C) To produce oxygen only
+- D) To absorb heat from the sun
 
-**Correct answer:** A) The specific groups of people or organizations your business aims to serve
-
----
-
-**Question 4:** Which Business Model Canvas component describes the different methods through which your business reaches and delivers its products or services to customers?
-- A) Channels
-- B) Customer Relationships
-- C) Key Partnerships
-- D) Revenue Streams
-
-**Correct answer:** A) Channels
+**Answer:** B) To convert light energy into chemical energy stored in glucose
 
 ---
 
-**Question 5:** A business model's "Cost Structure" block should include:
-- A) The total amount you will spend to operate your business
-- B) The key resources you will need to acquire
-- C) The channels you will use to distribute your products
-- D) The value proposition you offer to customers
+**Question 3:** Which pigment is the primary light-absorbing molecule in photosynthesis?
+- A) Carotenoid
+- B) Xanthophyll
+- C) Chlorophyll
+- D) Anthocyanin
 
-**Correct answer:** A) The total amount you will spend to operate your business
+**Answer:** C) Chlorophyll
+
+---
+
+**Question 4:** What gas do plants take in from the atmosphere during photosynthesis?
+- A) Nitrogen
+- B) Oxygen
+- C) Carbon dioxide
+- D) Hydrogen
+
+**Answer:** C) Carbon dioxide
+
+---
+
+**Question 5:** The photosynthetic process can be summarized by which basic equation?
+- A) Water + glucose → carbon dioxide + light
+- B) Carbon dioxide + water + light energy → glucose + oxygen
+- C) Oxygen + glucose → carbon dioxide + water
+- D) Nitrogen + light → proteins + oxygen
+
+**Answer:** B) Carbon dioxide + water + light energy → glucose + oxygen
 
 ## Summary
 
-These five practice questions test your understanding of the Business Model Canvas's nine components and the definition of a value proposition—the core topics of your first week. All questions and answer options are grounded in Week 1 material only, allowing you to assess mastery before moving to Week 2 (Customer Discovery) and beyond.
+This one-week study plan focuses on photosynthesis, the core topic covered before your October 7th exam. Master the location of photosynthesis in chloroplasts, the role of chlorophyll in capturing light energy, and the basic equation showing how plants convert carbon dioxide and water into glucose and oxygen. The five practice questions test your understanding of these foundational concepts.

@@ -1,46 +1,72 @@
+# BIO 110 Study Plan
+
 ## Study Plan
 
-| Week | Topics | Status |
-|------|--------|--------|
-| Week 1 | Cell structure and organelles | Current |
-| Week 2 | Cell membranes and transport | Upcoming |
-| Week 3 | Enzymes | Upcoming |
-| Week 4 | Cellular respiration | Upcoming |
+No exam date was given, so this plan assumes 8 weeks.
 
-**Note:** Week numbers are used instead of a specific exam date because no exam date was provided. This plan covers all four weeks listed in your syllabus in order.
+| Week | Date Range | Topic |
+|------|-----------|-------|
+| Week 1 | Oct 4–10 | Cell structure |
+| Week 2 | Oct 11–17 | Mitosis |
+| Week 3 | Oct 18–24 | Meiosis |
+| Week 4 | Oct 25–31 | Genetics |
+| Week 5 | Nov 1–7 | Evolution |
+| Week 6 | Nov 8–14 | Ecology |
+| Week 7 | Nov 15–21 | Photosynthesis |
+| Week 8 | Nov 22–28 | Enzymes |
 
 ## Practice Questions
 
-**Question 1:** Which organelle is the primary site of protein synthesis in eukaryotic cells?
-- A) Mitochondrion
-- B) Ribosome
-- C) Golgi apparatus
-- D) Nucleus
+**Question 1:** Which of the following structures is found in both animal and plant cells?
+- A) Cell wall
+- B) Chloroplast
+- C) Ribosome
+- D) Vacuole
 
-**Question 2:** A cell biologist observes two types of cells under a microscope. One cell contains a nucleus enclosed within a nuclear membrane, while the other cell has no such membrane-bound nucleus. The cell lacking a nucleus membrane is most likely:
-- A) A eukaryotic cell
-- B) A prokaryotic cell
-- C) A plant cell
-- D) A fungal cell
+**Answer:** C) Ribosome. Both animal and plant cells contain ribosomes for protein synthesis. Cell walls are found only in plant cells, chloroplasts are only in plant cells, and large vacuoles are primarily in plant cells.
 
-**Question 3:** Which of the following is a double-membrane organelle found in eukaryotic cells?
+---
+
+**Question 2:** The nucleus of a cell contains:
+- A) Proteins only
+- B) DNA and proteins
+- C) Lipids and carbohydrates
+- D) Water and salt ions
+
+**Answer:** B) DNA and proteins. The nucleus contains DNA (which carries genetic information) and proteins called histones that package and regulate the DNA. The other options do not accurately describe the nucleus's primary contents.
+
+---
+
+**Question 3:** Which organelle is responsible for producing energy in the form of ATP?
 - A) Ribosome
-- B) Centriole
+- B) Lysosome
 - C) Mitochondrion
-- D) Nucleolus
+- D) Centrosome
 
-**Question 4:** Rough endoplasmic reticulum (Rough ER) differs structurally from smooth endoplasmic reticulum (Smooth ER) because:
-- A) Rough ER contains attached ribosomes
-- B) Rough ER is only found in plant cells
-- C) Smooth ER contains DNA
-- D) Rough ER is surrounded by a double membrane
+**Answer:** C) Mitochondrion. The mitochondrion is the powerhouse of the cell, producing ATP through cellular respiration. Ribosomes make proteins, lysosomes break down waste, and centrosomes help organize the cytoskeleton.
 
-**Question 5:** Which organelle would you expect to find in a typical plant cell but not in a typical animal cell?
-- A) Mitochondrion
-- B) Nucleus
-- C) Chloroplast
-- D) Ribosome
+---
+
+**Question 4:** The semipermeable membrane that surrounds the cell and controls what enters and exits is called:
+- A) The cell wall
+- B) The cytoplasm
+- C) The plasma membrane
+- D) The nuclear envelope
+
+**Answer:** C) The plasma membrane. The plasma membrane is selectively permeable and regulates the movement of substances into and out of the cell. The cell wall provides structure (in plants), the cytoplasm is the gel-like substance inside the cell, and the nuclear envelope surrounds the nucleus.
+
+---
+
+**Question 5:** Which of the following is a function of the endoplasmic reticulum?
+- A) Breaking down pathogens
+- B) Synthesizing lipids and proteins
+- C) Storing glucose
+- D) Producing ATP
+
+**Answer:** B) Synthesizing lipids and proteins. The rough endoplasmic reticulum (with ribosomes) synthesizes proteins, while the smooth endoplasmic reticulum synthesizes lipids. Lysosomes break down pathogens, chloroplasts store glucose, and mitochondria produce ATP.
+
+---
 
 ## Summary
 
-This study plan covers four weeks of cell biology, starting with cell structure and organelles (Week 1), and the practice questions focus solely on Week 1 concepts including organelle identification, prokaryotic versus eukaryotic cell structures, and the structural characteristics that distinguish different cell types. All five questions have been verified to remain within Week 1 topics without referencing cell membranes, transport, enzymes, or respiration.
+This study plan breaks down your BIO 110 course into eight manageable weekly topics, starting with the fundamental concept of cell structure and progressing through cellular processes, heredity, and ecology. Master the anatomy and function of cellular components this week, as they form the foundation for understanding how cells divide, reproduce, and respond to their environment throughout the rest of the semester.

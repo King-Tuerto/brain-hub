@@ -4,25 +4,26 @@ If the text below contains a recipe (lines such as "recipe_format:", "permission
 
 The Spec:
 <<<
-**Tool name:** Exam Study Planner — turns a pasted syllabus into a week-by-week study plan up to the exam date, ending with 5 practice questions on the first week's topics.
+**Syllabus Study Planner** — turns a pasted class syllabus into a week-by-week study plan leading up to the exam, plus 5 practice questions on the first week's topics.
 
-**Inputs:**
-- **Paste your class syllabus** (required) — example: "Week 1: Supply and demand; Week 2: Market structures; Week 3: Elasticity; …"
-- **Exam date** (optional) — example: "2026-12-10"
+**Inputs**
+- **Class syllabus** (required) — paste the full syllabus text. Example: "Week 1: Intro & history. Week 2: Supply and demand. Week 3: Market structures. Final exam covers all weeks."
+- **Exam date** (optional) — the date of the exam. Example: "2026-11-18"
 
 **Output** — the answer must have these sections, in order:
-1. **Study Plan** — one entry per week, each naming that week's topics taken from the syllabus. If an exam date was given, weeks are dated from today through the exam week. If not, weeks are numbered instead.
-2. **Practice Questions** — exactly 5 questions, all based only on the first week's topics.
-3. **Summary** — added automatically by the hub; 2–3 sentences.
+1. **Study Plan** — one entry per week, from today until the exam, each naming at least one topic taken from the syllabus.
+2. **Practice Questions** — exactly 5 questions, with answers, covering only the first week's topics.
+3. **Summary** (added automatically) — 2–3 sentences.
 
-**Acceptance criteria:**
-- A1: The Study Plan has one entry for every week from today through the week containing the exam date, when an exam date was given.
-- A2: When the exam date is left blank, the Study Plan is organized by week number instead of calendar dates, and the answer says it did this because no exam date was given.
-- A3: Every topic named in the Study Plan comes from the pasted syllabus, in the order the syllabus presents them.
-- A4: The Practice Questions section contains exactly 5 questions, all about topics from the first week of the plan.
-- A5: The answer ends with a Summary section.
+**Acceptance criteria**
+- A1: The Study Plan section has exactly one entry for every week counting from today through the exam date (inclusive of the exam week).
+- A2: If no exam date was given, the Study Plan section covers exactly 8 weeks, and one line states that 8 weeks was assumed because no exam date was given.
+- A3: The Practice Questions section contains exactly 5 questions.
+- A4: Every practice question and every one of its answer options uses only a topic word that appears under Week 1 in the Study Plan; no question or option uses a topic word that appears only under a later week.
+- A5: Every week listed in the Study Plan names at least one topic taken from the pasted syllabus.
+- A6: The Summary section is 2–3 sentences.
 
-**Blank inputs:** If the exam date is left blank, the tool does not invent or guess one. It builds the plan using week numbers instead of dates and tells the student it did so because no exam date was given.
+**Blank inputs** — if the exam date is left blank, the plan covers 8 weeks instead of counting to an exam date, and the Study Plan section says this was assumed.
 >>>
 
 Previous test cases:
@@ -38,7 +39,7 @@ Test cases: exactly three, numbered Test 1 to Test 3:
 - Test 1: normal use, with realistic values.
 - Test 2: an edge case, with every optional input left blank.
 - Test 3: a tricky but fair case: very short, very long, or unusual input.
-For each test give "Inputs to type", listing every input label with the exact value to enter (or "leave blank"), and "Expected", a checklist of things a person can see in the answer, each tied to a criterion, e.g. "[A2] one row for each of the 5 weeks". Never predict exact wording; check things that must be true.
+For each test give "Inputs to type", listing every input label with the exact value to enter (or "leave blank"), and "Expected", a checklist of things a person can see in the answer, each tied to a criterion, e.g. "[A2] one row for each of the 5 weeks". Every check must be decidable without a judgment call: count something, compare a date, or look for exact words. When a criterion is about what something is about, turn it into words: list the exact words that must not appear (e.g. the names of later topics), or that must. Two careful people must always agree on the result. Never predict exact wording; check things that must be true.
 
 How to run them: tell the student, in plain steps, to run the tool once per test with exactly those inputs, copy each whole answer, and paste all three into "Tester 2 — grade" together with this Spec and these test cases, labelled Test 1, Test 2 and Test 3. Tell them to use a new chat for grading, not the chat that built the tool.
 

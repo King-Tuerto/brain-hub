@@ -1,38 +1,45 @@
 ## Study Plan
 
-| Week | Dates | Topic | Status |
-|------|-------|-------|--------|
-| Week 1 | Oct 4–10, 2026 | Supply and Demand | Starting now |
-| Week 2 | Oct 11–17, 2026 | Market Structures | |
-| Week 3 | Oct 18–24, 2026 | Elasticity | |
-| Week 4 | Oct 25–31, 2026 | Consumer Choice | |
-| Week 5 | Nov 1–7, 2026 | Costs of Production | |
-| Week 6 | Nov 8–12, 2026 | Perfect Competition | *Exam: Nov 12* |
+**Study Period:** October 4, 2026 – November 18, 2026 (7 weeks)
 
-Your syllabus covers 6 weeks of material, which aligns perfectly with your exam date of November 12, 2026. Study each week's topic in order, and plan to review all material in the final week before your exam.
+- **Week 1 (Oct 4–10):** Scarcity and opportunity cost
+- **Week 2 (Oct 11–17):** Supply and demand
+- **Week 3 (Oct 18–24):** Elasticity
+- **Week 4 (Oct 25–31):** Consumer choice
+- **Week 5 (Nov 1–7):** Production costs
+- **Week 6 (Nov 8–14):** Monopoly
+- **Week 7 (Nov 15–18):** Inflation (final exam on Nov 18)
 
 ## Practice Questions
 
-**Question 1:** A coffee shop observes that when it raises the price of espresso from $3 to $4 per cup, the quantity sold per day decreases from 150 cups to 120 cups. Explain what principle of supply and demand does this illustrate, and identify which curve (supply or demand) is relevant to this scenario.
+**Question 1:** If a country has [X] units of labor and can produce either [Y] cars or [Z] tons of wheat per year, what is the opportunity cost of producing one additional car in terms of wheat?
 
-**Question 2:** In the market for smartphones, suppose the equilibrium price is $500 and the equilibrium quantity is 100,000 units per month. If the price suddenly falls to $400, explain whether the market is in equilibrium, and describe what will happen to the quantity demanded and the quantity supplied.
+*Answer:* The opportunity cost is the amount of wheat that must be given up. If total wheat production is [Z] and total car production is [Y], the opportunity cost of one car is [Z]/[Y] tons of wheat.
 
-**Question 3:** A farmer can produce either wheat or corn on their land. This year, the price of corn increases significantly, but the price of wheat stays the same. How would this price change affect the supply of wheat in the market, and why?
+**Question 2:** Which of the following best illustrates the concept of scarcity?
+- A) A store running out of a popular item during a sale
+- B) The fact that every society must choose what goods to produce with limited resources
+- C) A person deciding not to buy an expensive item
+- D) A shortage caused by a natural disaster
 
-**Question 4:** A winter storm destroys a significant portion of the nation's orange crop. Using supply and demand concepts, explain what would happen to the equilibrium price and quantity of oranges in the market.
+*Answer:* B. Scarcity is the fundamental economic problem that all societies face: resources are limited but wants are unlimited, so choices must be made about production and allocation.
 
-**Question 5:** The government imposes a price floor on milk at $4 per gallon, but the equilibrium price (without government intervention) is $3 per gallon. Explain whether this price floor creates a shortage or a surplus, and describe how suppliers and consumers might respond.
+**Question 3:** A student decides to spend Saturday afternoon studying for ECON 101 instead of working a part-time job that pays [amount] per hour for [hours]. What is the opportunity cost of studying?
 
-**Question Verification Against Week 1 Topics:**
+*Answer:* The opportunity cost is [amount × hours], the wages the student forgoes by choosing to study instead of work.
 
-- **Question 1:** ✓ Uses only supply and demand curves and basic market observation (Week 1 concept)
-- **Question 2:** ✓ Tests equilibrium price and quantity, and the relationship between price and quantity demanded/supplied (Week 1 concepts)
-- **Question 3:** ✓ Tests opportunity cost and shifts in supply curves due to price of alternative products (Week 1 concepts)
-- **Question 4:** ✓ Tests how supply shocks affect equilibrium (Week 1 concepts)
-- **Question 5:** ✓ Tests government price controls and resulting shortages/surpluses (Week 1 concepts)
+**Question 4:** True or False: Opportunity cost exists only in situations where a person or society faces a monetary constraint.
 
-All five questions are answerable using only Week 1 supply and demand material. None require concepts from elasticity (Week 3), consumer choice (Week 4), production costs (Week 5), or market structures (Week 2).
+*Answer:* False. Opportunity cost applies whenever a choice must be made between alternatives, regardless of money. It reflects the value of the next-best alternative foregone.
+
+**Question 5:** If you have a limited amount of time this week and must choose between attending a lecture, going to the gym, or working on a project, this situation demonstrates:
+- A) Inefficiency
+- B) Scarcity
+- C) Market failure
+- D) Diminishing returns
+
+*Answer:* B. Scarcity. Your time is a limited resource, and you cannot do all three activities, so you must make a choice about which alternative to pursue.
 
 ## Summary
 
-This study plan maps all six weeks of your syllabus to the exam date of November 12, 2026, with supply and demand as your starting focus this week. The five practice questions test your understanding of fundamental supply and demand concepts—equilibrium, price movement, supply shifts, and government price controls—without requiring knowledge of material from Week 2 or beyond.
+This 7-week study plan aligns with your ECON 101 syllabus and takes you through all seven course topics before your final exam on November 18, 2026. The practice questions focus on scarcity and opportunity cost, foundational concepts that appear throughout economics.

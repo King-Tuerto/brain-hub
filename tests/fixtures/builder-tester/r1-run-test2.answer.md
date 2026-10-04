@@ -1,34 +1,74 @@
 ## Study Plan
 
-Since your exam date is not provided, this plan uses week numbers from your syllabus to ensure comprehensive coverage of all topics.
+Since no exam date was provided, this plan covers 8 weeks from today (2026-10-04) through the final exam.
 
-| Week | Topic | Focus Areas |
-|------|-------|------------|
-| **Week 1** | Cell structure and organelles | Prokaryotic vs. eukaryotic cells; major organelles (nucleus, mitochondria, endoplasmic reticulum, Golgi apparatus, lysosomes, chloroplasts); cell wall vs. cell membrane; cytoplasm |
-| **Week 2** | Cell membranes and transport | Phospholipid bilayer structure; selectively permeable membranes; passive transport (diffusion, osmosis); active transport; cell membrane proteins |
-| **Week 3** | Enzymes | Enzyme structure and function; catalysts; factors affecting enzyme activity (temperature, pH, substrate concentration); enzyme inhibition |
-| **Week 4** | Cellular respiration | Glycolysis; Krebs cycle; electron transport chain; ATP production; aerobic vs. anaerobic respiration |
+| Week | Dates | Primary Topic | Focus |
+|------|-------|---------------|-------|
+| Week 1 | Oct 4–10 | Cell structure | Prokaryotic vs. eukaryotic cells, organelles, cell membrane |
+| Week 2 | Oct 11–17 | Mitosis | Phases of mitosis, cytokinesis, checkpoint control |
+| Week 3 | Oct 18–24 | Meiosis | Reduction division, crossing over, gamete formation |
+| Week 4 | Oct 25–31 | Genetics | Mendelian inheritance, alleles, phenotype vs. genotype |
+| Week 5 | Nov 1–7 | Evolution | Natural selection, adaptation, speciation |
+| Week 6 | Nov 8–14 | Ecology | Organisms, populations, communities, ecosystems |
+| Week 7 | Nov 15–21 | Photosynthesis | Light-dependent and light-independent reactions, chloroplasts |
+| Week 8 | Nov 22–28 | Enzymes | Catalysis, enzyme specificity, factors affecting reaction rates |
 
-**Study strategy:** Dedicate [X] hours per week. Review lecture notes and textbook sections on each topic, then complete the practice questions provided. Create flashcards for organelle functions and enzyme types.
+**Exam Prep:** Use Nov 29–[your exam date] to review all topics and complete cumulative practice tests.
 
 ---
 
 ## Practice Questions
 
-**Based on Week 1: Cell structure and organelles**
+**Question 1:** Which of the following structures is responsible for producing energy in a typical eukaryotic cell?
+- A) The nucleus
+- B) The mitochondrion
+- C) The cell wall
+- D) The vacuole
 
-1. A cell biologist observes a cell under a microscope and notes the presence of a membrane-bound nucleus, multiple mitochondria, and rough endoplasmic reticulum with attached ribosomes. Which type of cell is this most likely to be, and why would rough endoplasmic reticulum be abundant in this cell?
+**Answer:** B) The mitochondrion. Mitochondria are the powerhouses of the cell, converting nutrients into ATP through cellular respiration.
 
-2. Describe the key structural differences between a prokaryotic cell and a eukaryotic cell. What advantages might the compartmentalization of organelles provide to a eukaryotic cell?
+---
 
-3. The Golgi apparatus is often described as the "packaging and shipping center" of the cell. Explain what structures it receives from other organelles and what role it plays in modifying and transporting materials.
+**Question 2:** What is the primary function of the cell membrane?
+- A) To store genetic material
+- B) To break down waste products
+- C) To regulate what enters and exits the cell
+- D) To provide rigid structural support
 
-4. A plant cell and an animal cell are placed in solutions with different salt concentrations. Explain how the presence of a cell wall in the plant cell would affect its response to a hypertonic solution compared to an animal cell's response.
+**Answer:** C) To regulate what enters and exits the cell. The cell membrane (plasma membrane) is selectively permeable and controls the transport of substances through its phospholipid bilayer.
 
-5. Mitochondria are sometimes called the "powerhouses" of the cell. What is the relationship between mitochondrial structure (cristae, inner and outer membranes) and its function in ATP production?
+---
+
+**Question 3:** Which organelle contains ribosomes and is involved in protein synthesis?
+- A) The endoplasmic reticulum
+- B) The Golgi apparatus
+- C) The lysosome
+- D) The peroxisome
+
+**Answer:** A) The endoplasmic reticulum. The rough endoplasmic reticulum (rough ER) is studded with ribosomes and is responsible for synthesizing proteins.
+
+---
+
+**Question 4:** In a prokaryotic cell, genetic material is located in which region?
+- A) Inside a membrane-bound nucleus
+- B) In the nucleoid region, not enclosed by a membrane
+- C) Within the cell wall only
+- D) Distributed throughout the cytoplasm equally
+
+**Answer:** B) In the nucleoid region, not enclosed by a membrane. Prokaryotic cells lack a true nucleus; their DNA is found in a region called the nucleoid.
+
+---
+
+**Question 5:** What is the primary component of the cell wall in plant cells?
+- A) Protein
+- B) Phospholipid
+- C) Cellulose
+- D) Cholesterol
+
+**Answer:** C) Cellulose. Plant cell walls are composed primarily of cellulose, a polysaccharide that provides structural support and rigidity.
 
 ---
 
 ## Summary
 
-This study plan covers all four weeks of your syllabus using week-based milestones since no exam date was provided, with specific focus areas for each topic to guide your preparation. The practice questions for Week 1 emphasize the structural and functional relationships between organelles and cellular processes. Plan to revisit these questions throughout the semester as you progress through later topics, since many cellular functions depend on the foundational organelle knowledge from Week 1.
+This 8-week study plan maps your entire BIO 110 syllabus with one primary topic assigned to each week, progressing from cell structure through enzymes. The five practice questions focus exclusively on Week 1 concepts (cell structure, organelles, and the cell membrane), testing your understanding of prokaryotic vs. eukaryotic cells and key cellular structures. Review these questions before moving to Week 2 to ensure mastery of foundational concepts.

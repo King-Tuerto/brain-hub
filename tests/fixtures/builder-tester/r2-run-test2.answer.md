@@ -1,44 +1,70 @@
 ## Study Plan
 
-Because no exam date was provided, this study plan uses week numbers to cover all four weeks from your syllabus:
+Since no exam date was provided, I'm assuming an 8-week plan from today (October 4, 2026).
 
-| Week | Topics |
-|------|--------|
-| Week 1 | Cell structure and organelles |
-| Week 2 | Cell membranes and transport |
-| Week 3 | Enzymes |
-| Week 4 | Cellular respiration |
-
-You should spend roughly equal time on each week's material, dedicating time to reading, practice problems, and active recall of key concepts before moving to the next topic.
+| Week | Start Date | Topic |
+|------|-----------|-------|
+| Week 1 | Oct 4 | Cell Structure |
+| Week 2 | Oct 11 | Mitosis |
+| Week 3 | Oct 18 | Meiosis |
+| Week 4 | Oct 25 | Genetics |
+| Week 5 | Nov 1 | Evolution |
+| Week 6 | Nov 8 | Ecology |
+| Week 7 | Nov 15 | Photosynthesis |
+| Week 8 | Nov 22 | Enzymes |
 
 ## Practice Questions
 
-**Question 1:** Which of the following is a characteristic of eukaryotic cells but NOT prokaryotic cells?
-- (a) Cell membrane
-- (b) Ribosomes
-- (c) Nucleus
-- (d) Cytoplasm
+**Question 1:** What is the primary function of the cell membrane?
+A. To store energy for the cell
+B. To control what enters and leaves the cell
+C. To produce proteins
+D. To break down waste materials
 
-**Question 2:** The mitochondria is an organelle found in eukaryotic cells. Which of the following best describes its location within the cell?
-- (a) Within the nucleus
-- (b) Attached to the cell membrane
-- (c) Floating freely in the cytoplasm
-- (d) Part of the cell wall
-
-**Question 3:** What is the primary function of ribosomes in a cell?
-- (a) Storing genetic material
-- (b) Synthesizing proteins
-- (c) Breaking down waste
-- (d) Controlling cell division
-
-**Question 4:** Name three organelles found in eukaryotic cells and briefly describe the primary role or location of each one.
-
-**Question 5:** How do prokaryotic cells differ from eukaryotic cells in terms of internal organization? Name at least two key structural differences.
+**Answer 1:** B. To control what enters and leaves the cell. The cell membrane is a semi-permeable barrier that regulates the passage of substances in and out of the cell.
 
 ---
 
-**Verification Check:** Each of the five questions above has been reviewed against Week 1's topics (Cell structure and organelles). All five questions are answerable using only Week 1 material and do not require or preview concepts from Week 2 (Cell membranes and transport), Week 3 (Enzymes), or Week 4 (Cellular respiration).
+**Question 2:** Which organelle is responsible for producing energy in the form of ATP?
+A. The nucleus
+B. The ribosome
+C. The mitochondrion
+D. The endoplasmic reticulum
+
+**Answer 2:** C. The mitochondrion. Mitochondria are known as the "powerhouse of the cell" because they produce ATP through cellular respiration.
+
+---
+
+**Question 3:** What is the main component of the cell wall in plant cells?
+A. Protein
+B. Lipids
+C. Cellulose
+D. Chlorophyll
+
+**Answer 3:** C. Cellulose. The cell wall provides structural support to plant cells and is composed primarily of cellulose fibers.
+
+---
+
+**Question 4:** Which of the following is true about prokaryotic cells?
+A. They contain a membrane-bound nucleus
+B. They lack organelles
+C. They are only found in animals
+D. They contain mitochondria
+
+**Answer 4:** B. They lack organelles. Prokaryotic cells (bacteria and archaea) do not have membrane-bound organelles or a nucleus, unlike eukaryotic cells.
+
+---
+
+**Question 5:** What is the name of the network of membrane-bound sacs in the cell that synthesizes and packages proteins?
+A. The Golgi apparatus
+B. The endoplasmic reticulum
+C. The cytoskeleton
+D. The lysosome
+
+**Answer 5:** B. The endoplasmic reticulum. The rough endoplasmic reticulum, studded with ribosomes, is responsible for synthesizing proteins, which are then processed and packaged by the Golgi apparatus.
+
+---
 
 ## Summary
 
-These five practice questions focus on fundamental concepts from Week 1: distinguishing prokaryotic and eukaryotic cell types, identifying key organelles, understanding their basic roles, and describing cell structures. They are designed to build your foundational understanding before advancing to more complex topics like membrane structure and cellular processes in later weeks.
+This 8-week study plan covers BIO 110 from October 4 through late November, building progressively from cell structure through enzyme function. The practice questions focus exclusively on Week 1 topics (cell structure, organelles, cell membranes) to help you master the foundational concepts before advancing to cellular processes. Use these questions to assess your understanding of cells before moving to mitosis in Week 2.

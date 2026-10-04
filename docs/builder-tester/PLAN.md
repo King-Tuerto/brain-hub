@@ -134,3 +134,43 @@ guides.
   the fixes box now takes the fixes, the current Spec and the recipe, and
   the Builder starts the new Spec from a word-for-word copy. The drifted
   round is kept as `attempt-4/`.
+- **Attempt 5 — a fuzzy criterion never passes.** With the Spec and tests
+  held fixed, failures fell 3 → 2 → 1 and then stuck at 23 of 24 for three
+  rounds, each time on a different judgment call ("in a competitive market"
+  ruled to touch the market-structures week). "Only about week 1" can't be
+  graded the same way twice. *Fix (Paul's call):* the Builder writes criteria
+  decidable without judgment — counts, dates, exact words; Tester 1 turns any
+  "about" criterion into word lists; Tester 2 grades each check exactly as
+  worded, no wider.
+- **Attempt 6 — objective, but the Builder dropped the request.** The first
+  Builder run under the objective-criteria rule wrote only layout checks
+  (counts, labels) and nothing about week 1 or the syllabus. *Fix:* every
+  requirement in the student's idea must be covered by a criterion.
+
+## The final run (passed)
+
+`tests/fixtures/builder-tester/r1-*` … `r5-*`: syllabus-study-planner,
+v1.0.0 → v1.0.4, Builder on Sonnet, the tool on Haiku, every Tester a fresh
+agent that never saw the recipe.
+
+| Round | Checks passed | Failure | Spec changed |
+|---|---|---|---|
+| 1 | 22/23 | exam week split into day blocks (A1) | — |
+| 2 | 21/23 | "production" in a week-1 answer (A4); "8-week" not "8 weeks" (A2) | A1 only |
+| 3 | 22/23 | day blocks again (A1) — the fix was in the recipe, Haiku ignored it | no |
+| 4 | 24/25 | "production" again, in an answer explanation (A4) | no |
+| 5 | **25/25 — PASS** | — | A4 only (explanations) |
+
+What held: the Spec changed only where a fix required it; tests were copied
+word for word except the checks for a changed criterion (Tester 1 added two
+stricter A1 checks in round 4); the grade prompts never contained a recipe.
+
+What is still weak, honestly:
+- **The run model is not consistent.** Two failures came back after being
+  fixed. A pass is one good run on three tests, not a guarantee.
+- **Word lists are literal.** Round 5 passed with "genetic" in a week-1
+  answer because the banned word was "genetics".
+- **Placeholders in practice questions.** The hub's no-invention rule
+  (example sentences get [X] for numbers) made the tool write "[X] dollars"
+  in made-up exam questions, which a student can't use. The rule is meant for
+  copyable claims about the student. Hub-wide; for Nitpick's review.

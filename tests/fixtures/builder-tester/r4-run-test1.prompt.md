@@ -1,46 +1,20 @@
-I'm a university student using this tool at the start of the semester.
+I'm a university student at the start of a semester, building a week-by-week study plan.
 
 Today's date: 2026-10-04
 
 My syllabus:
-Week 1: Supply and demand; Week 2: Market structures; Week 3: Elasticity; Week 4: Consumer choice; Week 5: Costs of production; Week 6: Perfect competition
+ECON 101. Week 1: Scarcity and opportunity cost. Week 2: Supply and demand. Week 3: Elasticity. Week 4: Consumer choice. Week 5: Production costs. Week 6: Monopoly. Week 7: Inflation. Final exam covers all weeks.
 
-My exam date: 2026-11-12
+My exam date: 2026-11-18
 
-If my exam date is (not provided), do not invent one. Build the plan using week
-numbers instead (Week 1, Week 2, and so on) covering every week my syllabus
-lists, and say in the Study Plan that you used week numbers because no exam
-date was given.
+If my exam date is (not provided), assume the plan should cover 8 weeks instead. In the Study Plan section, include one line that uses exactly the words "8 weeks" and "exam date", for example: "No exam date was given, so this plan assumes 8 weeks." Do not write it as "8-week".
 
-If my exam date is provided, build the plan with one entry for every week from
-today up to and including the week of my exam date, using the topics from my
-syllabus for each week in the order the syllabus presents them. If the
-syllabus has more or fewer weeks than fit before the exam date, say so.
-
-Give me exactly 5 practice questions based only on the first week's topics
-from my syllabus. Do not write a question — including any multiple-choice
-answer options — that mentions, previews, or acts as an "introduction to" any
-topic from week 2 or later, and do not write a question that can only be
-answered using, or is framed around (such as a comparison to, or a scenario
-built on), a concept from week 2 or later — every question, and every answer
-option, must be fully self-contained within the first week's topics. Build the
-wrong (incorrect) answer options using only first-week material — never a
-company, cost, channel, or any other detail that belongs to a later week's
-topic.
-
-Before giving me the final answer, check every answer option — not just the
-question stems — against the list of week 2 or later topics, and rewrite any
-option that touches one. Then re-check each of the 5 questions one by one —
-the stem and every answer option — against the first week's topic list, and
-rewrite any question that touches a week 2 or later topic in any way,
-including through its framing or scenario, until none do.
+Build a week-by-week study plan, from today until the exam date (or for 8 weeks if no exam date was given), naming at least one topic from the syllabus for each week. If the exam date falls within one of those weeks, that week still gets exactly one entry — do not split it into day-by-day blocks or a separate "Exam Day" block. For example, if today is 2026-10-04 and the exam falls between 2026-10-04 and 2026-10-10, write one single Study Plan entry such as "Week of 2026-10-04–2026-10-10" naming that week's topic — never write separate lines like "October 4–5", "October 6", "October 7", and never add a separate "Exam Day" line. Then write exactly 5 practice questions and their answers using only the topics you assigned to the first week — don't use any topic word from a later week in the questions or their answer options. Before finishing, check every question, option, and answer against the later weeks' topic words and reword any that match.
 
 ---
 Format your answer in Markdown with these sections, in this order, each as a "## " heading:
 - Study Plan
 - Practice Questions
 - Summary
-Every factual statement (figures, dates, names, statistics, quotations, claims about real organisations) must include a source link in Markdown form [title](https://…), or be marked [unverified]. Advice and recommendations do not need sources.
-Statements about your own method or about what you could not verify are not factual claims: start them with "Note:".
 Never invent facts about me (numbers, achievements, dates, names). Where a real detail of mine is needed and you do not have it, write a placeholder like [your number]. This includes example sentences I might copy, such as sample resume bullets or answers: put a placeholder like [X%] in place of every number in them.
 End with "## Summary": 2–3 sentences someone could search for later.

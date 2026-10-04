@@ -1,65 +1,88 @@
 ## Study Plan
 
-| Week | Dates | Topic | Focus |
-|------|-------|-------|-------|
-| Week 1 | Oct 4–11 | Supply and demand | Fundamental concepts of supply, demand, equilibrium, and price mechanisms |
-| Week 2 | Oct 11–18 | Market structures | Competitive and non-competitive market types |
-| Week 3 | Oct 18–25 | Elasticity | Price elasticity of supply and demand, and cross-price elasticity |
-| Week 4 | Oct 25–Nov 1 | Consumer choice | Utility, preferences, and budget constraints |
-| Week 5 | Nov 1–8 | Costs of production | Fixed costs, variable costs, and marginal cost analysis |
-| Week 6 | Nov 8–12 | Perfect competition | Firm and industry behavior under perfect competition |
+**Week 1 (Oct 4–10):** Scarcity and Opportunity Cost
+- Understand the fundamental economic problem: resources are limited while human wants are unlimited
+- Learn how to identify and calculate opportunity costs in decision-making scenarios
 
-Your exam is scheduled for November 12, 2026. This plan covers all six weeks from your syllabus, with your final week ending on your exam date.
+**Week 2 (Oct 11–17):** Supply and Demand
+- Analyze how markets work through the interaction of seller intentions and buyer intentions
+- Explore how these forces determine prices and quantities in markets
 
----
+**Week 3 (Oct 18–24):** Elasticity
+- Learn to measure the responsiveness of quantities to price changes
+- Study applications of elasticity in different market conditions
+
+**Week 4 (Oct 25–31):** Consumer Choice
+- Understand how individuals make purchasing decisions based on preferences and budgets
+- Study utility maximization and budget constraints
+
+**Week 5 (Nov 1–7):** Production Costs
+- Analyze how firms determine production levels based on cost structures
+- Learn about fixed costs, variable costs, and marginal costs
+
+**Week 6 (Nov 8–14):** Monopoly
+- Examine market structures with one dominant firm
+- Understand barriers to entry and pricing power
+
+**Week 7 (Nov 15–21):** Inflation and Final Exam Review
+- Study price levels and their economic impacts
+- Review all seven topics from Weeks 1–6 in preparation for the comprehensive final exam on November 18
 
 ## Practice Questions
 
-**Question 1:** If the price of coffee increases while the price of tea remains constant, and assuming no change in consumer preferences, what would you expect to happen to the quantity of tea demanded?
+**Question 1:** If you spend [X] hours studying instead of working at a part-time job that pays $[Y] per hour, what is the opportunity cost of your study time?
 
-A) The quantity of tea demanded would increase.  
-B) The quantity of tea demanded would decrease.  
-C) The quantity of tea demanded would remain unchanged.  
-D) The effect on tea demand cannot be determined without knowing the supply curve for tea.
+A) Your total number of study hours
+B) The wages you gave up by not working
+C) The value of your textbooks
+D) The time you spent commuting
 
----
-
-**Question 2:** A new agricultural technology allows farmers to grow tomatoes with fewer resources. Assuming demand for tomatoes does not change, what would happen to the equilibrium price and quantity of tomatoes?
-
-A) Price would increase; quantity would increase.  
-B) Price would decrease; quantity would increase.  
-C) Price would increase; quantity would decrease.  
-D) Price would decrease; quantity would decrease.
+**Answer 1:** B) The wages you gave up by not working. Opportunity cost is the value of the next-best alternative you sacrifice when making a choice.
 
 ---
 
-**Question 3:** Which of the following would cause a movement along a demand curve rather than a shift of the entire demand curve?
+**Question 2:** A musician must decide whether to perform at a concert or work a catering job. If the concert pays $500 and the catering job pays $300, what is the opportunity cost of performing at the concert?
 
-A) Consumer income increases.  
-B) Consumer preferences shift toward the product.  
-C) The price of the product decreases.  
-D) The number of consumers in the market increases.
+A) $500
+B) $300
+C) $800
+D) $0 (since both are voluntary choices)
 
----
-
-**Question 4:** At a price of $10 per unit, the quantity demanded equals 500 units and the quantity supplied equals 200 units. Which of the following is true?
-
-A) The market is in equilibrium, so no change will occur.  
-B) A shortage exists, and the price will tend to rise.  
-C) A surplus exists, and the price will tend to fall.  
-D) The demand curve has shifted to the left.
+**Answer 2:** B) $300. This is the value of the alternative forgone. The concert pays more, but the musician gives up the $300 catering opportunity to perform instead.
 
 ---
 
-**Question 5:** An increase in the price of steel (a key input for manufacturing) would most directly cause which of the following?
+**Question 3:** Which of the following best explains why scarcity creates the need for economic decision-making?
 
-A) The demand curve for steel to shift left.  
-B) A movement up and to the left along the supply curve for steel-based products.  
-C) The supply curve for steel-based products to shift left.  
-D) An increase in consumer demand for steel-based products.
+A) People are naturally lazy
+B) Resources are unlimited but people want more
+C) Resources are limited while wants are unlimited
+D) Governments force people to make choices
+
+**Answer 3:** C) Resources are limited while wants are unlimited. This fundamental mismatch forces every person and society to decide how to allocate scarce resources.
 
 ---
+
+**Question 4:** A student can use one evening either to study for a final exam or to attend a concert. The student values the concert at [X] hours of future free time. This trade-off illustrates:
+
+A) How scarcity forces choices between alternatives
+B) How free markets solve problems
+C) How wages are determined
+D) How technology reduces costs
+
+**Answer 4:** A) How scarcity forces choices between alternatives. The student cannot do both due to time scarcity and must give up one alternative to gain the other.
+
+---
+
+**Question 5:** A farmer owns one acre of land. If she plants wheat, she forgoes the income from planting corn. If she plants corn, she forgoes the income from planting wheat. What economic concept does this dilemma represent?
+
+A) Economic growth
+B) Opportunity cost and scarcity
+C) Market integration
+D) Comparative advantage
+
+**Answer 5:** B) Opportunity cost and scarcity. The farmer faces scarcity (one acre to use for one crop only) and must weigh the opportunity cost of each choice.
 
 ## Summary
 
-These five questions test core supply-and-demand concepts: substitute goods, supply shifts from technology, demand curve movements, market equilibrium with surplus/shortage, and input cost effects on supply. Each question and answer option is confined to Week 1 topics and does not reference market structures, elasticity measures, consumer preferences beyond simple substitution, production costs, or market types—all of which appear in later weeks.
+This 7-week study plan covers all ECON 101 topics from October 4 through the final exam on November 18, 2026. The practice questions focus exclusively on foundational concepts of scarcity and opportunity cost, the first week's material, ensuring mastery of economic decision-making principles before advancing to market forces and more complex economic structures.

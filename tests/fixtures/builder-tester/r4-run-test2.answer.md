@@ -1,73 +1,73 @@
 ## Study Plan
 
-Since no exam date was provided, this plan uses week numbers to cover all weeks in your syllabus:
+No exam date was given, so this plan assumes 8 weeks.
 
-- **Week 1**: Cell structure and organelles
-- **Week 2**: Cell membranes and transport
-- **Week 3**: Enzymes
-- **Week 4**: Cellular respiration
-
-**Note:** Week numbers are used in this plan because you did not provide an exam date. Adjust the timeline based on when your exam is actually scheduled.
+| Week | Dates | Topic |
+|------|-------|-------|
+| Week 1 | 2026-10-04–2026-10-10 | Cell structure |
+| Week 2 | 2026-10-11–2026-10-17 | Mitosis |
+| Week 3 | 2026-10-18–2026-10-24 | Meiosis |
+| Week 4 | 2026-10-25–2026-10-31 | Genetics |
+| Week 5 | 2026-11-01–2026-11-07 | Evolution |
+| Week 6 | 2026-11-08–2026-11-14 | Ecology |
+| Week 7 | 2026-11-15–2026-11-21 | Photosynthesis |
+| Week 8 | 2026-11-22–2026-11-28 | Enzymes |
 
 ## Practice Questions
 
-**Question 1: Which organelle contains multiple internal membrane systems called cristae?**
+**Question 1:** What is the primary function of the cell membrane?
 
-a) Rough endoplasmic reticulum  
-b) Lysosome  
-c) Mitochondrion  
-d) Golgi apparatus  
+A) To store energy for the cell  
+B) To regulate what enters and exits the cell  
+C) To produce proteins for the cell  
+D) To provide structural support to the cytoplasm
 
-**Correct answer:** c) Mitochondrion
-
----
-
-**Question 2: What is the primary role of ribosomes in a cell?**
-
-a) Storing genetic information  
-b) Protein synthesis  
-c) Breaking down cellular waste  
-d) Packaging and modifying proteins  
-
-**Correct answer:** b) Protein synthesis
+**Answer:** B) To regulate what enters and exits the cell
 
 ---
 
-**Question 3: Which of the following is a characteristic difference between prokaryotic and eukaryotic cells?**
+**Question 2:** Which organelle is responsible for producing ATP (energy) in animal cells?
 
-a) Eukaryotic cells lack a cell membrane  
-b) Prokaryotic cells do not have a nucleus  
-c) Prokaryotic cells contain mitochondria  
-d) Eukaryotic cells have no ribosomes  
+A) The nucleus  
+B) The ribosome  
+C) The mitochondrion  
+D) The nucleolus
 
-**Correct answer:** b) Prokaryotic cells do not have a nucleus
-
----
-
-**Question 4: The "rough" appearance of rough endoplasmic reticulum is due to the presence of which structures?**
-
-a) Mitochondria  
-b) Golgi apparatus  
-c) Ribosomes  
-d) Lysosomes  
-
-**Correct answer:** c) Ribosomes
+**Answer:** C) The mitochondrion
 
 ---
 
-**Question 5: Which of the following is typically found inside the nucleus of a eukaryotic cell?**
+**Question 3:** What is the primary component of a cell's genetic material?
 
-a) Ribosomes and mitochondria  
-b) DNA and the nucleolus  
-c) Golgi apparatus and vesicles  
-d) Lysosomes and endoplasmic reticulum  
+A) Lipids  
+B) DNA  
+C) Carbohydrates  
+D) Proteins
 
-**Correct answer:** b) DNA and the nucleolus
+**Answer:** B) DNA
 
 ---
 
-**Verification Note:** All five questions and every answer option (including incorrect options) are based exclusively on Week 1 topics (cell structure and organelles). No question, stem, or answer option references, previews, or requires knowledge of Week 2 or later topics.
+**Question 4:** How do prokaryotic cells differ from eukaryotic cells?
+
+A) Prokaryotic cells have a nucleus; eukaryotic cells do not  
+B) Eukaryotic cells are smaller than prokaryotic cells  
+C) Prokaryotic cells lack a nucleus and membrane-bound organelles  
+D) Prokaryotic cells have more organelles than eukaryotic cells
+
+**Answer:** C) Prokaryotic cells lack a nucleus and membrane-bound organelles
+
+---
+
+**Question 5:** What is the role of ribosomes in the cell?
+
+A) Breaking down waste materials  
+B) Synthesizing proteins  
+C) Storing calcium ions  
+D) Transporting lipids across membranes
+
+**Answer:** B) Synthesizing proteins
 
 ## Summary
 
-This study plan covers all four weeks of your syllabus using week numbers. The five practice questions focus on core Week 1 concepts—organelle structures, prokaryotic and eukaryotic cell differences, and the functions of key organelles—without requiring knowledge of transport, enzymes, or cellular respiration from later weeks.
+This study plan breaks down BIO 110 into eight weeks aligned with your syllabus topics, starting October 4. The practice questions focus on cell structure concepts from Week 1, including cell membrane function, ATP production, genetic material, cell types, and protein synthesis—giving you a foundation to test your understanding before moving into mitosis and beyond.

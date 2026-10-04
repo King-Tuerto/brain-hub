@@ -1,76 +1,85 @@
 ## Test plan
 
-No changes: the tests are the same as last time.
+**Changes made since last time:**
+- [A4] in Test 1, Test 2 and Test 3: the check now also covers answer explanations. It used to cover "questions, options or answers"; now it covers "questions, options, answers or answer explanations". Why: criterion A4 in the Spec now names "its answer explanation" as a place where later-week topic words must not appear. That part is new, so the check had to change to match it. Nothing else in the check changed.
+- No other changes. Every other check is copied word for word, because A1, A2, A3, A5, A6 and the section order are the same in the Spec.
 
-Coverage of each acceptance criterion:
+**Coverage:**
 
-- **A1** (one entry per week from today through the exam week): Test 1, Test 3
-- **A2** (week numbers when the exam date is blank, and says why): Test 2
-- **A3** (every topic from the syllabus, in syllabus order): Test 1, Test 2, Test 3
-- **A4** (exactly 5 questions, first-week topics only, nothing from week 2 or later in questions, options, framing or required knowledge): Test 1, Test 2, Test 3
-- **A5** (ends with a Summary section): Test 1, Test 2, Test 3
-- **Blank inputs** (no invented exam date): Test 2
-- **Section order** (Study Plan, Practice Questions, Summary): Test 1
+| Criterion | Test 1 | Test 2 | Test 3 |
+|---|---|---|---|
+| Section order | Yes | Yes | Yes |
+| A1: one entry per week up to and including the exam week, no Exam Day or single-day entries | Yes | — | Yes |
+| A2: 8 weeks when there is no exam date, with a line saying so | — | Yes | — |
+| A3: exactly 5 practice questions | Yes | Yes | Yes |
+| A4: practice questions use only Week 1 topics | Yes | Yes | Yes |
+| A5: every week names a syllabus topic | Yes | Yes | Yes |
+| A6: Summary is 2–3 sentences | Yes | Yes | Yes |
+
+Every criterion is covered by at least one test.
 
 ## Test cases
 
 ### Test 1: normal use
 
 **Inputs to type**
-- **Paste your class syllabus:** `Week 1: Supply and demand; Week 2: Market structures; Week 3: Elasticity; Week 4: Consumer choice; Week 5: Costs of production; Week 6: Perfect competition`
-- **Exam date:** `2026-11-12`
+- **Class syllabus:** `ECON 101. Week 1: Scarcity and opportunity cost. Week 2: Supply and demand. Week 3: Elasticity. Week 4: Consumer choice. Week 5: Production costs. Week 6: Monopoly. Week 7: Inflation. Final exam covers all weeks.`
+- **Exam date:** `2026-11-18`
 
 **Expected**
-- [ ] [A1] The Study Plan shows calendar dates, not just week numbers.
-- [ ] [A1] The first entry covers today (2026-10-04) or the week that contains it.
-- [ ] [A1] The last entry is the week that contains 2026-11-12. No entry comes after that week.
-- [ ] [A1] There are no missing weeks between the first and last entry. That means 6 entries if weeks start on Sunday 2026-10-04, or 7 if the plan uses Monday-to-Sunday weeks and counts this partial week.
-- [ ] [A3] Every topic named in the plan is one of the six syllabus topics. No outside topics are added, such as "Monopoly", "GDP" or "Game theory".
-- [ ] [A3] The topics appear in syllabus order: Supply and demand, Market structures, Elasticity, Consumer choice, Costs of production, Perfect competition.
-- [ ] [A4] The Practice Questions section has exactly 5 questions. Count them.
-- [ ] [A4] All 5 questions are about supply and demand. None of them is about elasticity, market structures or any later topic. No question or answer option mentions or previews a later topic, including as an "introduction to" it. No question is framed around a later topic, such as a comparison to it or a scenario that assumes it, and no question needs knowledge of a later topic to answer. For example, no question asks how "elastic" demand is, no answer option says "elastic", and no question is set in a monopoly or a perfectly competitive market.
-- [ ] [A5] The very last section of the answer is titled Summary. Nothing else comes after it.
-- [ ] [Order] The sections come in this order: Study Plan, Practice Questions, Summary.
+- [Order] The answer has the sections Study Plan, Practice Questions and Summary, in that order.
+- [A1] The Study Plan section has exactly 7 week entries (blocks starting 2026-10-04, 10-11, 10-18, 10-25, 11-01, 11-08 and 11-15; the last one contains 2026-11-18). Count them: 7, not 6 and not 8.
+- [A1] No line in the answer says 8 weeks was assumed, and the words "no exam date" do not appear.
+- [A1] *(new)* No entry in the Study Plan section is labelled "Exam Day", and no entry is labelled with a single day (a weekday name Monday–Sunday or a single date such as 2026-11-18 on its own). Every entry label names a week or a date range.
+- [A5] Each of the 7 week entries contains at least one of these words: scarcity, opportunity cost, supply, demand, elasticity, consumer choice, production, monopoly, inflation (any capitalisation; plurals count).
+- [A3] The Practice Questions section contains exactly 5 questions. Count them: 5.
+- [A3] Each of the 5 questions has an answer shown.
+- [A4] *(changed)* Write down which of these words appear in the Study Plan's first week entry: supply, demand, elasticity, consumer choice, production, monopoly, inflation. Every word from that list that does NOT appear in the first week entry must appear nowhere in the Practice Questions section (questions, options, answers or answer explanations; any capitalisation; plurals count).
+- [A6] The Summary section has 2 or 3 sentences. Count sentences by the full stops, question marks or exclamation marks that end them.
 
 ### Test 2: edge case, optional input left blank
 
 **Inputs to type**
-- **Paste your class syllabus:** `Week 1: Cell structure and organelles; Week 2: Cell membranes and transport; Week 3: Enzymes; Week 4: Cellular respiration`
+- **Class syllabus:** `BIO 110. Week 1: Cell structure. Week 2: Mitosis. Week 3: Meiosis. Week 4: Genetics. Week 5: Evolution. Week 6: Ecology. Week 7: Photosynthesis. Week 8: Enzymes. Final exam covers all weeks.`
 - **Exam date:** leave blank
 
 **Expected**
-- [ ] [A2] The Study Plan entries are labelled by week number, such as Week 1 to Week 4. They have no calendar dates.
-- [ ] [A2] The answer says clearly that it used week numbers because no exam date was given.
-- [ ] [A2 / Blank inputs] The answer never states or guesses an exam date anywhere. That includes "assuming your exam is on …" and "probably in December".
-- [ ] [A3] All four topics appear in this order: Cell structure and organelles, Cell membranes and transport, Enzymes, Cellular respiration. No topic is added that is not in the syllabus, such as photosynthesis or DNA replication.
-- [ ] [A4] The Practice Questions section has exactly 5 questions.
-- [ ] [A4] All 5 questions are about cell structure and organelles. None is about membranes, enzymes or respiration. No question or answer option mentions or previews those later topics, including as an "introduction to" them. No question is framed around them, such as a comparison to them or a scenario that assumes them, and none needs knowledge of them to answer. For example, no question asks what the mitochondria do in cellular respiration, or how things cross the cell membrane, and no answer option says "produces ATP through respiration" or "makes enzymes".
-- [ ] [A5] The answer ends with a Summary section.
+- [Order] The answer has the sections Study Plan, Practice Questions and Summary, in that order.
+- [A2] The Study Plan section has exactly 8 week entries. Count them: 8.
+- [A2] One line in the answer contains both "8 weeks" (or "eight weeks") and the words "exam date".
+- [A2] No exam date (no date in YYYY-MM-DD or written-out form) is presented as the exam date.
+- [A5] Each of the 8 week entries contains at least one of these words: cell, mitosis, meiosis, genetics, evolution, ecology, photosynthesis, enzymes (any capitalisation; singular or plural counts).
+- [A3] The Practice Questions section contains exactly 5 questions, each with an answer shown.
+- [A4] *(changed)* Write down which of these words appear in the Study Plan's first week entry: mitosis, meiosis, genetics, evolution, ecology, photosynthesis, enzyme. Every word from that list that does NOT appear in the first week entry must appear nowhere in the Practice Questions section (questions, options, answers or answer explanations; any capitalisation; plurals count).
+- [A6] The Summary section has 2 or 3 sentences.
 
-### Test 3: tricky case, a long syllabus and an exam that is only a few weeks away
+### Test 3: tricky but fair (very short syllabus, exam this week)
 
 **Inputs to type**
-- **Paste your class syllabus:** `Week 1: Business model canvas, Value proposition; Week 2: Customer discovery; Week 3: Lean startup and MVPs; Week 4: Competitive analysis; Week 5: Pricing strategy; Week 6: Go-to-market; Week 7: Unit economics; Week 8: Fundraising basics; Week 9: Pitch decks; Week 10: Scaling and growth`
-- **Exam date:** `2026-10-21`
+- **Class syllabus:** `Week 1: Photosynthesis. Week 2: Respiration.`
+- **Exam date:** `2026-10-07`
 
 **Expected**
-- [ ] [A1] The plan shows calendar dates and ends with the week that contains 2026-10-21. It has 3 entries, or 4 if it uses Monday-to-Sunday weeks and counts this partial week. It does not run on to 10 weeks just because the syllabus has 10.
-- [ ] [A1] The first entry covers today (2026-10-04) or the week that contains it, and no week is skipped.
-- [ ] [A3] Every topic named comes from the syllabus. No topic is invented.
-- [ ] [A3] Topics appear in syllabus order. "Business model canvas" comes before "Value proposition", which comes before "Customer discovery", and so on. A later topic never appears in an earlier week than one that comes before it in the syllabus.
-- [ ] [A4] The Practice Questions section has exactly 5 questions, even though the syllabus is long.
-- [ ] [A4] All 5 questions are about the business model canvas or the value proposition, the first week's two topics. None is about customer discovery or anything later. No question or answer option mentions or previews a later topic, including as an "introduction to" it. No question is framed around a later topic, such as a comparison to it or a scenario that assumes it, and none needs knowledge of one to answer. For example, no question asks you to test a value proposition with customer interviews, build an MVP or set a price, no answer option says "run customer interviews" or "check competitors", and no question is set in a startup that is pitching investors.
-- [ ] [A5] The answer ends with a Summary section.
+- [Order] The answer has the sections Study Plan, Practice Questions and Summary, in that order.
+- [A1] The Study Plan section has exactly 1 week entry (2026-10-07 falls in the first block, 2026-10-04 to 2026-10-10). Count them: 1.
+- [A1] No line in the answer says 8 weeks was assumed; the words "8 weeks" and "eight weeks" do not appear.
+- [A1] *(new)* No entry in the Study Plan section is labelled "Exam Day", and no entry is labelled with a single day (a weekday name Monday–Sunday or a single date such as 2026-10-07 on its own). The Study Plan has one entry only, not a day-by-day list.
+- [A5] The single week entry contains the word "photosynthesis" or "respiration" (any capitalisation).
+- [A3] The Practice Questions section contains exactly 5 questions, each with an answer shown.
+- [A4] *(changed)* If the word "respiration" does NOT appear in the Study Plan's week entry, then "respiration" appears nowhere in the Practice Questions section (questions, options, answers or answer explanations; any capitalisation).
+- [A6] The Summary section has 2 or 3 sentences.
 
 ## How to run them
 
-1. Open the Exam Study Planner tool.
-2. Run it once for Test 1. Type exactly the inputs listed under Test 1, leaving nothing out and adding nothing.
-3. Copy the tool's whole answer, from the first line to the last, and keep it somewhere labelled "Test 1".
-4. Do the same for Test 2 and Test 3, each as a separate run with exactly its own inputs. Label the answers "Test 2" and "Test 3".
-5. Open a **new chat**. Do not use the chat that built the tool.
-6. Open "Tester 2 — grade" in that new chat and paste in, together: the Spec, these test cases, and the three answers labelled Test 1, Test 2 and Test 3.
+1. Open the Syllabus Study Planner tool.
+2. Run it once for Test 1. Type the inputs exactly as shown under "Inputs to type", with nothing added or removed.
+3. Copy the tool's whole answer, from the first line to the last, and paste it somewhere safe. Label it "Test 1".
+4. Do the same for Test 2. Leave the Exam date box completely empty. Label the answer "Test 2".
+5. Do the same for Test 3. Label the answer "Test 3".
+6. Open a **new chat**. Do not use the chat that built the tool.
+7. Open "Tester 2 — grade" and paste in three things together: the Spec above, these test cases, and the three answers labelled Test 1, Test 2 and Test 3.
+8. Send it and read the grades.
 
 ## Summary
 
-Retest of the Exam Study Planner (syllabus to weekly study plan plus 5 first-week practice questions), with no changes: the three tests from last time are kept word for word as a fixed bar. They check dated weeks through the exam week, week numbers when the exam date is blank, syllabus-only topics in order, exactly 5 questions limited to week-1 topics with no later-topic framing, and a closing Summary.
+These are retest cases for the Syllabus Study Planner. They copy the previous tests word for word except for the A4 check, which now also bans later-week topic words in answer explanations. The three tests cover a normal 7-week ECON syllabus, a blank exam date that should give 8 weeks, and a two-week syllabus with the exam in the current week.

@@ -1,32 +1,74 @@
 ## Study Plan
 
-You have six weeks from today until your exam on November 12, which aligns perfectly with your six-week syllabus. Here's your week-by-week study schedule:
+You have approximately 7 weeks from today (October 4, 2026) until your final exam on November 18, 2026. This study plan maps one major topic from your syllabus to each week, giving you time to study each concept deeply and review before the exam.
 
-| Week | Dates | Topic |
-|------|-------|-------|
-| Week 1 | Oct 4–10 | Supply and Demand |
-| Week 2 | Oct 11–17 | Market Structures |
-| Week 3 | Oct 18–24 | Elasticity |
-| Week 4 | Oct 25–31 | Consumer Choice |
-| Week 5 | Nov 1–7 | Costs of Production |
-| Week 6 | Nov 8–12 | Perfect Competition |
+| Week | Dates | Topic | Study Focus |
+|------|-------|-------|------------|
+| Week 1 | Oct 4–10 | Scarcity and Opportunity Cost | Understand fundamental concepts: definition of scarcity, trade-offs, and how opportunity cost shapes economic decisions |
+| Week 2 | Oct 11–17 | Supply and Demand | Learn how supply and demand curves interact, market equilibrium, and factors that shift curves |
+| Week 3 | Oct 18–24 | Elasticity | Study price elasticity of demand, income elasticity, and how elasticity affects business decisions |
+| Week 4 | Oct 25–31 | Consumer Choice | Explore utility maximization, budget constraints, and consumer preferences |
+| Week 5 | Nov 1–7 | Production Costs | Analyze fixed costs, variable costs, marginal costs, and cost structures in production |
+| Week 6 | Nov 8–14 | Monopoly | Examine market structure, barriers to entry, and pricing strategies in monopolistic markets |
+| Week 7 | Nov 15–18 | Inflation | Review causes of inflation, inflation's effects on the economy, and policy responses |
 
-**Study approach:** Dedicate each week to learning and practicing that week's topic. By the end of each week, review the previous week's material to build cumulative knowledge. During Week 6, focus on practice exams and synthesis across all topics.
+**Exam Preparation (Final Week):**
+Reserve time during Week 7 to review all previous weeks' material and take practice exams covering all topics.
+
+---
 
 ## Practice Questions
 
-Based on Week 1 (Supply and Demand), here are five practice questions:
+**Question 1:** A student must choose between working at a part-time job earning [X] dollars per hour or attending volunteer hours that provide unpaid job experience. If the student chooses to volunteer, the opportunity cost of that decision is:
+- A) The money spent on transportation to the volunteer site
+- B) The [X] dollars per hour that could have been earned at the job
+- C) The combination of money earned plus experience gained
+- D) Zero, because volunteering doesn't cost money
 
-1. **Demand shift scenario:** If consumer income increases, how would this affect the demand curve for a normal good? Explain what happens to equilibrium price and quantity.
+**Answer to Question 1:** B. The opportunity cost of choosing to volunteer is the [X] dollars per hour that could have been earned. Opportunity cost is what you give up when you make a choice—in this case, the foregone wages from the job.
 
-2. **Supply and demand equilibrium:** Define market equilibrium and explain why markets tend to move toward equilibrium price. What role do shortages and surpluses play in this process?
+---
 
-3. **Price ceiling/floor effects:** A government imposes a price ceiling on a good below the equilibrium price. What unintended consequences could result, and which groups are helped or hurt by this policy?
+**Question 2:** Due to scarcity, society must answer three key economic questions. Which of the following is NOT one of these fundamental questions?
+- A) What goods and services should be produced?
+- B) How should goods and services be produced?
+- C) How much should each individual earn?
+- D) For whom should goods and services be produced?
 
-4. **Determinants of supply:** Name three factors that could shift the supply curve for agricultural products and explain the direction of each shift.
+**Answer to Question 2:** C. The three fundamental questions are what to produce, how to produce it, and for whom to produce it. While "how much should each individual earn" relates to income distribution, it is not one of the three basic economic questions that stem from scarcity.
 
-5. **Elasticity introduction:** If the price of a good increases and total revenue decreases, what does this tell you about the price elasticity of demand for that good? Explain why.
+---
+
+**Question 3:** A factory owner can use raw materials to produce either [Y] units of Product A or [Z] units of Product B. This situation directly illustrates:
+- A) The law of scarcity
+- B) The concept of opportunity cost
+- C) Consumer preference
+- D) Economic growth
+
+**Answer to Question 3:** B. When a factory must choose between producing one product or another because resources are limited, this directly illustrates opportunity cost—the trade-off between two alternatives. Choosing Product A means giving up the opportunity to produce Product B.
+
+---
+
+**Question 4:** Which of the following best explains why scarcity exists?
+- A) Governments impose unnecessary taxes
+- B) Human wants and needs are unlimited, but productive resources are finite
+- C) People are selfish and do not share resources
+- D) Technology is not advanced enough
+
+**Answer to Question 4:** B. Scarcity is a fundamental economic problem that exists because human wants and needs are unlimited, while the resources available to satisfy them are finite. This is true regardless of a nation's wealth or technology level.
+
+---
+
+**Question 5:** If a student's opportunity cost of studying for an economics exam is [A] hours of entertainment, this means:
+- A) Economics is worth [A] hours of entertainment
+- B) The student gained [A] hours of entertainment while studying
+- C) The student gave up [A] hours of entertainment to study
+- D) Economics and entertainment are equally valuable
+
+**Answer to Question 5:** C. Opportunity cost represents what you give up when you choose one alternative over another. If the opportunity cost is [A] hours of entertainment, it means the student sacrificed [A] hours of entertainment in order to study for the exam.
+
+---
 
 ## Summary
 
-This study plan spans six weeks leading up to your November 12 exam, covering one topic per week from your syllabus in sequence. The practice questions above focus on supply and demand fundamentals, testing your understanding of equilibrium, curves, and basic policy applications. Success requires active practice: work through these questions, apply concepts to real-world examples, and review each topic before moving to the next.
+This seven-week study plan aligns with your syllabus topics and exam date, guiding you from foundational concepts (scarcity and opportunity cost) through increasingly complex market structures, culminating in macroeconomic inflation. Master Week 1's concepts of scarcity and opportunity cost, as these foundational ideas underpin all subsequent economic reasoning throughout the course.

@@ -2,25 +2,26 @@ You are the Tester grading a tool someone else built. You did not build it and y
 
 The Spec:
 <<<
-**Tool name:** Exam Study Planner — turns a pasted syllabus into a week-by-week study plan up to the exam date, ending with 5 practice questions on the first week's topics.
+**Syllabus Study Planner** — turns a pasted class syllabus into a week-by-week study plan leading up to the exam, plus 5 practice questions on the first week's topics.
 
-**Inputs:**
-- **Paste your class syllabus** (required) — example: "Week 1: Supply and demand; Week 2: Market structures; Week 3: Elasticity; …"
-- **Exam date** (optional) — example: "2026-12-10"
+**Inputs**
+- **Class syllabus** (required) — paste the full syllabus text. Example: "Week 1: Intro & history. Week 2: Supply and demand. Week 3: Market structures. Final exam covers all weeks."
+- **Exam date** (optional) — the date of the exam. Example: "2026-11-18"
 
 **Output** — the answer must have these sections, in order:
-1. **Study Plan** — one entry per week, each naming that week's topics taken from the syllabus. If an exam date was given, weeks are dated from today through the exam week. If not, weeks are numbered instead.
-2. **Practice Questions** — exactly 5 questions, all about topics from the first week only. No question may mention, preview, or require understanding of any topic from week 2 or later — not even as an "introduction to" a later topic or as background needed to answer.
-3. **Summary** — added automatically by the hub; 2–3 sentences.
+1. **Study Plan** — one entry per week, from today until the exam, each naming at least one topic taken from the syllabus. If the exam date falls within a week, that week still gets exactly one entry (never split into day-by-day blocks or a separate Exam Day entry).
+2. **Practice Questions** — exactly 5 questions, with answers, covering only the first week's topics.
+3. **Summary** (added automatically) — 2–3 sentences.
 
-**Acceptance criteria:**
-- A1: The Study Plan has one entry for every week from today through the week containing the exam date, when an exam date was given.
-- A2: When the exam date is left blank, the Study Plan is organized by week number instead of calendar dates, and the answer says it did this because no exam date was given.
-- A3: Every topic named in the Study Plan comes from the pasted syllabus, in the order the syllabus presents them.
-- A4: The Practice Questions section contains exactly 5 questions, all about topics from the first week of the plan only, with no question mentioning or depending on any topic from week 2 or later.
-- A5: The answer ends with a Summary section.
+**Acceptance criteria**
+- A1: The Study Plan section has exactly one entry for every week counting from today through the exam date (inclusive of the exam week), with exactly one entry for the week containing the exam date — never split into day-by-day blocks or a separate Exam Day entry.
+- A2: If no exam date was given, the Study Plan section covers exactly 8 weeks, and one line states that 8 weeks was assumed because no exam date was given.
+- A3: The Practice Questions section contains exactly 5 questions.
+- A4: Every practice question and every one of its answer options uses only a topic word that appears under Week 1 in the Study Plan; no question or option uses a topic word that appears only under a later week.
+- A5: Every week listed in the Study Plan names at least one topic taken from the pasted syllabus.
+- A6: The Summary section is 2–3 sentences.
 
-**Blank inputs:** If the exam date is left blank, the tool does not invent or guess one. It builds the plan using week numbers instead of dates and tells the student it did so because no exam date was given.
+**Blank inputs** — if the exam date is left blank, the plan covers 8 weeks instead of counting to an exam date, and the Study Plan section says this was assumed.
 >>>
 
 The test cases (written before the tool was run):
@@ -28,50 +29,49 @@ The test cases (written before the tool was run):
 ### Test 1: normal use
 
 **Inputs to type**
-- **Paste your class syllabus:** `Week 1: Supply and demand; Week 2: Market structures; Week 3: Elasticity; Week 4: Consumer choice; Week 5: Costs of production; Week 6: Perfect competition`
-- **Exam date:** `2026-11-12`
+- **Class syllabus:** `ECON 101. Week 1: Scarcity and opportunity cost. Week 2: Supply and demand. Week 3: Elasticity. Week 4: Consumer choice. Week 5: Production costs. Week 6: Monopoly. Week 7: Inflation. Final exam covers all weeks.`
+- **Exam date:** `2026-11-18`
 
 **Expected**
-- [ ] [A1] The Study Plan shows calendar dates, not just week numbers.
-- [ ] [A1] The first entry covers today (2026-10-04) or the week that contains it.
-- [ ] [A1] The last entry is the week that contains 2026-11-12. No entry comes after that week.
-- [ ] [A1] There are no missing weeks between the first and last entry. That means 6 entries if weeks start on Sunday 2026-10-04, or 7 if the plan uses Monday-to-Sunday weeks and counts this partial week.
-- [ ] [A3] Every topic named in the plan is one of the six syllabus topics. No outside topics are added, such as "Monopoly", "GDP" or "Game theory".
-- [ ] [A3] The topics appear in syllabus order: Supply and demand, Market structures, Elasticity, Consumer choice, Costs of production, Perfect competition.
-- [ ] [A4] The Practice Questions section has exactly 5 questions. Count them.
-- [ ] [A4] All 5 questions are about supply and demand. None of them is about elasticity, market structures or any later topic. No question mentions or previews a later topic, including as an "introduction to" it, and no question needs knowledge of a later topic to answer. For example, no question asks how "elastic" demand is.
-- [ ] [A5] The very last section of the answer is titled Summary. Nothing else comes after it.
-- [ ] [Order] The sections come in this order: Study Plan, Practice Questions, Summary.
+- [Order] The answer has the sections Study Plan, Practice Questions and Summary, in that order.
+- [A1] The Study Plan section has exactly 7 week entries (blocks starting 2026-10-04, 10-11, 10-18, 10-25, 11-01, 11-08 and 11-15; the last one contains 2026-11-18). Count them: 7, not 6 and not 8.
+- [A1] No line in the answer says 8 weeks was assumed, and the words "no exam date" do not appear.
+- [A5] Each of the 7 week entries contains at least one of these words: scarcity, opportunity cost, supply, demand, elasticity, consumer choice, production, monopoly, inflation (any capitalisation; plurals count).
+- [A3] The Practice Questions section contains exactly 5 questions. Count them: 5.
+- [A3] Each of the 5 questions has an answer shown.
+- [A4] Write down which of these words appear in the Study Plan's first week entry: supply, demand, elasticity, consumer choice, production, monopoly, inflation. Every word from that list that does NOT appear in the first week entry must appear nowhere in the Practice Questions section (questions, options or answers; any capitalisation; plurals count).
+- [A6] The Summary section has 2 or 3 sentences. Count sentences by the full stops, question marks or exclamation marks that end them.
 
 ### Test 2: edge case, optional input left blank
 
 **Inputs to type**
-- **Paste your class syllabus:** `Week 1: Cell structure and organelles; Week 2: Cell membranes and transport; Week 3: Enzymes; Week 4: Cellular respiration`
+- **Class syllabus:** `BIO 110. Week 1: Cell structure. Week 2: Mitosis. Week 3: Meiosis. Week 4: Genetics. Week 5: Evolution. Week 6: Ecology. Week 7: Photosynthesis. Week 8: Enzymes. Final exam covers all weeks.`
 - **Exam date:** leave blank
 
 **Expected**
-- [ ] [A2] The Study Plan entries are labelled by week number, such as Week 1 to Week 4. They have no calendar dates.
-- [ ] [A2] The answer says clearly that it used week numbers because no exam date was given.
-- [ ] [A2 / Blank inputs] The answer never states or guesses an exam date anywhere. That includes "assuming your exam is on …" and "probably in December".
-- [ ] [A3] All four topics appear in this order: Cell structure and organelles, Cell membranes and transport, Enzymes, Cellular respiration. No topic is added that is not in the syllabus, such as photosynthesis or DNA replication.
-- [ ] [A4] The Practice Questions section has exactly 5 questions.
-- [ ] [A4] All 5 questions are about cell structure and organelles. None is about membranes, enzymes or respiration. No question mentions or previews those later topics, including as an "introduction to" them, and none needs knowledge of them to answer. For example, no question asks what the mitochondria do in cellular respiration, or how things cross the cell membrane.
-- [ ] [A5] The answer ends with a Summary section.
+- [Order] The answer has the sections Study Plan, Practice Questions and Summary, in that order.
+- [A2] The Study Plan section has exactly 8 week entries. Count them: 8.
+- [A2] One line in the answer contains both "8 weeks" (or "eight weeks") and the words "exam date".
+- [A2] No exam date (no date in YYYY-MM-DD or written-out form) is presented as the exam date.
+- [A5] Each of the 8 week entries contains at least one of these words: cell, mitosis, meiosis, genetics, evolution, ecology, photosynthesis, enzymes (any capitalisation; singular or plural counts).
+- [A3] The Practice Questions section contains exactly 5 questions, each with an answer shown.
+- [A4] Write down which of these words appear in the Study Plan's first week entry: mitosis, meiosis, genetics, evolution, ecology, photosynthesis, enzyme. Every word from that list that does NOT appear in the first week entry must appear nowhere in the Practice Questions section (questions, options or answers; any capitalisation; plurals count).
+- [A6] The Summary section has 2 or 3 sentences.
 
-### Test 3: tricky case, a long syllabus and an exam that is only a few weeks away
+### Test 3: tricky but fair (very short syllabus, exam this week)
 
 **Inputs to type**
-- **Paste your class syllabus:** `Week 1: Business model canvas, Value proposition; Week 2: Customer discovery; Week 3: Lean startup and MVPs; Week 4: Competitive analysis; Week 5: Pricing strategy; Week 6: Go-to-market; Week 7: Unit economics; Week 8: Fundraising basics; Week 9: Pitch decks; Week 10: Scaling and growth`
-- **Exam date:** `2026-10-21`
+- **Class syllabus:** `Week 1: Photosynthesis. Week 2: Respiration.`
+- **Exam date:** `2026-10-07`
 
 **Expected**
-- [ ] [A1] The plan shows calendar dates and ends with the week that contains 2026-10-21. It has 3 entries, or 4 if it uses Monday-to-Sunday weeks and counts this partial week. It does not run on to 10 weeks just because the syllabus has 10.
-- [ ] [A1] The first entry covers today (2026-10-04) or the week that contains it, and no week is skipped.
-- [ ] [A3] Every topic named comes from the syllabus. No topic is invented.
-- [ ] [A3] Topics appear in syllabus order. "Business model canvas" comes before "Value proposition", which comes before "Customer discovery", and so on. A later topic never appears in an earlier week than one that comes before it in the syllabus.
-- [ ] [A4] The Practice Questions section has exactly 5 questions, even though the syllabus is long.
-- [ ] [A4] All 5 questions are about the business model canvas or the value proposition, the first week's two topics. None is about customer discovery or anything later. No question mentions or previews a later topic, including as an "introduction to" it, and none needs knowledge of one to answer. For example, no question asks you to test a value proposition with customer interviews, build an MVP or set a price.
-- [ ] [A5] The answer ends with a Summary section.
+- [Order] The answer has the sections Study Plan, Practice Questions and Summary, in that order.
+- [A1] The Study Plan section has exactly 1 week entry (2026-10-07 falls in the first block, 2026-10-04 to 2026-10-10). Count them: 1.
+- [A1] No line in the answer says 8 weeks was assumed; the words "8 weeks" and "eight weeks" do not appear.
+- [A5] The single week entry contains the word "photosynthesis" or "respiration" (any capitalisation).
+- [A3] The Practice Questions section contains exactly 5 questions, each with an answer shown.
+- [A4] If the word "respiration" does NOT appear in the Study Plan's week entry, then "respiration" appears nowhere in the Practice Questions section (questions, options or answers; any capitalisation).
+- [A6] The Summary section has 2 or 3 sentences.
 >>>
 
 The tool's answers:
@@ -81,124 +81,159 @@ Ran on 2026-10-04.
 Test 1:
 ## Study Plan
 
-| Week | Dates | Topic | Status |
-|------|-------|-------|--------|
-| Week 1 | Oct 4–10, 2026 | Supply and Demand | Starting now |
-| Week 2 | Oct 11–17, 2026 | Market Structures | |
-| Week 3 | Oct 18–24, 2026 | Elasticity | |
-| Week 4 | Oct 25–31, 2026 | Consumer Choice | |
-| Week 5 | Nov 1–7, 2026 | Costs of Production | |
-| Week 6 | Nov 8–12, 2026 | Perfect Competition | *Exam: Nov 12* |
+**Study Period:** October 4, 2026 – November 18, 2026 (7 weeks)
 
-Your syllabus covers 6 weeks of material, which aligns perfectly with your exam date of November 12, 2026. Study each week's topic in order, and plan to review all material in the final week before your exam.
+- **Week 1 (Oct 4–10):** Scarcity and opportunity cost
+- **Week 2 (Oct 11–17):** Supply and demand
+- **Week 3 (Oct 18–24):** Elasticity
+- **Week 4 (Oct 25–31):** Consumer choice
+- **Week 5 (Nov 1–7):** Production costs
+- **Week 6 (Nov 8–14):** Monopoly
+- **Week 7 (Nov 15–18):** Inflation (final exam on Nov 18)
 
 ## Practice Questions
 
-**Question 1:** A coffee shop observes that when it raises the price of espresso from $3 to $4 per cup, the quantity sold per day decreases from 150 cups to 120 cups. Explain what principle of supply and demand does this illustrate, and identify which curve (supply or demand) is relevant to this scenario.
+**Question 1:** If a country has [X] units of labor and can produce either [Y] cars or [Z] tons of wheat per year, what is the opportunity cost of producing one additional car in terms of wheat?
 
-**Question 2:** In the market for smartphones, suppose the equilibrium price is $500 and the equilibrium quantity is 100,000 units per month. If the price suddenly falls to $400, explain whether the market is in equilibrium, and describe what will happen to the quantity demanded and the quantity supplied.
+*Answer:* The opportunity cost is the amount of wheat that must be given up. If total wheat production is [Z] and total car production is [Y], the opportunity cost of one car is [Z]/[Y] tons of wheat.
 
-**Question 3:** A farmer can produce either wheat or corn on their land. This year, the price of corn increases significantly, but the price of wheat stays the same. How would this price change affect the supply of wheat in the market, and why?
+**Question 2:** Which of the following best illustrates the concept of scarcity?
+- A) A store running out of a popular item during a sale
+- B) The fact that every society must choose what goods to produce with limited resources
+- C) A person deciding not to buy an expensive item
+- D) A shortage caused by a natural disaster
 
-**Question 4:** A winter storm destroys a significant portion of the nation's orange crop. Using supply and demand concepts, explain what would happen to the equilibrium price and quantity of oranges in the market.
+*Answer:* B. Scarcity is the fundamental economic problem that all societies face: resources are limited but wants are unlimited, so choices must be made about production and allocation.
 
-**Question 5:** The government imposes a price floor on milk at $4 per gallon, but the equilibrium price (without government intervention) is $3 per gallon. Explain whether this price floor creates a shortage or a surplus, and describe how suppliers and consumers might respond.
+**Question 3:** A student decides to spend Saturday afternoon studying for ECON 101 instead of working a part-time job that pays [amount] per hour for [hours]. What is the opportunity cost of studying?
 
-**Question Verification Against Week 1 Topics:**
+*Answer:* The opportunity cost is [amount × hours], the wages the student forgoes by choosing to study instead of work.
 
-- **Question 1:** ✓ Uses only supply and demand curves and basic market observation (Week 1 concept)
-- **Question 2:** ✓ Tests equilibrium price and quantity, and the relationship between price and quantity demanded/supplied (Week 1 concepts)
-- **Question 3:** ✓ Tests opportunity cost and shifts in supply curves due to price of alternative products (Week 1 concepts)
-- **Question 4:** ✓ Tests how supply shocks affect equilibrium (Week 1 concepts)
-- **Question 5:** ✓ Tests government price controls and resulting shortages/surpluses (Week 1 concepts)
+**Question 4:** True or False: Opportunity cost exists only in situations where a person or society faces a monetary constraint.
 
-All five questions are answerable using only Week 1 supply and demand material. None require concepts from elasticity (Week 3), consumer choice (Week 4), production costs (Week 5), or market structures (Week 2).
+*Answer:* False. Opportunity cost applies whenever a choice must be made between alternatives, regardless of money. It reflects the value of the next-best alternative foregone.
+
+**Question 5:** If you have a limited amount of time this week and must choose between attending a lecture, going to the gym, or working on a project, this situation demonstrates:
+- A) Inefficiency
+- B) Scarcity
+- C) Market failure
+- D) Diminishing returns
+
+*Answer:* B. Scarcity. Your time is a limited resource, and you cannot do all three activities, so you must make a choice about which alternative to pursue.
 
 ## Summary
 
-This study plan maps all six weeks of your syllabus to the exam date of November 12, 2026, with supply and demand as your starting focus this week. The five practice questions test your understanding of fundamental supply and demand concepts—equilibrium, price movement, supply shifts, and government price controls—without requiring knowledge of material from Week 2 or beyond.
+This 7-week study plan aligns with your ECON 101 syllabus and takes you through all seven course topics before your final exam on November 18, 2026. The practice questions focus on scarcity and opportunity cost, foundational concepts that appear throughout economics.
 
 Test 2:
 ## Study Plan
 
-Because no exam date was provided, this study plan uses week numbers to cover all four weeks from your syllabus:
+Since no exam date was provided, I'm assuming an 8-week plan from today (October 4, 2026).
 
-| Week | Topics |
-|------|--------|
-| Week 1 | Cell structure and organelles |
-| Week 2 | Cell membranes and transport |
-| Week 3 | Enzymes |
-| Week 4 | Cellular respiration |
-
-You should spend roughly equal time on each week's material, dedicating time to reading, practice problems, and active recall of key concepts before moving to the next topic.
+| Week | Start Date | Topic |
+|------|-----------|-------|
+| Week 1 | Oct 4 | Cell Structure |
+| Week 2 | Oct 11 | Mitosis |
+| Week 3 | Oct 18 | Meiosis |
+| Week 4 | Oct 25 | Genetics |
+| Week 5 | Nov 1 | Evolution |
+| Week 6 | Nov 8 | Ecology |
+| Week 7 | Nov 15 | Photosynthesis |
+| Week 8 | Nov 22 | Enzymes |
 
 ## Practice Questions
 
-**Question 1:** Which of the following is a characteristic of eukaryotic cells but NOT prokaryotic cells?
-- (a) Cell membrane
-- (b) Ribosomes
-- (c) Nucleus
-- (d) Cytoplasm
+**Question 1:** What is the primary function of the cell membrane?
+A. To store energy for the cell
+B. To control what enters and leaves the cell
+C. To produce proteins
+D. To break down waste materials
 
-**Question 2:** The mitochondria is an organelle found in eukaryotic cells. Which of the following best describes its location within the cell?
-- (a) Within the nucleus
-- (b) Attached to the cell membrane
-- (c) Floating freely in the cytoplasm
-- (d) Part of the cell wall
-
-**Question 3:** What is the primary function of ribosomes in a cell?
-- (a) Storing genetic material
-- (b) Synthesizing proteins
-- (c) Breaking down waste
-- (d) Controlling cell division
-
-**Question 4:** Name three organelles found in eukaryotic cells and briefly describe the primary role or location of each one.
-
-**Question 5:** How do prokaryotic cells differ from eukaryotic cells in terms of internal organization? Name at least two key structural differences.
+**Answer 1:** B. To control what enters and leaves the cell. The cell membrane is a semi-permeable barrier that regulates the passage of substances in and out of the cell.
 
 ---
 
-**Verification Check:** Each of the five questions above has been reviewed against Week 1's topics (Cell structure and organelles). All five questions are answerable using only Week 1 material and do not require or preview concepts from Week 2 (Cell membranes and transport), Week 3 (Enzymes), or Week 4 (Cellular respiration).
+**Question 2:** Which organelle is responsible for producing energy in the form of ATP?
+A. The nucleus
+B. The ribosome
+C. The mitochondrion
+D. The endoplasmic reticulum
+
+**Answer 2:** C. The mitochondrion. Mitochondria are known as the "powerhouse of the cell" because they produce ATP through cellular respiration.
+
+---
+
+**Question 3:** What is the main component of the cell wall in plant cells?
+A. Protein
+B. Lipids
+C. Cellulose
+D. Chlorophyll
+
+**Answer 3:** C. Cellulose. The cell wall provides structural support to plant cells and is composed primarily of cellulose fibers.
+
+---
+
+**Question 4:** Which of the following is true about prokaryotic cells?
+A. They contain a membrane-bound nucleus
+B. They lack organelles
+C. They are only found in animals
+D. They contain mitochondria
+
+**Answer 4:** B. They lack organelles. Prokaryotic cells (bacteria and archaea) do not have membrane-bound organelles or a nucleus, unlike eukaryotic cells.
+
+---
+
+**Question 5:** What is the name of the network of membrane-bound sacs in the cell that synthesizes and packages proteins?
+A. The Golgi apparatus
+B. The endoplasmic reticulum
+C. The cytoskeleton
+D. The lysosome
+
+**Answer 5:** B. The endoplasmic reticulum. The rough endoplasmic reticulum, studded with ribosomes, is responsible for synthesizing proteins, which are then processed and packaged by the Golgi apparatus.
+
+---
 
 ## Summary
 
-These five practice questions focus on fundamental concepts from Week 1: distinguishing prokaryotic and eukaryotic cell types, identifying key organelles, understanding their basic roles, and describing cell structures. They are designed to build your foundational understanding before advancing to more complex topics like membrane structure and cellular processes in later weeks.
+This 8-week study plan covers BIO 110 from October 4 through late November, building progressively from cell structure through enzyme function. The practice questions focus exclusively on Week 1 topics (cell structure, organelles, cell membranes) to help you master the foundational concepts before advancing to cellular processes. Use these questions to assess your understanding of cells before moving to mitosis in Week 2.
 
 Test 3:
 ## Study Plan
 
-Your exam is 2026-10-21, which is 17 days from today. This spans three weeks of your syllabus before the exam date. Note that your syllabus contains 10 weeks of material, but only the first three weeks fit into your study window.
+| Week | Topics |
+|------|--------|
+| Week 1 (Oct 4–7) | Photosynthesis |
 
-| Study Period | Topics |
-|---|---|
-| **Week 1 (Oct 4–10)** | Business model canvas, Value proposition |
-| **Week 2 (Oct 11–17)** | Customer discovery |
-| **Week 3 (Oct 18–21)** | Lean startup and MVPs |
-
-**Note:** Weeks 4–10 of your syllabus (Competitive analysis, Pricing strategy, Go-to-market, Unit economics, Fundraising basics, Pitch decks, Scaling and growth) fall after your exam date and are not included in this plan.
-
----
+Your exam is scheduled for Tuesday, October 7th, which falls within Week 1. Focus your preparation on photosynthesis and its key mechanisms during these remaining days before the exam.
 
 ## Practice Questions
 
-**Question 1:** You are launching an online coaching service. Your business model canvas shows that your key partners are established life coaches who lack technical skills, your key resources are the software platform and payment processing infrastructure, and your revenue stream comes from taking a 20% commission on each session booked. What is the primary purpose of including these specific elements in your business model canvas, and what does each element help you communicate to stakeholders?
+**Question 1: What are the two main stages of photosynthesis, and in which cellular structure does each occur?**
 
-**Question 2:** A co-founder argues that your software startup's value proposition should be "We build great technology." Explain why this is not an effective value proposition, and what would make it stronger instead.
+Answer: The two main stages are the light-dependent reactions (occurring in the thylakoid membranes) and the light-independent reactions or Calvin Cycle (occurring in the stroma). The light-dependent reactions capture light energy and produce ATP and NADPH, while the Calvin Cycle uses these products to synthesize glucose.
 
-**Question 3:** Your coffee subscription business has identified three different customer segments: busy professionals, students on a budget, and coffee enthusiasts who want rare single-origin beans. Should you use one value proposition for all three segments or develop different ones for each? Explain your reasoning.
+**Question 2: During the light-dependent reactions, what is the role of chlorophyll?**
 
-**Question 4:** Look at the business model canvas as a system. Describe how a change to one block (such as your key partners) might require or influence changes to at least two other blocks on the canvas.
+Answer: Chlorophyll absorbs light energy, which excites electrons to a higher energy state. This energy is used to split water molecules, release oxygen, and transfer electrons through an electron transport chain that produces ATP and NADPH.
 
-**Question 5:** You are presenting your value proposition to a potential investor. She says, "This sounds nice, but why would customers choose you over the competitor across the street?" Write a clear, concise answer that explains a strong value proposition and why it matters to investors and customers alike.
+**Question 3: What is the primary function of the Calvin Cycle?**
 
----
+Answer: The Calvin Cycle uses the ATP and NADPH produced by the light-dependent reactions to fix carbon dioxide from the atmosphere and convert it into glucose, a simple sugar that the plant can use for energy and growth.
+
+**Question 4: Why is water essential to photosynthesis?**
+
+Answer: Water serves as the electron donor in the light-dependent reactions. When water molecules are split (photolysis), they release electrons that enter the electron transport chain, oxygen as a byproduct, and hydrogen ions that contribute to ATP synthesis.
+
+**Question 5: How is photosynthesis an example of an anabolic (building-up) reaction?**
+
+Answer: Photosynthesis takes simple molecules (water and carbon dioxide) and uses light energy to build them into complex, high-energy molecules like glucose. This stores chemical energy in the bonds of glucose, contrasting with catabolic reactions that break down molecules to release energy.
 
 ## Summary
 
-This study plan covers the three weeks between today (2026-10-04) and your exam date (2026-10-21), focusing on business model canvas and value proposition from Week 1. The five practice questions test your understanding of the business model canvas structure, the difference between weak and strong value propositions, and how these foundational concepts work together in a business context.
+Prepare for your October 7th exam by mastering photosynthesis: the light-dependent reactions in the thylakoid, the Calvin Cycle in the stroma, and how chlorophyll and water drive energy capture and carbon fixation. Focus on understanding the flow of electrons, ATP/NADPH production, and glucose synthesis.
 >>>
 
-Results: a table with columns Test | Check | Result | Evidence. One row per expected check in every test. Result is PASS or FAIL. Evidence is a short quote or description from that answer (under 20 words), or "missing". If an answer for a test is missing, every check in that test is FAIL with evidence "answer missing".
+Results: a table with columns Test | Check | Result | Evidence. One row per expected check in every test. Result is PASS or FAIL. Grade each check exactly as its words say, no wider: if a check lists words that must not appear, it fails only if one of those words appears. Evidence is a short quote or description from that answer (under 20 words), or "missing". If an answer for a test is missing, every check in that test is FAIL with evidence "answer missing".
 
 Fixes: one numbered fix for each FAIL, written as an instruction to the Builder, e.g. "1. [A2, Test 2] When the exam date is blank, the plan must ask for it instead of inventing one." Name the criterion and the test. If nothing failed, write "No fixes needed."
 

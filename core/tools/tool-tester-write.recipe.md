@@ -44,6 +44,6 @@ Test cases: exactly three, numbered Test 1 to Test 3:
 - Test 1: normal use, with realistic values.
 - Test 2: an edge case, with every optional input left blank.
 - Test 3: a tricky but fair case: very short, very long, or unusual input.
-For each test give "Inputs to type", listing every input label with the exact value to enter (or "leave blank"), and "Expected", a checklist of things a person can see in the answer, each tied to a criterion, e.g. "[A2] one row for each of the 5 weeks". Never predict exact wording; check things that must be true.
+For each test give "Inputs to type", listing every input label with the exact value to enter (or "leave blank"), and "Expected", a checklist of things a person can see in the answer, each tied to a criterion, e.g. "[A2] one row for each of the 5 weeks". Every check must be decidable without a judgment call: count something, compare a date, or look for exact words. When a criterion is about what something is about, turn it into words: list the exact words that must not appear (e.g. the names of later topics), or that must. Two careful people must always agree on the result. Never predict exact wording; check things that must be true.
 
 How to run them: tell the student, in plain steps, to run the tool once per test with exactly those inputs, copy each whole answer, and paste all three into "Tester 2 — grade" together with this Spec and these test cases, labelled Test 1, Test 2 and Test 3. Tell them to use a new chat for grading, not the chat that built the tool.
