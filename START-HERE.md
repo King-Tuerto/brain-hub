@@ -208,7 +208,9 @@ not the one that built the tool. You get pass or fail for every check.
 **5. Fix and retest until it passes.**
 - **If it says FIX AND RETEST:** open **Builder — make a tool** again. Paste
   the Tester's **Fixes** and your current recipe into the last box. Install
-  the new version and repeat steps 3 and 4.
+  the new version. If the Builder changed the **Spec**, run Tester 1 again
+  on the new Spec first, because tests always follow the Spec. Then repeat
+  steps 3 and 4.
 - **When it says PASS:** keep the tool.
 
 **Keep it on every device:**
