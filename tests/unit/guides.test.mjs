@@ -92,6 +92,8 @@ const APP_TEMPLATED = {
   // before the citation check, outOf really is 50 (sections 20 + sources 30).
   // `Copy “${name}”`, the per-section copy button: the guides say "under the Spec heading, tap **Copy**".
   'Copy': () => APP.includes('`Copy “${name}”`') && APP.includes("tid: 'copy-section'"),
+  // A heading in Tester 1's answer, under which that Copy button appears.
+  'Test cases': () => /sections: \[Test plan, Test cases, How to run them\]/.test(read('core/tools/tool-tester-write.recipe.md')),
   'Score so far: … / 50': () => APP.includes('`Score so far: ${result.score} / ${result.outOf}') &&
     scoreReport('## Company snapshot\n- A fact. [1](https://example.com)\n', COMPANY, null).outOf === 50,
 }
@@ -143,7 +145,7 @@ const EMPHASIS = new Set([
   'builds', 'tests', '1. Build it (Builder).', '2. Write the tests (Tester 1)', '3. Run the tests.', '4. Grade (Tester 2).',
   '5. Fix and retest until it passes.', 'Use a new chat in your AI app',
   // These two quote Tester 2's verdicts; the test below checks the recipe really says them.
-  'If it says FIX AND RETEST:', 'When it says PASS:', 'and your previous test cases',
+  'If it says FIX AND RETEST:', 'When it says PASS:',
   // ES
   'Tiempo: unos 15 minutos.', 'La app está en inglés.', 'tal como aparecen en pantalla',
   '¿Te atoras? Pregúntale a tu IA, no a la persona que te mandó esto.', 'Una cuenta gratuita de GitHub.',
@@ -155,7 +157,7 @@ const EMPHASIS = new Set([
   'Tenla en todos tus dispositivos:', 'se pausa después de una semana sin uso',
   'construye', 'prueba', '1. Constrúyela (Builder).', '2. Escribe las pruebas (Tester 1)', '3. Corre las pruebas.',
   '4. Califica (Tester 2).', '5. Corrige y vuelve a probar hasta que pase.', 'Usa un chat nuevo en tu app de IA',
-  'Si dice FIX AND RETEST', 'Cuando diga PASS', 'y tus casos de prueba anteriores',
+  'Si dice FIX AND RETEST', 'Cuando diga PASS',
   // Translated example questions / requests to the AI (prose, not UI).
   "I'm on step 2 and I don't see a Pages option. Here's a screenshot.", "What does 'fork' mean? Is it safe?",
   "The hub says 'Could not reach that brain'. What do I do?", 'add a source link to every fact, or mark it [unverified]',
@@ -263,8 +265,9 @@ test('step 5 (fix): the Builder gets the Fixes, the current Spec AND the recipe,
 })
 
 test('step 5 (retest): Tester 1 is run again with the new Spec and the previous test cases, in its last box', () => {
-  assert.match(flat(EN), /run \*\*Tester 1\*\* again with its new Spec \*\*and your previous test cases\*\* \(the last box\)/)
-  assert.match(flat(ES), /corre otra vez \*\*Tester 1\*\* con el Spec nuevo \*\*y tus casos de prueba anteriores\*\* \(el último recuadro\)/)
+  // The previous test cases go in the last box, copied from Tester 1's last answer before it is run again.
+  assert.match(flat(EN), /open \*\*Tester 1\*\*: first tap \*\*Copy\*\* under \*\*Test cases\*\* in its last answer and paste them into the last box, then paste the new Spec \(copy it from the Builder's new answer\) and run it/)
+  assert.match(flat(ES), /abre \*\*Tester 1\*\*: primero toca \*\*Copy\*\* debajo de \*\*Test cases\*\* \(casos de prueba\) en su última respuesta y pégalos en el último recuadro; después pega el Spec nuevo \(cópialo de la nueva respuesta del Builder\) y ejecútalo/)
   assert.match(flat(EN), /The Tester keeps the same tests and changes only the ones the new Spec really changed/)
   assert.match(flat(ES), /El Tester conserva las mismas pruebas y solo cambia las que el Spec nuevo realmente cambió/)
   // The old step 5 (fresh tests from the new Spec every round) never converged: attempt-3.

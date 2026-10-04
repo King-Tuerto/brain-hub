@@ -18,7 +18,7 @@ import {
 } from '../../core/lib/prompt.js'
 import { checkSources, claimItems } from '../../core/lib/output.js'
 import { installSummary } from '../../core/lib/summary.js'
-import { DIR, TODAY, ROUNDS, LAST, BUILT_ID, BUILT_NAME, round, fixesFor, resultsFor, appHelpers } from '../helpers/buildertester.mjs'
+import { DIR, TODAY, ROUNDS, LAST, BUILT_ID, BUILT_NAME, round, fixesFor, resultsFor, appHelpers, asBuiltToday } from '../helpers/buildertester.mjs'
 
 const root = new URL('../../', import.meta.url)
 const read = (p) => readFileSync(new URL(p, root), 'utf8').replace(/\r\n/g, '\n')
@@ -192,7 +192,7 @@ describe('the three core recipes', () => {
       assert.equal(r().inputs.find((i) => i.id === 'fixes').label, "Tester's fixes, your Spec and your recipe")
       assert.match(r().body, /they contain the Tester's fixes, the current Spec and the current recipe/)
     })
-    test('the fixes box’s help names all three things to paste, like its label', { todo: 'should-fix: the help still says "Paste the Tester’s Fixes, then the recipe you are fixing." and never mentions the Spec (core/tools/tool-builder.recipe.md, fixes help)' }, () => {
+    test('the fixes box’s help names all three things to paste, like its label', () => {
       assert.match(r().inputs.find((i) => i.id === 'fixes').help, /Fixes.*Spec.*recipe/)
     })
     test('on a revision the new Spec starts as a word-for-word copy of the current one', () => {
@@ -313,7 +313,11 @@ describe('the three core recipes', () => {
     test('grades each check exactly as worded, no wider (attempt-5 stuck on judgment calls)', () => {
       const b = r().body
       assert.match(b, /against the Spec and the test cases exactly as written/)
-      assert.match(b, /Grade each check exactly as its words say, no wider: if a check lists words that must not appear, it fails only if one of those words appears\./)
+      assert.match(b, /Grade each check exactly as its words say, no wider: if a check lists words that must not appear, it fails only if one of those words appears, in any form: plural, -ing, -ed, or a related form such as "genetic" for "genetics"\. Quote the form you found\./)
+    })
+    test('word forms count (round 5 passed with "genetic" when "genetics" was banned): Tester 1 says so in its checks, Tester 2 grades so', () => {
+      assert.match(recipe('tool-tester-write').body, /say that every form of a listed word counts: plural, -ing, -ed, and related forms such as "genetic" for "genetics"/)
+      assert.match(r().body, /in any form: plural, -ing, -ed, or a related form/)
     })
     test('one fix per FAIL, naming criterion and test; verdict PASS only if everything passed', () => {
       const b = r().body
@@ -325,14 +329,17 @@ describe('the three core recipes', () => {
   })
 })
 
-// ---------------------------------------------------------------- the real run (final, r1 … r5)
+// ---------------------------------------------------------------- the real run (r1 … rN)
 
-// docs/builder-tester/PLAN.md "The final run": syllabus-study-planner v1.0.0 → v1.0.4,
-// FIX AND RETEST in rounds 1–4, PASS in round 5. Every prompt must be what the hub
-// itself builds, so the run proves the shipped recipes, not hand-made prompts.
+// docs/builder-tester/PLAN.md "The final run": syllabus-study-planner, FIX AND RETEST
+// in rounds 1–4, PASS in round 5 (v1.0.4); round 6 re-tests v1.0.4 under the
+// narrowed no-invention rule and the word-form-aware Testers (FIX), round 7 is
+// v1.0.5 (PASS). Every prompt must be what the hub itself builds, so the run
+// proves the shipped recipes, not hand-made prompts. Prompts from rounds run
+// before a hub change may differ from today's only in the SUPERSEDED lines.
 const { sectionText, recipesIn } = await appHelpers()
 
-describe('real run: the final Builder → Tester loop (r1 … r5)', () => {
+describe('real run: the Builder → Tester loop, every round', () => {
   const RECIPE_SYNTAX = /recipe_format|permissions:|web_search:|sourcing:|^output:\s*$|\{\{|^---$/m
   const REQUEST = JSON.parse(read(DIR + '0-request.json'))
   // The pasted text between the hub's <<< >>> markers (the guard text itself names "recipe_format:").
@@ -341,49 +348,72 @@ describe('real run: the final Builder → Tester loop (r1 … r5)', () => {
   const changedCriteria = (n) => Object.entries(criteria(round(n).spec)).filter(([c, t]) => criteria(round(n - 1).spec)[c] !== t).map(([c]) => c)
   const checks = (testsAnswer) => sectionText(testsAnswer, 'Test cases').split('\n').filter((l) => /^- \[(A\d+|Order)\]/.test(l))
   const tagOf = (line) => /^- \[(A\d+|Order)\]/.exec(line)[1]
+  const verdict = (n) => sectionText(round(n).gradeAnswer, 'Verdict')
+  // Same bytes as today's hub, allowing only the superseded lines; returns which were used.
+  const sameAsHub = (fixture, built, what) => {
+    const { text, used } = asBuiltToday(fixture)
+    assert.equal(text, built, what)
+    return used
+  }
+  const usedByRound = {}
+  const note = (n, used) => { usedByRound[n] = [...new Set([...(usedByRound[n] ?? []), ...used])] }
+
+  test('the rounds are r1 … rN with no gaps, and N ≥ 7', () => {
+    assert.deepEqual(ROUNDS, Array.from({ length: LAST }, (_, i) => i + 1))
+    assert.ok(LAST >= 7)
+  })
 
   for (const n of ROUNDS) {
     describe(`round ${n}`, () => {
       const R = round(n)
-      test('the Builder prompt is byte-for-byte what the hub builds (round 2+: with the Fixes, Spec and recipe of the round before)', () => {
-        const inputs = { ...REQUEST }
-        if (n > 1) inputs.fixes = fixesFor(n, sectionText(round(n - 1).gradeAnswer, 'Fixes'))
-        assert.equal(R.builderPrompt, buildPrompt(recipe('tool-builder'), inputs, { today: TODAY, widgetGuide: GUIDE }))
+      if (R.builder) {
+        test('the Builder prompt is what the hub builds (round 2+: with the Fixes, Spec and recipe of the round before)', () => {
+          const inputs = { ...REQUEST }
+          if (n > 1) inputs.fixes = fixesFor(n, sectionText(round(n - 1).gradeAnswer, 'Fixes'))
+          note(n, sameAsHub(R.builderPrompt, buildPrompt(recipe('tool-builder'), inputs, { today: TODAY, widgetGuide: GUIDE }), 'Builder prompt'))
+          if (n > 1) {
+            assert.ok(R.builderPrompt.includes(`My current Spec:\n${round(n - 1).spec.trim()}`), 'the Spec was sent back')
+            assert.ok(R.builderPrompt.includes(round(n - 1).recipe.trim()), 'the recipe was sent back')
+          }
+        })
+        test('the answer has Steps, Spec, Recipe, Summary; one recipe, found by recipesIn, that is this round’s recipe', () => {
+          const a = R.builderAnswer
+          assert.deepEqual(a.split('\n').filter((l) => /^## /.test(l)), ['## Steps', '## Spec', '## Recipe', '## Summary'])
+          assert.match(a, new RegExp(`^\`?${BUILT_ID}\\.recipe\\.md\`?$`, 'm'), 'the file name, on its own line')
+          const found = recipesIn(a)
+          assert.equal(found.length, 1)
+          assert.equal(found[0].text, R.recipe)
+          assert.equal(R.spec, sectionText(a, 'Spec') + '\n', 'the Spec is the answer’s Spec section')
+        })
         if (n > 1) {
-          assert.ok(R.builderPrompt.includes(`My current Spec:\n${round(n - 1).spec.trim()}`), 'the Spec was sent back')
-          assert.ok(R.builderPrompt.includes(round(n - 1).recipe.trim()), 'the recipe was sent back')
+          test('Steps end by saying whether the Spec changed', () => {
+            assert.match(sectionText(R.builderAnswer, 'Steps'), /Spec changed: (yes|no)/i)
+          })
         }
-      })
-      test('the answer has Steps, Spec, Recipe, Summary; one recipe, found by recipesIn, valid under its own name', () => {
-        const a = R.builderAnswer
-        assert.deepEqual(a.split('\n').filter((l) => /^## /.test(l)), ['## Steps', '## Spec', '## Recipe', '## Summary'])
-        assert.match(a, new RegExp(`^\`?${BUILT_ID}\\.recipe\\.md\`?$`, 'm'), 'the file name, on its own line (r5 put it in backticks)')
-        const found = recipesIn(a)
-        assert.equal(found.length, 1)
-        assert.equal(found[0].text, R.recipe)
+      } else {
+        test('no Builder this round: the same recipe and Spec are re-tested unchanged', () => {
+          assert.ok(n > 1)
+          assert.equal(R.recipe, round(n - 1).recipe)
+          assert.equal(R.spec, round(n - 1).spec)
+        })
+      }
+      test('the recipe validates under its own name, with a plain author and sourcing none', () => {
         const v = parseRecipe(R.recipe, { fileName: `${BUILT_ID}.recipe.md` })
         assert.ok(v.ok, v.errors?.join('; '))
         assert.equal(v.recipe.id, BUILT_ID)
         assert.equal(v.recipe.name, BUILT_NAME)
-        assert.equal(v.recipe.version, `1.0.${n - 1}`, 'each fix raises the version')
         assert.equal(v.recipe.author, 'Brain Hub student')
         assert.equal(v.recipe.sourcing, 'none')
       })
-      test('the Spec is the answer’s Spec section, with no recipe syntax', () => {
-        assert.equal(R.spec, sectionText(R.builderAnswer, 'Spec') + '\n')
+      test('the Spec has no recipe syntax, lists Summary and has a blank-inputs rule', () => {
         assert.doesNotMatch(R.spec, RECIPE_SYNTAX)
         assert.match(R.spec, /^- A1: /m)
         assert.match(R.spec, /Blank inputs/)
         assert.match(R.spec, /Summary/, 'Summary is listed (attempt-1)')
       })
-      if (n > 1) {
-        test('Steps end by saying whether the Spec changed', () => {
-          assert.match(sectionText(R.builderAnswer, 'Steps'), /Spec changed: (yes|no)/i)
-        })
-      }
-      test('Tester 1’s prompt is byte-for-byte the hub’s, from the Spec (and the previous Test cases), and holds no recipe', () => {
+      test('Tester 1’s prompt is the hub’s, from the Spec (and the previous Test cases), and holds no recipe', () => {
         const previous_tests = n > 1 ? sectionText(round(n - 1).testsAnswer, 'Test cases') : ''
-        assert.equal(R.testsPrompt, buildPrompt(recipe('tool-tester-write'), { spec: R.spec.trim(), previous_tests }, { today: TODAY }))
+        note(n, sameAsHub(R.testsPrompt, buildPrompt(recipe('tool-tester-write'), { spec: R.spec.trim(), previous_tests }, { today: TODAY }), 'Tester 1 prompt'))
         for (const text of pasted(R.testsPrompt)) assert.doesNotMatch(text, RECIPE_SYNTAX)
         assert.doesNotMatch(R.testsPrompt, /```recipe|sections: \[|\{\{syllabus\}\}/)
         if (n === 1) assert.ok(R.testsPrompt.includes(`<<<\n${EMPTY_INPUT_TEXT}\n>>>`), 'round 1 has no previous tests')
@@ -395,28 +425,28 @@ describe('real run: the final Builder → Tester loop (r1 … r5)', () => {
       })
       test('the three run prompts are the built recipe run with the test inputs', () => {
         const built = parseRecipe(R.recipe, { fileName: `${BUILT_ID}.recipe.md` }).recipe
-        for (const k of ['1', '2', '3']) assert.equal(R.runPrompt(k), buildPrompt(built, R.cases[k], { today: TODAY }), `test ${k}`)
+        for (const k of ['1', '2', '3']) note(n, sameAsHub(R.runPrompt(k), buildPrompt(built, R.cases[k], { today: TODAY }), `test ${k} prompt`))
         assert.equal(R.cases['2'].exam_date, '', 'Test 2 leaves the optional input blank')
       })
-      test('the grade prompt is byte-for-byte the hub’s, and contains no recipe anywhere', () => {
+      test('the grade prompt is the hub’s, and contains no recipe anywhere', () => {
         const p = R.gradePrompt
-        assert.equal(p, buildPrompt(recipe('tool-tester-grade'), { spec: R.spec.trim(), test_cases: sectionText(R.testsAnswer, 'Test cases'), results: resultsFor(n) }, { today: TODAY }))
+        note(n, sameAsHub(p, buildPrompt(recipe('tool-tester-grade'), { spec: R.spec.trim(), test_cases: sectionText(R.testsAnswer, 'Test cases'), results: resultsFor(n) }, { today: TODAY }), 'grade prompt'))
         // The tool's answers may use "---" rules, so look for what only a recipe has.
         assert.doesNotMatch(p, /recipe_format|```recipe|^permissions:|^inputs:|^web_search:|^sourcing:|\{\{/m)
       })
-      test(n === LAST ? 'the grade is "PASS — install it", with no FAIL and no fixes' : 'the grade is FIX AND RETEST, with one numbered fix per FAIL naming criterion and test', () => {
+      test('the grade: one PASS/FAIL row per check; PASS has no FAIL and no fixes; FIX has one fix per FAIL naming criterion and test', () => {
         const g = R.gradeAnswer
         assert.deepEqual(g.split('\n').filter((l) => /^## /.test(l)), ['## Results', '## Fixes', '## Verdict', '## Summary'])
         const rows = sectionText(g, 'Results').split('\n').filter((l) => /^\| \d \|/.test(l))
         const fails = rows.filter((l) => /\| FAIL \|/.test(l))
         assert.equal(rows.filter((l) => /\| (PASS|FAIL) \|/.test(l)).length, rows.length, 'every row is PASS or FAIL')
         assert.equal(rows.length, checks(R.testsAnswer).length, 'one row per check')
-        if (n === LAST) {
-          assert.equal(sectionText(g, 'Verdict'), 'PASS — install it')
+        if (verdict(n).startsWith('PASS')) {
+          assert.equal(verdict(n), 'PASS — install it')
           assert.equal(fails.length, 0)
           assert.equal(sectionText(g, 'Fixes'), 'No fixes needed.')
         } else {
-          assert.match(sectionText(g, 'Verdict'), /^FIX AND RETEST — send the Fixes, the Spec and your current recipe to the Builder/)
+          assert.equal(verdict(n), 'FIX AND RETEST — send the Fixes, the Spec and your current recipe to the Builder, install the new version, then run all three tests again.')
           assert.ok(fails.length > 0)
           const fixes = sectionText(g, 'Fixes').split('\n').filter((l) => /^\d+\. /.test(l))
           assert.equal(fixes.length, fails.length, 'one fix per FAIL')
@@ -431,12 +461,12 @@ describe('real run: the final Builder → Tester loop (r1 … r5)', () => {
     test(`round ${n - 1} → ${n}: the Spec changed only in the criteria the Steps say changed`, () => {
       const before = round(n - 1).spec.split('\n')
       const after = round(n).spec.split('\n')
-      const steps = sectionText(round(n).builderAnswer, 'Steps')
       const added = after.filter((l) => !before.includes(l))
       const removed = before.filter((l) => !after.includes(l))
       assert.deepEqual(Object.keys(criteria(round(n).spec)), Object.keys(criteria(round(n - 1).spec)), 'no criterion renumbered, added or dropped')
+      const steps = round(n).builder ? sectionText(round(n).builderAnswer, 'Steps') : 'Spec changed: no'
       if (/Spec changed: no/i.test(steps)) {
-        assert.deepEqual([added, removed], [[], []], 'Steps say "Spec changed: no", so the Spec must be identical')
+        assert.deepEqual([added, removed], [[], []], 'no Spec change claimed, so the Spec must be identical')
         return
       }
       assert.match(steps, /Spec changed: yes/i)
@@ -462,8 +492,43 @@ describe('real run: the final Builder → Tester loop (r1 … r5)', () => {
     })
   }
 
-  test('the final run matches the PLAN table: FIX, FIX, FIX, FIX, PASS; versions 1.0.0 → 1.0.4', () => {
-    assert.deepEqual(ROUNDS.map((n) => (sectionText(round(n).gradeAnswer, 'Verdict').startsWith('PASS') ? 'PASS' : 'FIX')), ['FIX', 'FIX', 'FIX', 'FIX', 'PASS'])
-    assert.deepEqual(ROUNDS.map((n) => /^version: (.*)$/m.exec(round(n).recipe)[1]), ['1.0.0', '1.0.1', '1.0.2', '1.0.3', '1.0.4'])
+  test('the verdicts and versions match PLAN: FIX×4, PASS (1.0.4), FIX under the new rules, PASS (1.0.5)', () => {
+    assert.deepEqual(ROUNDS.map((n) => (verdict(n).startsWith('PASS') ? 'PASS' : 'FIX')), ['FIX', 'FIX', 'FIX', 'FIX', 'PASS', 'FIX', 'PASS'])
+    assert.deepEqual(ROUNDS.map((n) => /^version: (.*)$/m.exec(round(n).recipe)[1]), ['1.0.0', '1.0.1', '1.0.2', '1.0.3', '1.0.4', '1.0.4', '1.0.5'])
+    // The version goes up by one patch exactly when the Builder ran.
+    for (const n of ROUNDS.slice(1)) {
+      const [a, b] = [n - 1, n].map((k) => Number(/^version: 1\.0\.(\d+)$/m.exec(round(k).recipe)[1]))
+      assert.equal(b - a, round(n).builder ? 1 : 0, `round ${n}`)
+    }
+    assert.equal(verdict(LAST), 'PASS — install it', 'the loop ends on PASS')
+  })
+
+  test('the final round was run entirely with today’s hub: no superseded line in any of its prompts', () => {
+    // Filled by the byte-for-byte tests above (they run first, in file order).
+    assert.ok(usedByRound[LAST], 'the per-round prompt tests did not run')
+    assert.deepEqual(usedByRound[LAST], [])
+    // Round 6, the regression round: everything on today's hub except its Tester 1
+    // prompt, built with an unshipped draft of the rule (it only writes tests).
+    assert.deepEqual(usedByRound[LAST - 1], ['NO_INVENTION_RULE v3 draft'])
+    assert.equal(asBuiltToday(round(LAST - 1).testsPrompt).used.join(), 'NO_INVENTION_RULE v3 draft')
+    for (const k of ['1', '2', '3']) assert.deepEqual(asBuiltToday(round(LAST - 1).runPrompt(k)).used, [], 'the tool itself ran under the shipped rule')
+    for (const n of ROUNDS) if (n !== LAST - 1) assert.ok(!usedByRound[n].includes('NO_INVENTION_RULE v3 draft'), `round ${n}`)
+    for (const n of [1, 2, 3, 4, 5]) assert.ok(usedByRound[n].includes('NO_INVENTION_RULE v2'), `round ${n} ran before the rule was narrowed`)
+  })
+
+  test('under the narrowed rule, practice questions use concrete made-up numbers, never [X] placeholders', () => {
+    const questions = (n, k) => sectionText(round(n).runAnswer(k), 'Practice Questions')
+    // Control: round 1 (old rule) wrote "[X] dollars" into a made-up question.
+    assert.match(questions(1, '1'), /\[X\] dollars/)
+    for (const n of [LAST - 1, LAST]) {
+      for (const k of ['1', '2', '3']) {
+        const q = questions(n, k)
+        assert.ok(q.length > 200, `round ${n} test ${k}: no Practice Questions`)
+        assert.doesNotMatch(q.replace(/\[[^\]]*\]\(https?:[^)]*\)/g, ''), /\[[^\]]+\]/, `round ${n} test ${k}: a [placeholder] in a practice question`)
+      }
+      // The ECON test asks about opportunity cost: its questions carry real figures, not just "Question 1…5".
+      const figures = questions(n, '1').replace(/\*\*Question \d+:?\*\*|Question \d+/g, '').match(/\$?\d[\d,.]*/g) ?? []
+      assert.ok(figures.length >= 2, `round ${n} test 1: only ${figures.length} figures in the practice questions`)
+    }
   })
 })

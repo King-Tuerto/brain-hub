@@ -6,8 +6,10 @@
 // times with Copy answer → Tester 2 shows FIX → Builder with the Fixes, the Spec
 // and the recipe → install the newer version over the old → Tester 1 again with
 // the previous test cases → … → Tester 2 shows PASS → download the recipe for
-// plugins/. All five rounds run, so every prompt the hub builds along the way is
-// checked byte for byte against the prompt the real AIs answered.
+// plugins/. Every round runs (r1–r4 FIX, r5 PASS, r6 FIX under the narrowed
+// rule and word-form-aware Testers with no rebuild, r7 PASS), so every prompt the
+// hub builds along the way is checked byte for byte against the prompt the real
+// AIs answered (allowing only the superseded lines in rounds run before a change).
 //
 // No AI and no network: the answers are the real ones, pasted in Manual mode, and
 // the shared network guard fails the test on any request that is not local.
@@ -15,10 +17,13 @@
 import { test, expect } from '../helpers/fixtures.mjs'
 import { tid, setup, openTool, setHash } from '../helpers/hub.mjs'
 import {
-  ROUNDS, LAST, TODAY, BUILT_ID, BUILT_NAME, round, fixesFor, resultsFor, fxJson, appHelpers,
+  ROUNDS, LAST, TODAY, BUILT_ID, BUILT_NAME, round, fixesFor, resultsFor, fxJson, appHelpers, asBuiltToday,
 } from '../helpers/buildertester.mjs'
 
 const REQUEST = fxJson('0-request.json')
+// Rounds run before a hub change differ from today's prompts only in whole
+// superseded lines (tests/helpers/buildertester.mjs SUPERSEDED).
+const today = (fixture) => asBuiltToday(fixture).text
 const { sectionText } = await appHelpers()
 const tile = (page, id) => tid(page, 'tool-tile').and(page.locator(`[data-tool-id="${id}"]`))
 const copySection = (page, name) => tid(page, 'copy-section').and(page.locator(`[data-section="${name}"]`))
@@ -64,16 +69,19 @@ async function installFromAnswer(page, version) {
   await expect(tid(page, 'installed-notice')).toBeVisible()
 }
 
-test('the full loop: FIX in rounds 1–4, the newer version installed over the old each time, PASS in round 5, recipe downloaded', async ({ page, browserName }) => {
-  test.setTimeout(300_000)
+test('the full loop: FIX → fix → install the newer version over the old → retest with the same tests … → PASS → recipe downloaded', async ({ page, browserName }) => {
+  test.setTimeout(420_000)
   await page.clock.setFixedTime(new Date(`${TODAY}T12:00:00Z`))
   await setup(page, { mode: 'manual' })
 
+  let spec = ''
   for (const n of ROUNDS) {
     const R = round(n)
-    const version = `1.0.${n - 1}`
+    const version = /^version: (.*)$/m.exec(R.recipe)[1]
 
     // ---- 1. Build (Builder). Round 2+: the Tester's Fixes, the current Spec and the current recipe in the last box.
+    // (Round 6 re-tests the passing v1.0.4 under the new rules: no rebuild.)
+    if (R.builder) {
     await setHash(page, '#/home')
     await openTool(page, 'tool-builder')
     if (n === 1) {
@@ -87,7 +95,7 @@ test('the full loop: FIX in rounds 1–4, the newer version installed over the o
       await expect(copySection(page, 'Recipe')).toBeVisible()
       await tid(page, 'field-fixes').fill(fixesFor(n, sectionText(round(n - 1).gradeAnswer, 'Fixes')))
     }
-    expect(await runTool(page), `round ${n}: Builder prompt`).toBe(R.builderPrompt)
+    expect(await runTool(page), `round ${n}: Builder prompt`).toBe(today(R.builderPrompt))
     await useAnswer(page, R.builderAnswer)
     await expect(tid(page, 'check-btn'), 'sourcing: none — no Check this answer').toHaveCount(0)
     await expect(tid(page, 'no-sources-warning')).toHaveCount(0)
@@ -95,7 +103,7 @@ test('the full loop: FIX in rounds 1–4, the newer version installed over the o
 
     // Copy “Spec”: only the Spec — never the recipe — goes to the Tester.
     const specBtn = copySection(page, 'Spec')
-    const spec = await copy(page, specBtn, statusAfter(specBtn), browserName, R.spec.trim(), `round ${n} Copy “Spec”`)
+    spec = await copy(page, specBtn, statusAfter(specBtn), browserName, R.spec.trim(), `round ${n} Copy “Spec”`)
     expect(spec).toBe(R.spec.trim())
     expect(spec).not.toMatch(/recipe_format|permissions:|```|\{\{|^---$/m)
 
@@ -106,9 +114,12 @@ test('the full loop: FIX in rounds 1–4, the newer version installed over the o
     expect(local[0].text).toBe(R.recipe)
     await setHash(page, '#/home')
     await expect(tile(page, BUILT_ID)).toHaveCount(1)
+    }
+    expect(spec).toBe(R.spec.trim())
 
     // ---- 2. Write the tests (Tester 1), from the Spec only; round 2+ with the previous test cases.
     let previous = ''
+    await setHash(page, '#/home')
     await openTool(page, 'tool-tester-write')
     if (n > 1) {
       // Last round's Tester 1 answer is still on screen: copy its Test cases first.
@@ -118,7 +129,7 @@ test('the full loop: FIX in rounds 1–4, the newer version installed over the o
     }
     await tid(page, 'field-spec').fill(spec)
     await tid(page, 'field-previous_tests').fill(previous)
-    expect(await runTool(page), `round ${n}: Tester 1 prompt`).toBe(R.testsPrompt)
+    expect(await runTool(page), `round ${n}: Tester 1 prompt`).toBe(today(R.testsPrompt))
     await useAnswer(page, R.testsAnswer)
     await expect(tid(page, 'install-from-answer')).toHaveCount(0)
     const tcBtn = copySection(page, 'Test cases')
@@ -127,13 +138,13 @@ test('the full loop: FIX in rounds 1–4, the newer version installed over the o
     // ---- 3. Run the tests: the built tool once per test, Copy answer into Tester 2's last box.
     await setHash(page, '#/home')
     await openTool(page, 'tool-tester-grade')
-    await tid(page, 'field-results').fill(`Ran on ${TODAY}.`)
+    await tid(page, 'field-results').fill(`Ran on ${TODAY}.`) // last round's answers are replaced
     for (const k of ['1', '2', '3']) {
       await setHash(page, '#/home')
       await openTool(page, BUILT_ID)
       await tid(page, 'field-syllabus').fill(R.cases[k].syllabus)
       await tid(page, 'field-exam_date').fill(R.cases[k].exam_date)
-      expect(await runTool(page), `round ${n}, test ${k}: the built tool’s prompt`).toBe(R.runPrompt(k))
+      expect(await runTool(page), `round ${n}, test ${k}: the built tool’s prompt`).toBe(today(R.runPrompt(k)))
       await useAnswer(page, R.runAnswer(k))
       const answer = await copy(page, tid(page, 'copy-answer'), tid(page, 'copy-answer-status'), browserName, R.runAnswer(k).trim(), `round ${n} test ${k} Copy answer`)
       expect(answer).toBe(R.runAnswer(k).trim())
@@ -148,11 +159,11 @@ test('the full loop: FIX in rounds 1–4, the newer version installed over the o
     await tid(page, 'field-test_cases').fill(testCases)
     await expect(tid(page, 'field-results')).toHaveValue(resultsFor(n))
     const gradePrompt = await runTool(page)
-    expect(gradePrompt, `round ${n}: Tester 2 prompt`).toBe(R.gradePrompt)
+    expect(gradePrompt, `round ${n}: Tester 2 prompt`).toBe(today(R.gradePrompt))
     expect(gradePrompt).not.toMatch(/recipe_format|```recipe/)
     await useAnswer(page, R.gradeAnswer)
     const result = tid(page, 'result')
-    if (n < LAST) {
+    if (!sectionText(R.gradeAnswer, 'Verdict').startsWith('PASS')) {
       await expect(result).toContainText('FIX AND RETEST — send the Fixes, the Spec and your current recipe to the Builder')
       await expect(copySection(page, 'Fixes')).toBeVisible()
     } else {
@@ -163,8 +174,9 @@ test('the full loop: FIX in rounds 1–4, the newer version installed over the o
   }
 
   // ---- 5. Keep it: the passing version is installed; download it for plugins/.
+  await setHash(page, '#/home')
   await openTool(page, 'tool-builder')
-  await installFromAnswer(page, `1.0.${LAST - 1}`)
+  await installFromAnswer(page, '1.0.5')
   const [dl] = await Promise.all([page.waitForEvent('download'), tid(page, 'download-recipe').click()])
   expect(dl.suggestedFilename()).toBe(`${BUILT_ID}.recipe.md`)
   const chunks = []
@@ -174,5 +186,6 @@ test('the full loop: FIX in rounds 1–4, the newer version installed over the o
   await expect(tile(page, BUILT_ID)).toHaveCount(1)
   const local = await page.evaluate(() => JSON.parse(localStorage.getItem('hub.localTools')))
   expect(local).toHaveLength(1)
-  expect(local[0].text).toContain('version: 1.0.4')
+  expect(local[0].text).toBe(round(LAST).recipe)
+  expect(local[0].text).toContain('version: 1.0.5')
 })

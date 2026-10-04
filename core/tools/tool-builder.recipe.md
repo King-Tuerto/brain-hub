@@ -24,7 +24,7 @@ inputs:
     label: Tester's fixes, your Spec and your recipe
     type: long_text
     required: false
-    help: Only when fixing a tool. Paste the Tester's Fixes, then the recipe you are fixing.
+    help: Only when fixing a tool. Paste the Tester's Fixes, then your current Spec, then your current recipe.
 output:
   sections: [Steps, Spec, Recipe]
 save:

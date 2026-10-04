@@ -156,12 +156,20 @@ export function sectionText(md, name) {
 
 // A small Copy button after every ## heading, so a student can copy one section
 // (the Builder's Spec, for the Tester) without the rest.
+// What a section's Copy button copies. A section holding a recipe copies just the
+// recipe file, ready to paste into plugins/ (Nitpick S1); anything else, the section.
+export function sectionCopy(md, name) {
+  const text = sectionText(md, name)
+  const [recipe] = recipesIn(text)
+  return recipe ? recipe.text : text
+}
+
 function addSectionCopyButtons(body, md) {
   body.querySelectorAll('h2').forEach((h2) => {
     const name = h2.textContent.trim()
     const status = h('span', { class: 'small muted', role: 'status' })
     h2.after(h('div', { class: 'row' },
-      h('button', { class: 'ghost', tid: 'copy-section', 'data-section': name, onclick: () => copyText(sectionText(md, name), status) }, `Copy “${name}”`),
+      h('button', { class: 'ghost', tid: 'copy-section', 'data-section': name, onclick: () => copyText(sectionCopy(md, name), status) }, `Copy “${name}”`),
       status))
   })
 }

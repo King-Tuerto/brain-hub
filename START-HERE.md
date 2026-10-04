@@ -216,8 +216,9 @@ not the one that built the tool. You get pass or fail for every check.
 - **If it says FIX AND RETEST:** open **Builder — make a tool** again. Paste
   the Tester's **Fixes**, your current **Spec** and your current recipe
   into the last box, one after the other. Install
-  the new version. Then run **Tester 1** again with its new Spec **and your
-  previous test cases** (the last box). The Tester keeps the same tests and
+  the new version. Then open **Tester 1**: first tap **Copy** under **Test
+  cases** in its last answer and paste them into the last box, then paste
+  the new Spec (copy it from the Builder's new answer) and run it. The Tester keeps the same tests and
   changes only the ones the new Spec really changed. A fixed bar is the only
   fair test, and a builder's word about its own changes isn't a test. Then
   repeat steps 3 and 4.

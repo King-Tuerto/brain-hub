@@ -97,10 +97,11 @@ test('case B answer: every section, no missing-sections; the advice-mode source-
   await expect(tid(page, 'source-check')).toBeVisible()
   await expect(tid(page, 'source-check')).toContainText(`${sc.unsourced.length} of ${sc.claims} claims have no source`)
   // Pinned independently of checkSources: advice mode counts only figure-bearing
-  // statements, so B has 2 (both are her own 22 → 41 figures), not the 16 a
-  // facts-mode count would give.
-  await expect(tid(page, 'source-check')).toContainText('2 of 2 claims have no source')
-  await expect(tid(page, 'unsourced-list').locator('li')).toHaveCount(2)
+  // statements. The v3-rule answer has 5: one marked [unverified], and 4 with no
+  // source (her own 22 → 41 figures twice, "Summer 2026", and the [X%] placeholder
+  // line), not the dozen-plus a facts-mode count would give. (The v2 answer had 2 of 2.)
+  await expect(tid(page, 'source-check')).toContainText('4 of 5 claims have no source')
+  await expect(tid(page, 'unsourced-list').locator('li')).toHaveCount(4)
 })
 
 test('Save writes one row with metadata.hub.tool = job-interview-prep, tagged job-prep and the company', async ({ page, standin }) => {

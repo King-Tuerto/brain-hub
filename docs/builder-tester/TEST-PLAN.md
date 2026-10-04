@@ -1,16 +1,18 @@
 # Builder & Tester specialists: Nitpick's test plan
 
 **Author:** Nitpick · **Date:** 2026-10-04 · **Branch:** `builder-tester`
-**Status:** test plan and first round of tests. **No sign-off yet:** the
-full-loop E2E is added when El Código's rerun of the real loop lands.
+**Status:** second round done: the full loop (rounds 1–7 of the final run)
+is replayed through the UI in all three projects. Sign-off and findings are in
+Nitpick's report for this round.
 
 ## Where the tests are
 
 | File | What |
 |---|---|
-| `tests/unit/builder-tester.test.mjs` | `{{widget_guide}}`, `sourcing: none`, the three recipes, the real run's Builder v1 and Tester 1 |
-| `tests/e2e/builder-tester.spec.mjs` | The hub pieces in all three projects, replayed from the real fixtures; `sectionText` and `recipesIn` edge cases |
-| `tests/helpers/buildertester.mjs` | Which fixture attempt the tests read (`DIR`) |
+| `tests/unit/builder-tester.test.mjs` | `{{widget_guide}}`, `sourcing: none`, the three recipes, and every round of the real run (r1 … r7) |
+| `tests/e2e/builder-tester.spec.mjs` | The hub pieces in all three projects, replayed from the real fixtures; `sectionText` and `recipesIn` edge cases; the Tester guard; the retest box |
+| `tests/e2e/builder-tester-loop.spec.mjs` | The whole loop through the UI, all seven rounds |
+| `tests/helpers/buildertester.mjs` | Finds the rounds by file name; the lines the hub has changed since earlier rounds (`SUPERSEDED`) |
 | `tests/unit/guides.test.mjs` | Classifies the new bold labels; checks the guides against the recipes |
 
 `sectionText` and `recipesIn` can't be imported in Node, because `core/app.js`
@@ -19,10 +21,12 @@ E2E tests import the module the page already loaded. That's the same URL, so
 it doesn't run again. They call the exports directly, with no `eval`, because
 the CSP guard would rightly flag `eval`.
 
-The tests currently read `tests/fixtures/builder-tester/attempt-1/`. When the
-rerun lands at the top level, change `DIR` in the helper. Then make the Builder
-prompt check byte-exact again: attempt-1 was built with the first Builder
-recipe and an older guide.
+The tests read the final run at the top of `tests/fixtures/builder-tester/`
+(`r1-*` … `r7-*`); the `attempt-*` folders are history and are not tested.
+Every prompt is compared byte for byte with what the hub builds today. Rounds
+run before a hub change (the narrowed no-invention rule, the word-form-aware
+Testers) may differ only in those whole lines, written out in the helper's
+`SUPERSEDED` list; the last round must use none of them.
 
 ## Contract fixes (existing tests)
 
@@ -168,22 +172,25 @@ turns red the day it's fixed, as a reminder to remove the `test.fail`. Set
    recipe that still validates and still offers **Install**.
 3. **Copy "Recipe"** stops at a `## ` line inside the recipe's code block.
 
-## Still to do (when the rerun lands)
+Second round: 1 and 3 are fixed and are now ordinary tests. 2 is still open
+(still `test.fail`). New:
+4. **Copy "Recipe"** copies the ```` ```recipe ```` fence and the file-name
+   line too, so pasting it into a `plugins/` file, as the guides' "Keep it on
+   every device" says, gives a file the hub rejects.
 
-The full loop is replayed through the UI from the new fixtures:
-- **Build:** run the Builder, paste the answer, then Install → Check →
-  Install.
-- **Test:** copy the Spec, run Tester 1, run the built tool three times with
-  **Copy answer**, then Tester 2 shows FIX.
-- **Fix:** run the Builder with the fixes, which reports "Spec changed". Run
-  Tester 1 again on the new Spec, which the guides now say to do every time.
-  Then install 1.0.1, rerun the tests, and Tester 2 shows PASS.
-- **Keep:** download the recipe for `plugins/`.
+## The full loop (done)
 
-The final assertions:
-- byte-exact prompts for every step;
-- the final grade is PASS;
-- the final recipe installs;
-- no Tester prompt contains recipe syntax inside its pasted text.
+`tests/e2e/builder-tester-loop.spec.mjs` replays all seven rounds through the
+UI: Builder → Install → **Copy "Spec"** → Tester 1 (round 2+: with the
+previous **Test cases**, copied from its last answer) → the built tool three
+times with **Copy answer** into Tester 2's last box → Tester 2 → on FIX, the
+Builder with the Fixes, the Spec and the recipe → the newer version installed
+over the old → … → PASS → **Download** the recipe. Every prompt along the way
+is checked against the real run's prompt.
 
-After that comes the written sign-off.
+The unit tests check every round of the real run: byte-exact prompts; one
+recipe per Builder answer, valid under its own name; no recipe in any Tester
+prompt; the Spec changes only in the criteria the Steps name; Tester 1 copies
+every check word for word unless its criterion changed, and marks what it
+added or changed; one fix per FAIL; and the verdict sequence FIX×4, PASS,
+FIX, PASS.
