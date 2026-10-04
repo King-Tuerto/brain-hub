@@ -20,12 +20,12 @@ inputs:
     required: true
     help: The whole listing — title, responsibilities, requirements.
   - id: my_background
-    label: Your background (optional)
+    label: Your background
     type: long_text
     required: false
     help: A few lines or your resume — projects, jobs, clubs, skills. Only what is true.
   - id: weaknesses
-    label: Gaps you're worried about (optional)
+    label: Gaps you're worried about
     type: long_text
     required: false
     help: A skill you're light on, little experience, a career change.

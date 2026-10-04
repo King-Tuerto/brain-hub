@@ -74,7 +74,7 @@ Each input is a list item with these keys:
 | Key | Required | Rules |
 |---|---|---|
 | `id` | yes | Lowercase letters, digits and underscores. Unique in this recipe. Used as `{{id}}` in the template. |
-| `label` | yes | The question shown to the student. Keep it short; phones are narrow. |
+| `label` | yes | The question shown to the student. Keep it short; phones are narrow. Don't write "(optional)": the hub adds it to every input with `required: false`. |
 | `type` | yes | One of `text` (one line), `long_text` (a paragraph or pasted document), `choose_one`, `number`. |
 | `required` | yes | `true` or `false`. |
 | `options` | only for `choose_one` | A list of 2–12 short strings. |

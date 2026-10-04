@@ -15,8 +15,8 @@ export const STANDARD_BLOCK_RULES = [
   'Every factual claim must include a source link in Markdown form [title](https://…). If you cannot source a claim, mark it [unverified].',
   // Fourth standard rule: Phase 3 PLAN §2a (amends WIDGET-GUIDE §8).
   'Statements about your own method or about what you could not verify are not factual claims: start them with "Note:".',
-  // Phase 5 / DECISIONS #18: appended to every prompt.
-  'Never invent facts about me (numbers, achievements, dates, names). Where a real detail of mine is needed and you do not have it, write a placeholder like [your number].',
+  // Phase 5 / DECISIONS #18: appended to every prompt. Second sentence: starter-job-prep PLAN.
+  'Never invent facts about me (numbers, achievements, dates, names). Where a real detail of mine is needed and you do not have it, write a placeholder like [your number]. This includes example sentences I might copy, such as sample resume bullets or answers: put a placeholder like [X%] in place of every number in them.',
   'End with "## Summary": 2–3 sentences someone could search for later.',
 ]
 export const AI_APP_URLS = {

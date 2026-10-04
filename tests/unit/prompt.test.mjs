@@ -41,7 +41,8 @@ const EXPECTED_BLOCK_LINES = [
   // Fourth standard rule: Phase 3 PLAN §2a (amends WIDGET-GUIDE §8).
   'Statements about your own method or about what you could not verify are not factual claims: start them with "Note:".',
   // Phase 5 PLAN Part A 1 / DECISIONS #18: on every prompt, whatever the recipe says.
-  'Never invent facts about me (numbers, achievements, dates, names). Where a real detail of mine is needed and you do not have it, write a placeholder like [your number].',
+  // starter-job-prep PLAN: second sentence added after a real answer gave sample resume bullets made-up figures.
+  'Never invent facts about me (numbers, achievements, dates, names). Where a real detail of mine is needed and you do not have it, write a placeholder like [your number]. This includes example sentences I might copy, such as sample resume bullets or answers: put a placeholder like [X%] in place of every number in them.',
   'End with "## Summary": 2–3 sentences someone could search for later.',
 ]
 // Phase 5 PLAN Part A 1: `sourcing: advice` swaps only the source-rule line.
